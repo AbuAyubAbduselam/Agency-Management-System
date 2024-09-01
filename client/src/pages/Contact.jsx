@@ -1,5 +1,10 @@
 import { useRef } from "react";
 import { Form, Input, Button, notification } from "antd";
+import {
+  MailOutlined,
+  PhoneOutlined,
+  EnvironmentOutlined,
+} from "@ant-design/icons";
 import emailjs from "@emailjs/browser";
 
 const { TextArea } = Input;
@@ -7,32 +12,33 @@ const { TextArea } = Input;
 const ContactPage = () => {
   const formRef = useRef();
 
-  const sendEmail = (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault(); // Prevent the default form submission
 
-    emailjs
-      .sendForm(
+    try {
+      await emailjs.sendForm(
         "service_4o8exkt",
         "template_p1vwxfq",
         formRef.current,
         "fCrr-yh2Q00Yx5Uxm"
-      )
-      .then(
-        () => {
-          notification.success({
-            message: "Message Sent",
-            description: "Your message has been sent successfully!",
-          });
-        },
-        (error) => {
-          console.error("EmailJS error:", error);
-          notification.error({
-            message: "Message Failed",
-            description:
-              "There was an issue sending your message. Please try again later.",
-          });
-        }
       );
+
+      // Success Notification
+      notification.success({
+        message: "Message Sent",
+        description: "Your message has been sent successfully!",
+      });
+    } catch (error) {
+      // Error Notification
+      notification.error({
+        message: "Message Failed",
+        description:
+          error?.text ||
+          "There was an issue sending your message. Please try again later.",
+      });
+
+      console.error("EmailJS error:", error); // Logs the error details for debugging
+    }
   };
 
   return (
@@ -41,6 +47,25 @@ const ContactPage = () => {
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
           Contact Us
         </h2>
+
+        {/* Icons and Values */}
+        <div className="flex flex-col sm:flex-row justify-around text-center mb-8">
+          <div className="mb-4 sm:mb-0">
+            <MailOutlined style={{ fontSize: "24px", color: "#10b981" }} />
+            <p className="mt-2 text-gray-600">email@example.com</p>
+          </div>
+          <div className="mb-4 sm:mb-0">
+            <PhoneOutlined style={{ fontSize: "24px", color: "#10b981" }} />
+            <p className="mt-2 text-gray-600">+123 456 7890</p>
+          </div>
+          <div className="mb-4 sm:mb-0">
+            <EnvironmentOutlined
+              style={{ fontSize: "24px", color: "#10b981" }}
+            />
+            <p className="mt-2 text-gray-600">1234 Street, City, Country</p>
+          </div>
+        </div>
+
         <form ref={formRef} onSubmit={sendEmail}>
           <Form layout="vertical">
             <Form.Item
