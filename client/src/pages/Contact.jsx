@@ -52,17 +52,19 @@ const ContactPage = () => {
         <div className="flex flex-col sm:flex-row justify-around text-center mb-8">
           <div className="mb-4 sm:mb-0">
             <MailOutlined style={{ fontSize: "24px", color: "#10b981" }} />
-            <p className="mt-2 text-gray-600">email@example.com</p>
+            <p className="mt-2 text-gray-600">medresaalansar@gmail.com</p>
           </div>
           <div className="mb-4 sm:mb-0">
             <PhoneOutlined style={{ fontSize: "24px", color: "#10b981" }} />
-            <p className="mt-2 text-gray-600">+123 456 7890</p>
+            <p className="mt-2 text-gray-600">+2519 6016 2802</p>
           </div>
           <div className="mb-4 sm:mb-0">
             <EnvironmentOutlined
               style={{ fontSize: "24px", color: "#10b981" }}
             />
-            <p className="mt-2 text-gray-600">1234 Street, City, Country</p>
+            <p className="mt-2 text-gray-600">
+              Bole Bulbula Wereda 12 Ansar Mesjid
+            </p>
           </div>
         </div>
 

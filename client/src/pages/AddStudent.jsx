@@ -40,14 +40,16 @@ const AddStudent = ({ closeModal }) => {
         form={form}
         layout="vertical"
         initialValues={{
-          fullName: "John Doe",
+          firstName: "Abduselam",
+          middleName: "Idris",
+          lastName: "Beharu",
           gender: "male",
-          dateOfBirth: "2000-01-01",
-          schoolName: "ABC School",
+          dateOfBirth: "2001-09-23",
+          schoolName: "AB School",
           classes: "1",
-          address: "123 Main St",
-          parentName: "Jane Doe",
-          parentPhoneNumber: "1234567890",
+          address: "Bole Bulbula",
+          parentName: "Idris",
+          parentPhoneNumber: "0923500914",
         }}
         onFinish={handleSubmit} // Handle form submission manually
       >
@@ -58,7 +60,6 @@ const AddStudent = ({ closeModal }) => {
             name="avatar"
             valuePropName="fileList"
             getValueFromEvent={(e) => e?.fileList}
-            rules={[{ required: true, message: "Please upload an avatar!" }]}
           >
             <Upload
               name="avatar"
@@ -71,7 +72,7 @@ const AddStudent = ({ closeModal }) => {
             </Upload>
           </Form.Item>
           <Form.Item
-            label="First Name"
+            label="First Name "
             name="firstName"
             rules={[
               { required: true, message: "Please input the first name!" },
@@ -124,20 +125,7 @@ const AddStudent = ({ closeModal }) => {
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Academic Year"
-            name="academicStatus"
-            rules={[
-              { required: true, message: "Please select the Academic Year!" },
-            ]}
-          >
-            <Select>
-              <Select.Option value="2017">2017</Select.Option>
-              <Select.Option value="2018">2018</Select.Option>
-              <Select.Option value="2019">2019</Select.Option>
-              <Select.Option value="2020">2020</Select.Option>
-            </Select>
-          </Form.Item>
+
           <Form.Item
             label="Class"
             name="classes"

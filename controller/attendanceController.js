@@ -4,10 +4,19 @@ import StudentAttendance from "../models/StudentAttendanceModel.js";
 import dayjs from "dayjs";
 
 export const getAttendance = async (req, res) => {
-  const studentAttendance = await StudentAttendance.find();
-  res.status(StatusCodes.OK).json({ studentAttendance });
-};
+  try {
+    const { date } = req.query;
+    console.log(date);
 
+    const query = date ? { date: new Date(date) } : {};
+
+    const studentAttendance = await StudentAttendance.find(query);
+
+    res.status(StatusCodes.OK).json({ studentAttendance });
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+  }
+};
 export const createAttendance = async (req, res) => {
   try {
     const currentDate = dayjs().format("YYYY-MM-DD");

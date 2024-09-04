@@ -61,8 +61,7 @@ const Student = ({
               <td>
                 <div>
                   <div className="font-bold">
-                    {firstName}
-                    <span className="font-bold">{middleName}</span>
+                    {firstName} <span className="font-bold">{middleName}</span>
                   </div>
                   <div className="text-sm opacity-50">{lastName}</div>
                 </div>

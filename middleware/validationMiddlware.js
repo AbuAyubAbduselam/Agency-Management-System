@@ -87,8 +87,6 @@ export const validateRegisterInput = withValidationErrors([
     .withMessage("password is required")
     .isLength({ min: 8 })
     .withMessage("The pasword character must be greater than 8"),
-  body("lastName").notEmpty().withMessage("lastName is required"),
-  body("location").notEmpty().withMessage("location is required"),
 ]);
 
 export const validateLoginInput = withValidationErrors([
