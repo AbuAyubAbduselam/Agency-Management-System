@@ -51,10 +51,10 @@ const AddStudent = ({ closeModal }) => {
           parentName: "Idris",
           parentPhoneNumber: "0923500914",
         }}
-        onFinish={handleSubmit} // Handle form submission manually
+        onFinish={handleSubmit}
       >
         <h4 className="form-title">Add Student</h4>
-        <div className="form-center">
+        <div className="form-center ">
           <Form.Item
             label="Photo"
             name="avatar"

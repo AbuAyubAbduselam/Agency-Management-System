@@ -33,7 +33,7 @@ const Wrapper = styled.section`
   }
   @media (max-width: 750px) {
     .form-center {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       align-items: center;
       column-gap: 1rem;
       row-gap: 1rem;
