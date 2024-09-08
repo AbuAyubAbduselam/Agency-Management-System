@@ -1,9 +1,8 @@
 import { toast } from "react-toastify";
-import { StudentAttendanceContainer } from "../components";
 import customFetch from "../utils/customFetch";
 import { useLoaderData } from "react-router-dom";
 import { useContext, createContext } from "react";
-import TeachersAttendanceContainer from "../components/TeacherAttendanceContainer";
+import { TeachersContainer } from "../components";
 
 export const loader = async ({ request }) => {
   const params = Object.fromEntries([
@@ -22,19 +21,19 @@ export const loader = async ({ request }) => {
   }
 };
 
-const TeacherAttendanceContext = createContext();
+const TeachersContext = createContext();
 
-const TeacherAttendance = () => {
+const Teachers = () => {
   const { data, selectedParams } = useLoaderData();
+  console.log(data);
 
   return (
-    <TeacherAttendanceContext.Provider value={{ data, selectedParams }}>
-      <TeachersAttendanceContainer />
-    </TeacherAttendanceContext.Provider>
+    <TeachersContext.Provider value={{ data, selectedParams }}>
+      <TeachersContainer />
+    </TeachersContext.Provider>
   );
 };
 
-export const useTeacherAttendanceContext = () =>
-  useContext(TeacherAttendanceContext);
+export const useTeachersContext = () => useContext(TeachersContext);
 
-export default TeacherAttendance;
+export default Teachers;

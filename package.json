@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "your-build-command",
     "setup-project": "npm i && cd client && npm i",
     "server": "nodemon server",
     "client": "cd client && npm run dev",

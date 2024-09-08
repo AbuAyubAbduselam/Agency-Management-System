@@ -24,7 +24,7 @@ router.route("/stats").get(showStats);
 router
   .route("/:id")
   .get(getSingleStudent)
-  .patch(validateIdParam, validateStudentInput, updateStudent)
-  .delete(validateIdParam, deleteStudent);
+  .patch(updateStudent)
+  .delete(deleteStudent);
 
 export default router;

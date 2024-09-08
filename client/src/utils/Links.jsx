@@ -10,16 +10,12 @@ import {
 const links = [
   {
     text: "Students",
-    path: "",
+    path: ".",
     icon: <TeamOutlined />,
-    subLinks: [
-      { text: "Add Student", path: "." },
-      { text: "All Student", path: "all-students" },
-    ],
   },
   {
     text: "Teachers",
-    path: "all-jobs",
+    path: "teachers",
     icon: <UserOutlined />,
   },
   {

@@ -1,166 +1,123 @@
-import Student from "../models/studentModels.js";
+import Teacher from "../models/TeachersModel.js";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 import day from "dayjs";
-import cloudinary from "cloudinary";
-import fs from "fs/promises"; // Use fs/promises for async/await
+import fs from "fs/promises";
 
-//===============GET ALL STUDENTS==================//
-export const getAllStudents = async (req, res) => {
-  const { search, sort, classes } = req.query;
-
-  const queryObject = {};
-
-  if (search) {
-    queryObject.$or = [
-      { firstName: { $regex: search, $options: "i" } },
-      { lastName: { $regex: search, $options: "i" } },
-    ];
-  }
-
-  if (classes && classes !== "all") {
-    queryObject.classes = classes;
-  }
-
-  const sortOptions = {
-    newest: "-createdAt",
-    oldest: "createdAt",
-    "a-z": "position",
-    "z-a": "-position",
-  };
-
-  const sortKey = sortOptions[sort] || sortOptions.newest;
-
+//===============GET ALL Teachers==================//
+export const getAllTeachers = async (req, res) => {
+  console.log(44444444444444);
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
 
   try {
-    const students = await Student.find(queryObject)
-      .sort(sortKey)
+    const teachers = await Teacher.find({})
+
       .skip(skip)
       .limit(limit);
-    const totalStudents = await Student.countDocuments(queryObject);
-    const numOfPages = Math.ceil(totalStudents / limit);
+    const totalTeachers = await Teacher.countDocuments({});
+    const numOfPages = Math.ceil(totalTeachers / limit);
 
     res
       .status(StatusCodes.OK)
-      .json({ totalStudents, numOfPages, currentPage: page, students });
+      .json({ totalTeachers, numOfPages, currentPage: page, teachers });
   } catch (error) {
     console.error(error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Error fetching students" });
+      .json({ msg: "Error fetching teachers" });
   }
 };
 
 //==============CREATE STUDENT====================//
 
-export const createStudent = async (req, res) => {
+export const createTeacher = async (req, res) => {
   try {
-    req.body.createdBy = req.user.userId;
-
     const studentDetail = { ...req.body };
-    console.log(req.files);
-    // Check if a file was uploaded
-    if (req.files && req.files.avatar) {
-      const file = req.files.avatar;
 
-      // Upload file to Cloudinary
-      const response = await cloudinary.v2.uploader.upload(file.tempFilePath, {
-        folder: "avatars", // You can specify a folder in Cloudinary
-      });
-
-      // Remove file from the server after upload
-      await fs.unlink(file.tempFilePath);
-
-      // Attach file details to the student object
-      studentDetail.avatar = response.secure_url;
-      studentDetail.avatarPublicId = response.public_id;
-    }
-
-    const student = await Student.create(studentDetail);
-    res.status(StatusCodes.CREATED).json({ student });
+    const teacher = await Teacher.create(studentDetail);
+    res.status(StatusCodes.CREATED).json({ teacher });
   } catch (error) {
     console.error(error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Failed to create student" });
+      .json({ msg: "Failed to create teacher" });
   }
 };
 
 //=============GET SINGLE STUDENT================
-export const getSingleStudent = async (req, res) => {
+export const getSingleTeacher = async (req, res) => {
+  console.log(11111111);
   const { id } = req.params;
 
   try {
-    const student = await Student.findOne({ _id: id });
+    const teacher = await Teacher.findOne({ _id: id });
 
-    if (!student) {
+    if (!teacher) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ msg: "student not found" });
+        .json({ msg: "teacher not found" });
     }
 
-    res.status(StatusCodes.OK).json({ student });
+    res.status(StatusCodes.OK).json({ teacher });
   } catch (error) {
     console.error(error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Error fetching student" });
+      .json({ msg: "Error fetching teacher" });
   }
 };
 
 //---------------UPDATE STUDENT
-export const updateStudent = async (req, res) => {
+export const updateTeacher = async (req, res) => {
   console.log(33333333, req.body);
   const { id } = req.params;
 
   try {
-    const updatedStudent = await Student.findByIdAndUpdate(id, req.body, {
+    const updatedTeacher = await Teacher.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
 
-    if (!updatedStudent) {
+    if (!updatedTeacher) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ msg: "student not found" });
+        .json({ msg: "teacher not found" });
     }
 
     res
       .status(StatusCodes.OK)
-      .json({ msg: "Student is modified", student: updatedStudent });
+      .json({ msg: "Teacher is modified", teacher: updatedTeacher });
   } catch (error) {
     console.error(error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Error updating student" });
+      .json({ msg: "Error updating teacher" });
   }
 };
 
 //-----------------DELETE STUDENT
-export const deleteStudent = async (req, res) => {
+export const deleteTeacher = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
 
   try {
-    const removedStudent = await Student.findByIdAndDelete(id);
+    const removedTeacher = await Teacher.findByIdAndDelete(id);
 
-    if (!removedStudent) {
+    if (!removedTeacher) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ msg: "Student not found" });
+        .json({ msg: "Teacher not found" });
     }
 
     res
       .status(StatusCodes.OK)
-      .json({ msg: "Student is deleted", student: removedStudent });
+      .json({ msg: "Teacher is deleted", teacher: removedTeacher });
   } catch (error) {
     console.error(error);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Error deleting student" });
+      .json({ msg: "Error deleting teacher" });
   }
 };
 

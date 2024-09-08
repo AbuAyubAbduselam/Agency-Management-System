@@ -11,6 +11,7 @@ import cloudinary from "cloudinary";
 
 //routes
 import studentRouter from "./routes/studentRouter.js";
+import teacherRouter from "./routes/teacherRouter.js";
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import attendanceRouter from "./routes/attendanceRouter.js";
@@ -48,6 +49,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.resolve(__dirname, "./public")));
 
 app.use("/api/v1/students", authenticateUser, studentRouter);
+app.use("/api/v1/teachers", authenticateUser, teacherRouter);
 app.use("/api/v1/users", authenticateUser, userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/attendance", attendanceRouter);

@@ -1,4 +1,9 @@
-import { useLoaderData, useParams, redirect } from "react-router-dom";
+import {
+  useLoaderData,
+  useParams,
+  redirect,
+  useNavigate,
+} from "react-router-dom";
 import { toast } from "react-toastify";
 import customFetch from "../utils/customFetch";
 import Wrapper from "../assets/wrappers/DashboardFormPage";
@@ -12,7 +17,7 @@ export const loader = async ({ params }) => {
     return data;
   } catch (error) {
     toast.error(error.response.data.msg);
-    return redirect("/dashboard/all-students");
+    return redirect("/dashboard");
   }
 };
 
@@ -23,7 +28,7 @@ export const action = async ({ request, params }) => {
   try {
     await customFetch.patch(`/students/${params.id}`, data);
     toast.success("Student edited successfully");
-    return redirect("/dashboard/all-students");
+    return redirect("/dashboard");
   } catch (error) {
     toast.error(error.response.data.msg);
     return error;
@@ -32,12 +37,13 @@ export const action = async ({ request, params }) => {
 
 const EditStudent = () => {
   const { student } = useLoaderData();
+  const navigate = useNavigate();
 
   const onFinish = async (values) => {
     try {
       await customFetch.patch(`/students/${student._id}`, values);
       toast.success("Student edited successfully");
-      return redirect("/dashboard/all-students");
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error.response.data.msg);
     }
@@ -116,20 +122,7 @@ const EditStudent = () => {
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Academic Year"
-            name="academicStatus"
-            rules={[
-              { required: true, message: "Please select the Academic Year!" },
-            ]}
-          >
-            <Select>
-              <Select.Option value="2017">2017</Select.Option>
-              <Select.Option value="2018">2018</Select.Option>
-              <Select.Option value="2019">2019</Select.Option>
-              <Select.Option value="2020">2020</Select.Option>
-            </Select>
-          </Form.Item>
+
           <Form.Item
             label="Class"
             name="classes"

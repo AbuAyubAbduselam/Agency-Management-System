@@ -70,7 +70,7 @@ const Student = ({
               <td>{gender}</td>
               <td>{classes}</td>
               <td>
-                <Link to={`../edit-student/${_id}`}>
+                <Link to={`../dashboard/edit-student/${_id}`}>
                   <Button
                     icon={<EditOutlined />}
                     type="primary"
@@ -102,7 +102,10 @@ const Student = ({
               <td>{schoolName}</td>
 
               <td>
-                <Form method="post" action={`../delete-student/${_id}`}>
+                <Form
+                  method="post"
+                  action={`../dashboard/delete-student/${_id}`}
+                >
                   <Button
                     icon={<DeleteOutlined />}
                     type="primary"

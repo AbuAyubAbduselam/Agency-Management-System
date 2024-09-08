@@ -17,11 +17,16 @@ import {
   TeacherAttendance,
   About,
   Contact,
+  Teachers,
 } from "./pages";
 import { action as loginAction } from "./pages/Login";
 import { loader as dashboardLoader } from "./pages/DashboardLayout";
-import { loader as attendanceDetailLoader } from "./pages/AttendanceDetail";
+import AttendanceLoader, {
+  loader as attendanceDetailLoader,
+} from "./pages/AttendanceLoader";
 import { loader as allStudentsLoader } from "./pages/AllStudents";
+import { loader as allTeachersLoader } from "./pages/Teachers";
+import { loader as teachersLoader } from "./pages/Teachers";
 import { loader as editStudentLoader } from "./pages/EditStudent";
 import { action as editStudentAction } from "./pages/EditStudent";
 import { action as deleteStudentAction } from "./pages/DeleteStudent";
@@ -60,7 +65,7 @@ const router = createBrowserRouter([
       },
       {
         path: "attendance-detail",
-        element: <AttendanceDetail />,
+        element: <AttendanceLoader />,
         loader: attendanceDetailLoader,
       },
       {
@@ -78,17 +83,19 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <AddStudent />,
+            element: <AllStudents />,
+            loader: allStudentsLoader,
           },
           {
             path: "stats",
             element: <Stats />,
             loader: statsLoader,
           },
+
           {
-            path: "all-students",
-            element: <AllStudents />,
-            loader: allStudentsLoader,
+            path: "teachers",
+            element: <Teachers />,
+            loader: teachersLoader,
           },
           {
             path: "student-attendance",
@@ -98,7 +105,7 @@ const router = createBrowserRouter([
           {
             path: "teacher-attendance",
             element: <TeacherAttendance />,
-            loader: allStudentsLoader,
+            loader: allTeachersLoader,
           },
 
           {

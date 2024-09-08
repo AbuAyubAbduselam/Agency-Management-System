@@ -25,7 +25,6 @@ const AllStudentsContext = createContext();
 
 const AllStudents = () => {
   const { data, selectedParams } = useLoaderData();
-  console.log(data);
 
   return (
     <AllStudentsContext.Provider value={{ data, selectedParams }}>
