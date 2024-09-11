@@ -21,15 +21,13 @@ import {
 } from "./pages";
 import { action as loginAction } from "./pages/Login";
 import { loader as dashboardLoader } from "./pages/DashboardLayout";
-import AttendanceLoader, {
-  loader as attendanceDetailLoader,
-} from "./pages/AttendanceLoader";
 import { loader as allStudentsLoader } from "./pages/AllStudents";
 import { loader as allTeachersLoader } from "./pages/Teachers";
 import { loader as teachersLoader } from "./pages/Teachers";
 import { loader as editStudentLoader } from "./pages/EditStudent";
 import { action as editStudentAction } from "./pages/EditStudent";
 import { action as deleteStudentAction } from "./pages/DeleteStudent";
+import { action as deleteTeacherAction } from "./pages/DeleteTeacher";
 import { loader as adminLoader } from "./pages/Admin";
 import { action as profileAction } from "./pages/Profile";
 import { loader as statsLoader } from "./pages/Stats";
@@ -63,11 +61,7 @@ const router = createBrowserRouter([
         element: <Login />,
         action: loginAction,
       },
-      {
-        path: "attendance-detail",
-        element: <AttendanceLoader />,
-        loader: attendanceDetailLoader,
-      },
+
       {
         path: "about",
         element: <About />,
@@ -90,6 +84,10 @@ const router = createBrowserRouter([
             path: "stats",
             element: <Stats />,
             loader: statsLoader,
+          },
+          {
+            path: "attendance-detail",
+            element: <AttendanceDetail />,
           },
 
           {
@@ -127,6 +125,10 @@ const router = createBrowserRouter([
           {
             path: "delete-student/:id",
             action: deleteStudentAction,
+          },
+          {
+            path: "delete-teacher/:id",
+            action: deleteTeacherAction,
           },
         ],
       },

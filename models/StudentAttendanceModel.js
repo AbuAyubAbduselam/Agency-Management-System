@@ -8,6 +8,10 @@ const StudentAttendanceSchema = new mongoose.Schema(
       type: String,
       enum: ["Absent", "Present", "Late"],
     },
+    classes: {
+      type: String,
+      enum: ["1", "2", "3", "4"],
+    },
 
     date: Date,
 

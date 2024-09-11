@@ -25,6 +25,7 @@ const links = [
     subLinks: [
       { text: "Student Attendance", path: "student-attendance" },
       { text: "Teacher Attendance", path: "teacher-attendance" },
+      { text: "View Attendance", path: "attendance-detail" },
     ],
   },
   { text: "Results", path: "results", icon: <ReadOutlined /> },

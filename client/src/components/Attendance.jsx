@@ -15,6 +15,7 @@ day.extend(advancedFormat);
 const Attendance = ({
   _id,
   idNumber,
+  classes,
   avatar,
   firstName,
   middleName,
@@ -52,6 +53,7 @@ const Attendance = ({
 
   const handleSubmit = async (buttonType) => {
     const attendanceData = {
+      classes,
       firstName,
       middleName,
       idNumber,

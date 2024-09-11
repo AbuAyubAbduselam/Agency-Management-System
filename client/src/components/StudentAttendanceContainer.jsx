@@ -1,10 +1,6 @@
 import { useRef, useState } from "react";
-import Student from "./Student";
 import Wrapper from "../assets/wrappers/StudentsContainer";
-import PageBtnContainer from "./PageBtnContainer";
-import { AddStudent } from "../pages";
-import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+
 import { UseAllStudentsAttendanceContext } from "../pages/StudentAttendance";
 import Attendance from "./Attendance";
 import PageBtnContainer2 from "./PageBtnContainer2";
@@ -13,18 +9,6 @@ import { Link } from "react-router-dom";
 const StudentAttendanceContainer = () => {
   const { data } = UseAllStudentsAttendanceContext();
   const { students, totalStudents, numOfPages } = data;
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const modalRef = useRef(null);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setIsModalVisible(false);
-  };
 
   if (students.length === 0) {
     return (

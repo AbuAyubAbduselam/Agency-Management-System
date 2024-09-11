@@ -3,18 +3,34 @@ import StudentAttendance from "../models/StudentAttendanceModel.js";
 import dayjs from "dayjs";
 import TeacherAttendance from "../models/TeacherAttendanceModel.js";
 
-export const getAttendance = async (req, res) => {
+export const getAttendanceByDate = async (req, res) => {
   try {
-    const { date } = req.query;
-    console.log(date);
+    const { date, classes } = req.query;
+    console.log(classes);
+    const queryObject = {};
 
-    const query = date ? { date: new Date(date) } : {};
+    const isDateFound = await StudentAttendance.find({
+      date: new Date(date),
+    });
 
-    const studentAttendance = await StudentAttendance.find(query);
+    if (!isDateFound) {
+      return res
+        .status(404)
+        .json({ message: "No attendance records found for this date." });
+    }
 
-    res.status(StatusCodes.OK).json({ studentAttendance });
+    if (isDateFound) {
+      queryObject.date = date;
+    }
+    if (classes && classes !== "all") {
+      queryObject.classes = classes;
+    }
+    const attendanceRecords = await StudentAttendance.find(queryObject);
+    console.log(attendanceRecords);
+
+    res.status(200).json(attendanceRecords);
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: error.message });
+    res.status(500).json({ message: "Server error", error });
   }
 };
 export const createAttendance = async (req, res) => {
@@ -22,7 +38,6 @@ export const createAttendance = async (req, res) => {
     const currentDate = dayjs().format("YYYY-MM-DD");
     const attendanceData = req.body;
     const { idNumber } = attendanceData;
-    console.log(req.body);
 
     const existingAttendance = await StudentAttendance.findOne({
       idNumber: idNumber,
@@ -35,11 +50,12 @@ export const createAttendance = async (req, res) => {
       Attendance1 = await existingAttendance.save();
     } else {
       Attendance1 = await StudentAttendance.create({
-        attendanceData,
+        ...attendanceData,
         idNumber,
         date: currentDate,
       });
     }
+    console.log(Attendance1);
 
     res.status(StatusCodes.CREATED).json({ Attendance1 });
   } catch (error) {
