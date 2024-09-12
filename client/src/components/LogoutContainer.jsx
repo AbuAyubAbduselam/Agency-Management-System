@@ -11,7 +11,7 @@ const LogoutContainer = () => {
     <Wrapper>
       <Button
         type="button"
-        className="bg-emerald-600 hover:bg-green-550 logout-btn"
+        className="text-cyan-50  bg-[#059669] hover:bg-green-550 logout-btn"
         onClick={() => {
           setShowLogout(!showLogout);
         }}

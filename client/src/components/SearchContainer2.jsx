@@ -87,7 +87,7 @@ const SearchContainer2 = () => {
       </form>
 
       <div className="mt-5 flex justify-center">
-        <button className="btn btn-primary">
+        <button className="bg-emerald-600 text-white h-8 px-4 rounded">
           <Link to="/dashboard/student-attendance" onClick={handleReset}>
             Reset
           </Link>

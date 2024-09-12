@@ -4,17 +4,18 @@ import Logo from "./Logo";
 import { useDashboardContext } from "../pages/DashboardLayout";
 import LogoutContainer from "./LogoutContainer";
 import ThemeToggle from "./ThemeToggle";
+import Toggle from "./Drawer";
 
 const Navbar = () => {
   const { toggleSidebar } = useDashboardContext();
   return (
     <Wrapper>
       <div className="nav-center z-1000">
-        <button type="button" className="toggle-btn">
-          <MenuUnfoldOutlined onClick={toggleSidebar} />
-        </button>
+        <div className="lg:hidden">
+          <Toggle />
+        </div>
+
         <div>
-          <Logo />
           <h4 className="logo-text">dashboard</h4>
         </div>
         <div className="btn-container">

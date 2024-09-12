@@ -63,11 +63,11 @@ const StudentsContainer = () => {
           {totalStudents} {totalStudents > 1 ? "students" : "student"} found
         </h5>
         <Button
-          className="btn flex"
+          className="btn flex "
           onClick={showModal}
           icon={<PlusOutlined />}
         >
-          <span className="ml-3">Add Student</span>
+          <span className="ml-3 ">Add Student</span>
         </Button>
         {isModalVisible && (
           <div className="modal modal-open">

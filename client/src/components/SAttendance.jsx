@@ -47,7 +47,10 @@ const Student = ({
               <th>Qirat Level</th>
               <th>ID No.</th>
               <th>
-                <Button type="primary" icon={<InfoCircleOutlined />}></Button>
+                <Button
+                  className="!text-white !bg-[#059669]"
+                  icon={<InfoCircleOutlined />}
+                ></Button>
               </th>
             </tr>
           </thead>
@@ -81,7 +84,7 @@ const Student = ({
                   <Button
                     icon={<EditOutlined />}
                     type="primary"
-                    className="edit-btn"
+                    className="edit-btn !bg-[#059669]"
                   ></Button>
                 </Link>
               </td>
@@ -112,7 +115,7 @@ const Student = ({
                     icon={<DeleteOutlined />}
                     type="primary"
                     danger
-                    className="delete-btn"
+                    className="delete-btn  !bg-[#059669]"
                     htmlType="submit"
                   ></Button>
                 </Form>

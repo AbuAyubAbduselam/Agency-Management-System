@@ -29,7 +29,6 @@ const Student = ({
   parentName,
   parentPhoneNumber,
 }) => {
-  const date = day(dateOfBirth).format("MMM Do, YYYY");
   const age = day().diff(day(dateOfBirth), "year");
   return (
     <Wrapper>
@@ -42,9 +41,7 @@ const Student = ({
               <th>ID No.</th>
               <th>Sex</th>
               <th>Class</th>
-              <th>
-                <Button type="primary" icon={<InfoCircleOutlined />}></Button>
-              </th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -53,7 +50,7 @@ const Student = ({
                 <div className="flex items-center gap-3">
                   <div className="avatar">
                     <div className="mask mask-squircle h-12 w-12">
-                      <img src={avatar} alt="Avatar" />
+                      <img src={avatar} alt="Photo" />
                     </div>
                   </div>
                 </div>
@@ -74,7 +71,7 @@ const Student = ({
                   <Button
                     icon={<EditOutlined />}
                     type="primary"
-                    className="edit-btn"
+                    className="edit-btn !bg-[#059669]"
                   ></Button>
                 </Link>
               </td>
@@ -87,7 +84,7 @@ const Student = ({
               <th>Parent Name</th>
               <th>Parent Phone</th>
               <th>School Name</th>
-              <th></th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -110,7 +107,7 @@ const Student = ({
                     icon={<DeleteOutlined />}
                     type="primary"
                     danger
-                    className="delete-btn"
+                    className="delete-btn  !bg-[#059669]"
                     htmlType="submit"
                   ></Button>
                 </Form>

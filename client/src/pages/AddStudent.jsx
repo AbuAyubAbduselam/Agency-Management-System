@@ -36,23 +36,7 @@ const AddStudent = ({ closeModal }) => {
 
   return (
     <Wrapper>
-      <Form
-        form={form}
-        layout="vertical"
-        initialValues={{
-          firstName: "Abduselam",
-          middleName: "Idris",
-          lastName: "Beharu",
-          gender: "male",
-          dateOfBirth: "2001-09-23",
-          schoolName: "AB School",
-          classes: "1",
-          address: "Bole Bulbula",
-          parentName: "Idris",
-          parentPhoneNumber: "0923500914",
-        }}
-        onFinish={handleSubmit}
-      >
+      <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <h4 className="form-title">Add Student</h4>
         <div className="form-center ">
           <Form.Item
@@ -89,11 +73,7 @@ const AddStudent = ({ closeModal }) => {
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Last Name"
-            name="lastName"
-            rules={[{ required: true, message: "Please input the last name!" }]}
-          >
+          <Form.Item label="Last Name" name="lastName">
             <Input />
           </Form.Item>
           <Form.Item
@@ -168,7 +148,7 @@ const AddStudent = ({ closeModal }) => {
             <Input />
           </Form.Item>
           <Form.Item>
-            <button className="bg-emerald-500 btn text-cyan-50" type="submit">
+            <button className="bg-[#059669] btn text-cyan-50" type="submit">
               Submit
             </button>
           </Form.Item>

@@ -4,6 +4,7 @@ import { FormRow, Logo, SubmitBtn } from "../components";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
 import { useActionData } from "react-router-dom";
+import { notification } from "antd";
 
 export const action = async ({ request }) => {
   const formData = await request.formData();
@@ -15,25 +16,20 @@ export const action = async ({ request }) => {
   }
   try {
     await customFetch.post("/auth/login", data);
-    toast.success("Login successful");
+    notification.success({ message: "Login successful" });
     return redirect("/dashboard");
   } catch (error) {
-    // toast.error(error?.response?.data?.msg);
-    errors.msg = error.response.data.msg;
+    notification.error({ message: error.response.data.msg });
     return errors;
   }
 };
 
 const Login = () => {
-  const navigate = useNavigate();
-
-  const errors = useActionData();
   return (
     <Wrapper>
       <Form method="post" className="form">
         <Logo />
         <h4>login</h4>
-        {errors && <p style={{ color: "red" }}>{errors.msg}</p>}
         <FormRow type="email" name="email" defaultValue="a@gmail.com" />
         <FormRow type="password" name="password" defaultValue="11111111" />
         <SubmitBtn />

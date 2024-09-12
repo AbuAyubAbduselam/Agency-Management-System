@@ -67,7 +67,6 @@ const DashboardLayout = ({ isDarkThemeEnabled }) => {
     >
       <Wrapper>
         <main className="dashboard">
-          <SmallSidebar />
           <BigSidebar />
           <div>
             <Navbar />

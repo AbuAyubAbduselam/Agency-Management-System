@@ -5,7 +5,7 @@ const { Header, Content } = Layout;
 const About = () => {
   return (
     <Layout>
-      <Header className="flex justify-center bg-emerald-500 h-20">
+      <Header className="flex justify-center bg-[#059669] h-20">
         <p className="text-5xl text-white">ማዕከላችን</p>
       </Header>
       <Content className="min-h-screen mx-10 my-10">

@@ -90,7 +90,7 @@ const Attendance = ({
                   <div className="flex items-center gap-3">
                     <div className="avatar">
                       <div className="mask mask-squircle h-12 w-12">
-                        <img src={avatar} alt="Avatar" />
+                        <img src={avatar} alt="Photo" />
                       </div>
                     </div>
                     <div>

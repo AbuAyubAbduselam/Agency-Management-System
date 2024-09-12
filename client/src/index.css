@@ -151,6 +151,11 @@ h5 {
 }
  */
 
+.ant-menu-item-selected {
+  background-color: #059669 !important;
+  color: #fff !important;
+}
+
 .text {
   margin-bottom: 1.5rem;
   max-width: 40em;

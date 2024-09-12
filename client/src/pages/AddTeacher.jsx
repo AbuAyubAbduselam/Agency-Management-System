@@ -30,20 +30,9 @@ const AddTeacher = ({ closeModal }) => {
 
   return (
     <Wrapper>
-      <Form
-        form={form}
-        layout="vertical"
-        initialValues={{
-          firstName: "Abduselam",
-          lastName: "Beharu",
-          gender: "male",
-          address: "Bole Bulbula",
-        }}
-        onFinish={handleSubmit}
-      >
+      <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <h4 className="form-title">Add Teacher</h4>
 
-        {/* First Name */}
         <Form.Item
           label="First Name"
           name="firstName"
@@ -52,7 +41,6 @@ const AddTeacher = ({ closeModal }) => {
           <Input />
         </Form.Item>
 
-        {/* Last Name */}
         <Form.Item
           label="Last Name"
           name="lastName"
@@ -61,7 +49,6 @@ const AddTeacher = ({ closeModal }) => {
           <Input />
         </Form.Item>
 
-        {/* Gender */}
         <Form.Item
           label="Gender"
           name="gender"
@@ -73,7 +60,6 @@ const AddTeacher = ({ closeModal }) => {
           </Select>
         </Form.Item>
 
-        {/* Email Address */}
         <Form.Item
           label="Email"
           name="email"
@@ -88,7 +74,6 @@ const AddTeacher = ({ closeModal }) => {
           <Input />
         </Form.Item>
 
-        {/* Phone Number */}
         <Form.Item
           label="Phone Number"
           name="phoneNumber"
@@ -124,7 +109,7 @@ const AddTeacher = ({ closeModal }) => {
 
         {/* Submit Button */}
         <Form.Item>
-          <Button className="bg-emerald-500 text-white" htmlType="submit">
+          <Button className="bg-[#059669] text-white" htmlType="submit">
             Submit
           </Button>
         </Form.Item>

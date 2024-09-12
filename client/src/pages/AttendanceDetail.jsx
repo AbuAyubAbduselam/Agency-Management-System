@@ -46,7 +46,7 @@ const AttendanceDetail = () => {
                 value={selectedClass}
                 onChange={(value) => setSelectedClass(value)}
                 placeholder="Select Class"
-                className="w-full md:w-1/3 h-[44px]"
+                className="w-full md:w-1/3 h-[44px] border-none"
               >
                 {["all", ...Object.values(CLASSES)].map((clas) => (
                   <Option key={clas} value={clas}>
@@ -59,7 +59,7 @@ const AttendanceDetail = () => {
               <Button
                 type="primary"
                 onClick={fetchAttendance}
-                className="bg-[#10b981] hover:bg-green-600 text-white px-4 py-2 rounded-md h-[44px]"
+                className=" bg-[#059669] hover:bg-green-600 text-white px-4 py-2 rounded-md h-[35px]"
               >
                 View Attendance
               </Button>

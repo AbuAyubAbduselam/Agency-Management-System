@@ -10,14 +10,7 @@ const Wrapper = styled.aside`
   }
   .sidebar-container {
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
     z-index: -1;
-    opacity: 0;
-    transition: var(--transition);
     visibility: hidden;
   }
   .show-sidebar {

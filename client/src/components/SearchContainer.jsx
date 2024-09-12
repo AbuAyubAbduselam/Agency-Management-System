@@ -90,14 +90,12 @@ const SearchContainer2 = () => {
           </div>
         </div>
 
-        <div className="form-control">
-          <Link
-            to="/dashboard/all-students"
-            className="btn btn-error w-full lg:w-auto"
-            onClick={handleReset}
-          >
-            Reset
-          </Link>
+        <div className="mt-5 flex justify-center">
+          <button className="bg-emerald-600 text-white h-8 px-4 rounded">
+            <Link to="/dashboard" onClick={handleReset}>
+              Reset
+            </Link>
+          </button>
         </div>
       </form>
     </div>
