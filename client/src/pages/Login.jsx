@@ -30,8 +30,8 @@ const Login = () => {
       <Form method="post" className="form">
         <Logo />
         <h4>login</h4>
-        <FormRow type="email" name="email" defaultValue="a@gmail.com" />
-        <FormRow type="password" name="password" defaultValue="11111111" />
+        <FormRow type="email" name="email" />
+        <FormRow type="password" name="password" />
         <SubmitBtn />
       </Form>
     </Wrapper>

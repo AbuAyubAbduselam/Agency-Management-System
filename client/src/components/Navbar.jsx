@@ -19,7 +19,6 @@ const Navbar = () => {
           <h4 className="logo-text">dashboard</h4>
         </div>
         <div className="btn-container">
-          <ThemeToggle />
           <LogoutContainer />
         </div>
       </div>
