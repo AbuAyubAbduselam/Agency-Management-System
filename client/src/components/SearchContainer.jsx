@@ -4,7 +4,7 @@ import { useAllStudentsContext } from "../pages/AllStudents";
 
 const SearchContainer2 = () => {
   const { selectedParams, setSelectedParams } = useAllStudentsContext();
-  const { search, classes, sort } = selectedParams;
+  const { search, classes, sort, gender } = selectedParams;
 
   const submit = useSubmit();
 
@@ -22,7 +22,8 @@ const SearchContainer2 = () => {
   const handleReset = () => {
     const resetParams = {
       search: "",
-      classes: "all",
+      gender: "Gender",
+      classes: "Class",
       sort: "newest",
     };
     setSelectedParams(resetParams);
@@ -58,9 +59,31 @@ const SearchContainer2 = () => {
               }}
               className="select select-bordered bg-white w-full"
             >
-              {["all", ...Object.values(CLASSES)].map((clas) => (
+              {["Class", ...Object.values(CLASSES)].map((clas) => (
                 <option key={clas} value={clas}>
                   {clas}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="form-control flex-1">
+          <div className="flex items-center space-x-2">
+            <label className="label w-20" htmlFor="classes">
+              <span className="label-text">Gender</span>
+            </label>
+            <select
+              id="gender"
+              name="gender"
+              defaultValue={gender}
+              onChange={(e) => {
+                submit(e.currentTarget.form);
+              }}
+              className="select select-bordered bg-white w-full"
+            >
+              {["Gender", "male", "female"].map((gen) => (
+                <option key={gen} value={gen}>
+                  {gen}
                 </option>
               ))}
             </select>

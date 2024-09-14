@@ -7,7 +7,7 @@ import fs from "fs/promises"; // Use fs/promises for async/await
 
 //===============GET ALL STUDENTS==================//
 export const getAllStudents = async (req, res) => {
-  const { search, sort, classes } = req.query;
+  const { search, sort, classes, gender } = req.query;
 
   const queryObject = {};
 
@@ -18,8 +18,11 @@ export const getAllStudents = async (req, res) => {
     ];
   }
 
-  if (classes && classes !== "all") {
+  if (classes && classes !== "Class") {
     queryObject.classes = classes;
+  }
+  if (gender && gender !== "Gender") {
+    queryObject.gender = gender;
   }
 
   const sortOptions = {

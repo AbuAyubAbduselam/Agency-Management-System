@@ -14,10 +14,6 @@ const StudentSchema = new mongoose.Schema(
       type: String,
       enum: ["male", "female"],
     },
-    qiratLevel: {
-      type: String,
-      enum: surahs.map((surah) => surah.value),
-    },
 
     classes: {
       type: String,

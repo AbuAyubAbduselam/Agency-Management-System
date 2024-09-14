@@ -108,6 +108,7 @@ const Attendance = ({
                     type={clickedButton === "Present" ? "success" : "primary"}
                     onClick={() => handleSubmit("Present")}
                     disabled={clickedButton === "Present"}
+                    className="!bg-[#059669]"
                   />
                 </td>
                 <td>
@@ -117,6 +118,7 @@ const Attendance = ({
                     danger
                     onClick={() => handleSubmit("Absent")}
                     disabled={clickedButton === "Absent"}
+                    className="!bg-[#059669]"
                   />
                 </td>
                 <td>
@@ -125,6 +127,7 @@ const Attendance = ({
                     type={clickedButton === "Late" ? "warning" : "primary"}
                     onClick={() => handleSubmit("Late")}
                     disabled={clickedButton === "Late"}
+                    className="!bg-[#059669]"
                   />
                 </td>
               </tr>

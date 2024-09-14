@@ -18,6 +18,8 @@ import {
   About,
   Contact,
   Teachers,
+  Results,
+  Finance,
 } from "./pages";
 import { action as loginAction } from "./pages/Login";
 import { loader as dashboardLoader } from "./pages/DashboardLayout";
@@ -31,6 +33,9 @@ import { action as deleteTeacherAction } from "./pages/DeleteTeacher";
 import { loader as adminLoader } from "./pages/Admin";
 import { action as profileAction } from "./pages/Profile";
 import { loader as statsLoader } from "./pages/Stats";
+import AttendanceStats, {
+  loader as attendanceStatsLoader,
+} from "./pages/AttendanceStats";
 import AttendanceDetail from "./pages/AttendanceDetail";
 const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem("darkTheme") === "true";
@@ -81,9 +86,22 @@ const router = createBrowserRouter([
             loader: allStudentsLoader,
           },
           {
-            path: "stats",
+            path: "students-stats",
             element: <Stats />,
             loader: statsLoader,
+          },
+          {
+            path: "attendance-stats",
+            element: <AttendanceStats />,
+            loader: attendanceStatsLoader,
+          },
+          {
+            path: "results",
+            element: <Results />,
+          },
+          {
+            path: "finance",
+            element: <Finance />,
           },
           {
             path: "attendance-detail",

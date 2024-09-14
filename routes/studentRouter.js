@@ -10,16 +10,14 @@ import {
   getSingleStudent,
   updateStudent,
   deleteStudent,
-  showStats,
 } from "../controller/studentsController.js";
 import { checkForTestUser } from "../middleware/authMiddleware.js";
+import { numOfStudents } from "../controller/statsController.js";
 
 //router.get("/", getAllStudents);
 router.post("/", checkForTestUser, validateStudentInput, createStudent);
 
 router.route("/").get(getAllStudents);
-
-router.route("/stats").get(showStats);
 
 router
   .route("/:id")

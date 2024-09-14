@@ -30,7 +30,15 @@ const links = [
   },
   { text: "Results", path: "results", icon: <ReadOutlined /> },
   { text: "Finance", path: "finance", icon: <DollarOutlined /> },
-  { text: "Stats", path: "stats", icon: <BarChartOutlined /> },
+  {
+    text: "Stats",
+    path: "",
+    icon: <BarChartOutlined />,
+    subLinks: [
+      { text: "Student", path: "students-stats" },
+      { text: "Attendance", path: "attendance-stats" },
+    ],
+  },
 ];
 
 export default links;

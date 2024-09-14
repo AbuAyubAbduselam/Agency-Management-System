@@ -28,7 +28,7 @@ const NavLinks = ({ isBigSidebar, onLinkClick }) => {
       mode="inline"
       openKeys={openKeys}
       onOpenChange={handleOpenChange}
-      style={{ width: 256 }}
+      style={{ width: 250 }}
       className="flex flex-col gap-4"
     >
       {links.map((link) => {

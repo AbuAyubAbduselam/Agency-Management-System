@@ -15,6 +15,7 @@ import teacherRouter from "./routes/teacherRouter.js";
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import attendanceRouter from "./routes/attendanceRouter.js";
+import statsRouter from "./routes/statsRouter.js";
 //public
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -53,6 +54,7 @@ app.use("/api/v1/teachers", authenticateUser, teacherRouter);
 app.use("/api/v1/users", authenticateUser, userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/attendance", attendanceRouter);
+app.use("/api/v1/stats", statsRouter);
 
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "./public", "index.html"));
