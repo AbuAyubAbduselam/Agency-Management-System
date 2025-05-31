@@ -64,7 +64,11 @@ const AttendanceStats = () => {
           />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" onClick={handleSubmit}>
+          <Button
+            htmlType="submit"
+            className="!bg-[#059669] text-white hover:!bg-[#047857] hover:!text-white"
+            onClick={handleSubmit}
+          >
             Fetch Stats
           </Button>
         </Form.Item>

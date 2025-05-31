@@ -156,6 +156,14 @@ h5 {
   color: #fff !important;
 }
 
+.ant-menu-item-active {
+  color: #010000 !important;
+}
+
+.ant-menu-submenu-open .ant-menu-submenu-title {
+  color: #059669 !important;
+}
+
 .text {
   margin-bottom: 1.5rem;
   max-width: 40em;

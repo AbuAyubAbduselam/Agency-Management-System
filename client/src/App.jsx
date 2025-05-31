@@ -33,6 +33,7 @@ import { action as deleteTeacherAction } from "./pages/DeleteTeacher";
 import { loader as adminLoader } from "./pages/Admin";
 import { action as profileAction } from "./pages/Profile";
 import { loader as statsLoader } from "./pages/Stats";
+import { loader as resultsLoader } from "./pages/Results";
 import AttendanceStats, {
   loader as attendanceStatsLoader,
 } from "./pages/AttendanceStats";
@@ -98,6 +99,7 @@ const router = createBrowserRouter([
           {
             path: "results",
             element: <Results />,
+            loader: resultsLoader,
           },
           {
             path: "finance",
