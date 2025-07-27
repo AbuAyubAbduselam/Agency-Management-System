@@ -35,7 +35,7 @@ const Landing = () => {
 
             <h1>AGENCY MANAGEMENT SYSTEM </h1>
             <div className="two-login">
-              <Link to="/user-login" className="btn">
+              <Link to="/teacher-login" className="btn">
                 User Login
               </Link>
             </div>

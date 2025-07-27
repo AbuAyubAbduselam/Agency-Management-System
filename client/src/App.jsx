@@ -67,7 +67,7 @@ const router = createBrowserRouter([
         action: loginAction,
       },
       {
-        path: "user-login",
+        path: "teacher-login",
         element: <Login />,
         action: loginAction,
       },
