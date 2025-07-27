@@ -52,7 +52,7 @@ const ContactPage = () => {
         <div className="flex flex-col sm:flex-row justify-around text-center mb-8">
           <div className="mb-4 sm:mb-0">
             <MailOutlined style={{ fontSize: "24px", color: "#10b981" }} />
-            <p className="mt-2 text-gray-600">medresaalansar@gmail.com</p>
+            <p className="mt-2 text-gray-600">mubarekahmed11@gmail.com</p>
           </div>
           <div className="mb-4 sm:mb-0">
             <PhoneOutlined style={{ fontSize: "24px", color: "#10b981" }} />
@@ -63,7 +63,7 @@ const ContactPage = () => {
               style={{ fontSize: "24px", color: "#10b981" }}
             />
             <p className="mt-2 text-gray-600">
-              Bole Bulbula Wereda 12 Ansar Mesjid
+            CHEW BERENDA,ADDIS ABABA, ETHIOPIA
             </p>
           </div>
         </div>

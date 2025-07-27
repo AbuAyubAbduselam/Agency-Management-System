@@ -3,31 +3,38 @@ import day from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { renderStatus } from "../utils/colorStatus";
-
+import { renderStatus } from "../utils/colorStatus"; // Assuming you have a utility function for rendering status
 day.extend(advancedFormat);
 
-const Attendance = ({
+const Candidate = ({
   _id,
   avatar,
   firstName,
+  lastName,
   middleName,
-  contractCreationDate,
-  laborId,
+  gender,
+  dateOfBirth,
   passportNo,
-  selectedBy,
-  tasheer,
-  visaStatus,
+  phoneNo,
+  narrativePhoneNo,
+  religion,
+  laborId,
+  cvStatus,
   cocStatus,
+  musanedStatus,
   medicalStatus,
-  lmis,
-  wokala,
-  ticket,
+  experienceOutside,
+  availabilityStatus, 
+  cvSentTo,
+  medicalDate,
   isSelected,
   onCheckboxChange,
 }) => {
+  const age = day().diff(day(dateOfBirth), "year");
+const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "N/A";
 
-  const contractDate = day(contractCreationDate).format("DD MMMM YYYY");
+
+
 
   return (
     <tbody>
@@ -39,7 +46,7 @@ const Attendance = ({
             checked={isSelected}
             onChange={() => onCheckboxChange(_id)}
           />
-        </th> 
+        </th>
         <td>
           <div className="flex items-center gap-3">
             <div className="avatar">
@@ -56,19 +63,24 @@ const Attendance = ({
             </div>
           </div>
         </td>
+        <td>{gender}</td>
+        <td>{age}</td>
         <td>{passportNo}</td>
+        <td>{phoneNo}</td>
+        <td>{narrativePhoneNo}</td>
+        <td>{religion}</td>
         <td>{laborId}</td>
-        <td>{contractDate}</td>
-        <td>{renderStatus("medicalStatus", medicalStatus)}</td>
-        <td>{renderStatus("selectedBy", selectedBy)}</td>
-        <td>{renderStatus("tasheer", tasheer)}</td>
-        <td>{renderStatus("wokala", wokala)}</td>
-        <td>{renderStatus("visaStatus", visaStatus)}</td>
+        <td>{renderStatus("cvStatus", cvStatus)}</td>
+        <td>{cvSentTo}</td>
         <td>{renderStatus("cocStatus", cocStatus)}</td>
-        <td>{renderStatus("lmis", lmis)}</td>
-        <td>{renderStatus("ticket", ticket)}</td>
+        <td>{renderStatus("musanedStatus", musanedStatus)}</td>
+        <td>{renderStatus("medicalStatus", medicalStatus)}</td>
+
+        <td>{medicalDays} days ago</td>
+        <td>{experienceOutside}</td>
+        <td>{renderStatus("availabilityStatus", availabilityStatus)}</td>
         <td>
-          <Link to={`../edit-candidate-attendance/${_id}`}>
+          <Link to={`../dashboard/edit-candidate/${_id}`}>
             <Button
               icon={<EditOutlined />}
               type="primary"
@@ -76,10 +88,20 @@ const Attendance = ({
             />
           </Link>
         </td>
-       
+        <td>
+          <Form method="post" action={`../dashboard/delete-candidate/${_id}`}>
+            <Button
+              icon={<DeleteOutlined />}
+              type="primary"
+              danger
+              className="delete-btn !bg-[#059669]"
+              htmlType="submit"
+            />
+          </Form>
+        </td>
       </tr>
     </tbody>
   );
 };
 
-export default Attendance;
+export default Candidate;

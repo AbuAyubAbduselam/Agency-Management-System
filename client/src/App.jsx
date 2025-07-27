@@ -7,13 +7,13 @@ import {
   DashboardLayout,
   Error,
   Landing,
-  AddStudent,
+  AddCandidate,
   Stats,
-  AllStudents,
+  AllCandidates,
   Profile,
   Admin,
-  EditStudent,
-  StudentAttendance,
+  EditCandidate,
+  CandidateAttendance,
   TeacherAttendance,
   About,
   Contact,
@@ -23,21 +23,25 @@ import {
 } from "./pages";
 import { action as loginAction } from "./pages/Login";
 import { loader as dashboardLoader } from "./pages/DashboardLayout";
-import { loader as allStudentsLoader } from "./pages/AllStudents";
+import { loader as allCandidatesLoader } from "./pages/AllCandidates";
 import { loader as allTeachersLoader } from "./pages/Teachers";
 import { loader as teachersLoader } from "./pages/Teachers";
-import { loader as editStudentLoader } from "./pages/EditStudent";
-import { action as editStudentAction } from "./pages/EditStudent";
-import { action as deleteStudentAction } from "./pages/DeleteStudent";
+import { loader as editCandidateLoader } from "./pages/EditCandidate";
+import { loader as editSelectedCandidateLoader } from "./pages/EditSelectedCandidate";
+import { action as editCandidateAction } from "./pages/EditCandidate";
+import { action as editSelectedCandidateAction } from "./pages/EditSelectedCandidate";
+import { action as deleteCandidateAction } from "./pages/DeleteCandidate";
 import { action as deleteTeacherAction } from "./pages/DeleteTeacher";
 import { loader as adminLoader } from "./pages/Admin";
 import { action as profileAction } from "./pages/Profile";
 import { loader as statsLoader } from "./pages/Stats";
 import { loader as resultsLoader } from "./pages/Results";
+import { loader as candidateAttendanceLoader } from "./pages/CandidateAttendance";
 import AttendanceStats, {
   loader as attendanceStatsLoader,
 } from "./pages/AttendanceStats";
 import AttendanceDetail from "./pages/AttendanceDetail";
+import EditSelectedCandidate from "./pages/EditSelectedCandidate";
 const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem("darkTheme") === "true";
   document.body.classList.toggle("dark-theme", isDarkTheme);
@@ -83,11 +87,11 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <AllStudents />,
-            loader: allStudentsLoader,
+            element: <AllCandidates />,
+            loader: allCandidatesLoader,
           },
           {
-            path: "students-stats",
+            path: "candidates-stats",
             element: <Stats />,
             loader: statsLoader,
           },
@@ -116,9 +120,9 @@ const router = createBrowserRouter([
             loader: teachersLoader,
           },
           {
-            path: "student-attendance",
-            element: <StudentAttendance />,
-            loader: allStudentsLoader,
+            path: "candidate-attendance",
+            element: <CandidateAttendance />,
+            loader: candidateAttendanceLoader,
           },
           {
             path: "teacher-attendance",
@@ -137,14 +141,20 @@ const router = createBrowserRouter([
             loader: adminLoader,
           },
           {
-            path: "edit-student/:id",
-            element: <EditStudent />,
-            loader: editStudentLoader,
-            action: editStudentAction,
+            path: "edit-candidate/:id",
+            element: <EditCandidate />,
+            loader: editCandidateLoader,
+            action: editCandidateAction,
           },
           {
-            path: "delete-student/:id",
-            action: deleteStudentAction,
+            path: "edit-candidate-attendance/:id",
+            element: <EditSelectedCandidate />,
+            loader: editSelectedCandidateLoader,
+            action: editSelectedCandidateAction,
+          },
+          {
+            path: "delete-candidate/:id",
+            action: deleteCandidateAction,
           },
           {
             path: "delete-teacher/:id",

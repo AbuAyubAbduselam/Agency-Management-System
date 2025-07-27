@@ -1,11 +1,12 @@
 import { useSubmit, Link } from "react-router-dom";
 import { JOB_SORT_BY, CLASSES } from "../../../utils/constant";
-import { UseAllStudentsAttendanceContext } from "../pages/StudentAttendance";
+import { UseAllCandidatesAttendanceContext } from "../pages/CandidateAttendance";
+import FormSelectGroup from "./FormSelectGroup";
 
 const SearchContainer2 = () => {
   const { selectedParams, setSelectedParams } =
-    UseAllStudentsAttendanceContext();
-  const { search, classes, sort } = selectedParams;
+    UseAllCandidatesAttendanceContext();
+  const { search, sort, gender,visaStatus,ticket,wokala,selectedBy,medicalStatus,tasheer,cocStatus,lmis } = selectedParams;
 
   const submit = useSubmit();
 
@@ -33,8 +34,9 @@ const SearchContainer2 = () => {
   return (
     <div className="p-6 bg-white shadow-md rounded-md">
       <h5 className="text-lg font-bold mb-4">Search Form</h5>
-      <form className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-4">
-        <div className="form-control flex-1">
+      <form className="grid
+            grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+       <div className="form-control flex-1">
           <input
             type="search"
             name="search"
@@ -44,51 +46,83 @@ const SearchContainer2 = () => {
             className="input input-bordered bg-white w-full"
           />
         </div>
-        <div className="form-control flex-1">
-          <div className="flex items-center space-x-2">
-            <label className="label w-20" htmlFor="classes">
-              <span className="label-text">Class</span>
-            </label>
-            <select
-              id="classes"
-              name="classes"
-              defaultValue={classes}
-              onChange={(e) => submit(e.currentTarget.form)}
-              className="select select-bordered bg-white w-full"
-            >
-              {["all", ...Object.values(CLASSES)].map((clas) => (
-                <option key={clas} value={clas}>
-                  {clas}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="form-control flex-1">
-          <div className="flex items-center space-x-2">
-            <label className="label w-20" htmlFor="sort">
-              <span className="label-text">Sort By</span>
-            </label>
-            <select
-              id="sort"
-              name="sort"
-              defaultValue={sort}
-              onChange={(e) => submit(e.currentTarget.form)}
-              className="select select-bordered bg-white w-full"
-            >
-              {Object.values(JOB_SORT_BY).map((sortBy) => (
-                <option key={sortBy} value={sortBy}>
-                  {sortBy}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <FormSelectGroup
+          label="Medical Status"
+          name="medicalStatus"
+          value={medicalStatus}
+          options={["Medical Status", "fit", "unfit", "waiting", "booked"]}
+          onChange={(e) => submit(e.currentTarget.form)}
+        />
+        <FormSelectGroup
+          label="CoC Status"
+          name="cocStatus"
+          value={cocStatus}
+          options={["CoC Status", "done", "waiting", "booked"]}
+          onChange={(e) => submit(e.currentTarget.form)}
+        />
+        <FormSelectGroup
+          label="Visa Status"
+          name="visaStatus"
+          value={visaStatus}
+          options={[
+            "Visa Status",
+            "ready for embassy",
+            "sent to embassy",
+            "visa issued",
+            "visa canceled",
+            "arrived ksa",
+          ]}
+          onChange={(e) => submit(e.currentTarget.form)}  
+        />
+        <FormSelectGroup
+          label="Ticket"
+          name="ticket"
+          value={ticket}
+          options={["Ticket", "waiting", "booked", "done"]}
+          onChange={(e) => submit(e.currentTarget.form)}
+        />
+        <FormSelectGroup  
+          label="Wokala"
+          name="wokala"
+          value={wokala}
+          options={["Wokala", "waiting tasdeeq", "waiting", "done"]}
+          onChange={(e) => submit(e.currentTarget.form)}  
+        />
+        <FormSelectGroup
+          label="Selected By"
+          name="selectedBy"
+          value={selectedBy}
+          options={["Selected By", "A", "B", "C"]}
+          onChange={(e) => submit(e.currentTarget.form)}
+        />
+        <FormSelectGroup
+          label="Tasheer"
+          name="tasheer"
+          value={tasheer}
+          options={["Tasheer", "waiting", "booked", "done"]}
+          onChange={(e) => submit(e.currentTarget.form)}
+        />
+        <FormSelectGroup
+          label="LMIS"
+          name="lmis"
+          value={lmis}
+          options={["LMIS", "draft", "pending", "issued", "rejected"]}
+          onChange={(e) => submit(e.currentTarget.form)}
+        />
+
+          <FormSelectGroup
+                  name="sort"
+                  value={sort}
+                  onChange={(e) => submit(e.currentTarget.form)}
+                  options={Object.values(JOB_SORT_BY)}
+                />
+      
+            
       </form>
 
       <div className="mt-5 flex justify-center">
         <button className="bg-emerald-600 text-white h-8 px-4 rounded">
-          <Link to="/dashboard/student-attendance" onClick={handleReset}>
+          <Link to="/dashboard/candidate-attendance" onClick={handleReset}>
             Reset
           </Link>
         </button>

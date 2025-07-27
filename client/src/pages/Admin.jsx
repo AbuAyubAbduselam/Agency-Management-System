@@ -16,7 +16,7 @@ export const loader = async () => {
 };
 
 const Admin = () => {
-  const { users, students } = useLoaderData();
+  const { users, candidates } = useLoaderData();
   return (
     <Wrapper>
       <StatItem
@@ -27,8 +27,8 @@ const Admin = () => {
         icon={<FaSuitcaseRolling />}
       />
       <StatItem
-        title="total students"
-        count={students}
+        title="total candidates"
+        count={candidates}
         color="#647acb"
         bcg="#e0e8f9"
         icon={<FaCalendarCheck />}

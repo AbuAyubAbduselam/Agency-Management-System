@@ -5,11 +5,11 @@ import day from "dayjs";
 import cloudinary from "cloudinary";
 import fs from "fs/promises"; // Use fs/promises for async/await
 
-//===============GET ALL CANDIDATE==================//
-export const getAllSelectedCandidates = async (req, res) => {
-  const { search, sort, gender,visaStatus,ticket,wokala,selectedBy,medicalStatus,tasheer,cocStatus,lmis } = req.query;
+//===============GET ALL CANDIDATES==================//
+export const getAllCandidates = async (req, res) => {
+  const { search, sort, medicalStatus, gender, religion, cvStatus, cocStatus, musanedStatus, availabilityStatus, cvSentTo } = req.query;
 
-  const queryObject = { availabilityStatus: 'selected' };
+  const queryObject = {};
 
   if (search) {
     queryObject.$or = [
@@ -17,30 +17,29 @@ export const getAllSelectedCandidates = async (req, res) => {
       { middleName: { $regex: search, $options: "i" } },
     ];
   }
-  if (visaStatus && visaStatus !== "Visa Status") {
-    queryObject.visaStatus = visaStatus;
-  }
-  if (ticket && ticket !== "Ticket") {  
-    queryObject.ticket = ticket;
-  }
-  if (wokala && wokala !== "Wokala") {
-    queryObject.wokala = wokala;
-  }
-  if (selectedBy && selectedBy !== "Selected By") {
-    queryObject.selectedBy = selectedBy;
-  }
+
   if (medicalStatus && medicalStatus !== "Medical Status") {
     queryObject.medicalStatus = medicalStatus;
   }
-  if (tasheer && tasheer !== "Tasheer") {
-    queryObject.tasheer = tasheer;
+  if (cvStatus && cvStatus !== "CV Status") {
+    queryObject.cvStatus = cvStatus;
   }
   if (cocStatus && cocStatus !== "CoC Status") {
     queryObject.cocStatus = cocStatus;
   }
-  if (lmis && lmis !== "LMIS") {
-    queryObject.lmis = lmis;
+  if (musanedStatus && musanedStatus !== "Musaned Status") {
+    queryObject.musanedStatus = musanedStatus;
   }
+  if (availabilityStatus && availabilityStatus !== "Availability Status") {
+    queryObject.availabilityStatus = availabilityStatus;
+  }
+  if (cvSentTo && cvSentTo !== "CV Sent To") {
+    queryObject.cvSentTo = cvSentTo;
+  }
+  if (religion && religion !== "Religion") {
+    queryObject.religion = religion;
+  }
+
   if (gender && gender !== "Gender") {
     queryObject.gender = gender;
   }
@@ -59,16 +58,16 @@ export const getAllSelectedCandidates = async (req, res) => {
   const skip = (page - 1) * limit;
 
   try {
-    const selectedCandidates = await Candidate.find(queryObject)
+    const candidates = await Candidate.find(queryObject)
       .sort(sortKey)
       .skip(skip)
       .limit(limit);
-    const totalSelectedCandidates = await Candidate.countDocuments(queryObject);
-    const numOfPages = Math.ceil(totalSelectedCandidates / limit);
+    const totalCandidates = await Candidate.countDocuments(queryObject);
+    const numOfPages = Math.ceil(totalCandidates / limit);
 
     res
       .status(StatusCodes.OK)
-      .json({ totalSelectedCandidates, numOfPages, currentPage: page, selectedCandidates });
+      .json({ totalCandidates, numOfPages, currentPage: page, candidates });
   } catch (error) {
     console.error(error);
     res
@@ -77,12 +76,64 @@ export const getAllSelectedCandidates = async (req, res) => {
   }
 };
 
+//===============GET CHECKED CANDIDATES==================//
+export const getCheckedCandidates = async (req, res) => {
+  const ids = req.query.ids?.split(",") || [];
+
+  try {
+    const candidates = await Candidate.find({ _id: { $in: ids } });
+    res.status(StatusCodes.OK).json({ candidates });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ msg: "Error fetching selected candidates" });
+  }
+};
+
 //==============CREATE CANDIDATE====================//
 
+export const createCandidate = async (req, res) => {
+  try {
+    req.body.createdBy = req.user.userId;
+    const candidateDetail = { ...req.body };
+
+    // Handle avatar upload
+    if (req.files?.avatar) {
+      const avatarFile = req.files.avatar;
+      const response = await cloudinary.v2.uploader.upload(avatarFile.tempFilePath, {
+        folder: 'avatars',
+      });
+      await fs.unlink(avatarFile.tempFilePath);
+
+      candidateDetail.avatar = response.secure_url;
+      candidateDetail.avatarPublicId = response.public_id;
+    }
+
+    // Handle fullSizePhoto upload
+    if (req.files?.fullSizePhoto) {
+      const fullPhotoFile = req.files.fullSizePhoto;
+      const response = await cloudinary.v2.uploader.upload(fullPhotoFile.tempFilePath, {
+        folder: 'fullSizePhotos',
+      });
+      await fs.unlink(fullPhotoFile.tempFilePath);
+
+      candidateDetail.fullSizePhoto = response.secure_url;
+      candidateDetail.fullSizePhotoPublicId = response.public_id;
+    }
+
+    const candidate = await Candidate.create(candidateDetail);
+    res.status(StatusCodes.CREATED).json({ candidate });
+  } catch (error) {
+    console.error(error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: "Failed to create candidate",
+    });
+  }
+};
 
 
-//=============GET SINGLE SELECTED CANDIDATE================
-export const getSingleSelectedCandidate = async (req, res) => {
+//=============GET SINGLE CANDIDATE================
+export const getSingleCandidate = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -91,7 +142,7 @@ export const getSingleSelectedCandidate = async (req, res) => {
     if (!candidate) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ msg: "candidate not found" });
+        .json({ msg: "Candidate not found" });
     }
 
     res.status(StatusCodes.OK).json({ candidate });
@@ -104,25 +155,48 @@ export const getSingleSelectedCandidate = async (req, res) => {
 };
 
 //---------------UPDATE CANDIDATE
-export const updateSelectedCandidate = async (req, res) => {
-  console.log(33333333, req.body);
+
+
+export const updateCandidate = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const updatedSelectedCandidate = await Candidate.findByIdAndUpdate(id, req.body, {
+    // Upload avatar if provided
+    if (req.files && req.files.avatar) {
+      const avatarFile = req.files.avatar;
+      const avatarRes = await cloudinary.v2.uploader.upload(avatarFile.tempFilePath, {
+        folder: "avatars",
+      });
+      await fs.unlink(avatarFile.tempFilePath);
+      req.body.avatar = avatarRes.secure_url;
+      req.body.avatarPublicId = avatarRes.public_id;
+    }
+
+    // Upload fullSizePhoto if provided
+    if (req.files && req.files.fullSizePhoto) {
+      const fullPhotoFile = req.files.fullSizePhoto;
+      const fullPhotoRes = await cloudinary.v2.uploader.upload(fullPhotoFile.tempFilePath, {
+        folder: "fullsize-photos",
+      });
+      await fs.unlink(fullPhotoFile.tempFilePath);
+      req.body.fullSizePhoto = fullPhotoRes.secure_url;
+      req.body.fullSizePhotoPublicId = fullPhotoRes.public_id;
+    }
+
+    const updatedCandidate = await Candidate.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
 
-    if (!updatedSelectedCandidate) {
+    if (!updatedCandidate) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ msg: "candidate not found" });
+        .json({ msg: "Candidate not found" });
     }
 
     res
       .status(StatusCodes.OK)
-      .json({ msg: "Candidate is modified", candidate: updatedSelectedCandidate });
+      .json({ msg: "Candidate is modified", candidate: updatedCandidate });
   } catch (error) {
     console.error(error);
     res
@@ -131,7 +205,8 @@ export const updateSelectedCandidate = async (req, res) => {
   }
 };
 
-//-----------------DELETE cANDIDATE
+
+//-----------------DELETE CANDIDATE
 export const deleteCandidate = async (req, res) => {
   const { id } = req.params;
   console.log(id);
@@ -189,6 +264,7 @@ export const showStats = async (req, res) => {
       { $sort: { "_id.year": -1, "_id.month": -1 } },
       { $limit: 6 },
     ]);
+
     monthlyApplications = monthlyApplications
       .map((item) => {
         const {

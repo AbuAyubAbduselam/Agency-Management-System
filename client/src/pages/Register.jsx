@@ -25,8 +25,6 @@ const Register = () => {
         <Logo />
         <h4>Register Page</h4>
         <FormRow type="text" name="name" labelText="first name" />
-        <FormRow type="text" name="lastName" labelText="last name" />
-        <FormRow type="text" name="location" defaultValue="earth" />
         <FormRow type="email" name="email" />
         <FormRow type="password" name="password" />
         <SubmitBtn />

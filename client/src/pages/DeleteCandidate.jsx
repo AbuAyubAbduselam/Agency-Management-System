@@ -5,8 +5,8 @@ import { toast } from "react-toastify";
 export async function action({ params }) {
   try {
     console.log(params, 33333333333);
-    await customFetch.delete(`/students/${params.id}`);
-    toast.success("Student deleted successfully");
+    await customFetch.delete(`/candidates/${params.id}`);
+    toast.success("Candidate deleted successfully");
   } catch (error) {
     console.log(params, 3223123);
     toast.error(error.response.data.msg);

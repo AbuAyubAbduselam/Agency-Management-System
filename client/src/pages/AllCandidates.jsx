@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { StudentsContainer, SearchContainer } from "../components";
+import { CandidatesContainer, SearchContainer } from "../components";
 import customFetch from "../utils/customFetch";
 import { useLoaderData } from "react-router-dom";
 import { useContext, createContext } from "react";
@@ -10,7 +10,7 @@ export const loader = async ({ request }) => {
   ]);
 
   try {
-    const { data } = await customFetch.get("/students", {
+    const { data } = await customFetch.get("/candidates", {
       params,
     });
 
@@ -21,19 +21,19 @@ export const loader = async ({ request }) => {
   }
 };
 
-const AllStudentsContext = createContext();
+const AllCandidatesContext = createContext();
 
-const AllStudents = () => {
+const AllCandidates = () => {
   const { data, selectedParams } = useLoaderData();
 
   return (
-    <AllStudentsContext.Provider value={{ data, selectedParams }}>
+    <AllCandidatesContext.Provider value={{ data, selectedParams }}>
       <SearchContainer />
-      <StudentsContainer />
-    </AllStudentsContext.Provider>
+      <CandidatesContainer />
+    </AllCandidatesContext.Provider>
   );
 };
 
-export const useAllStudentsContext = () => useContext(AllStudentsContext);
+export const useAllCandidatesContext = () => useContext(AllCandidatesContext);
 
-export default AllStudents;
+export default AllCandidates;

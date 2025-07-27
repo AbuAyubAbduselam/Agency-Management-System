@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  validateStudentInput,
+  validateCandidateInput,
   validateIdParam,
 } from "../middleware/validationMiddlware.js";
 const router = Router();
@@ -13,7 +13,7 @@ import {
   showStats,
 } from "../controller/teachersController.js";
 
-//router.get("/", getAllStudents);
+//router.get("/", getAllCandidates);
 router.post("/", createTeacher);
 
 router.route("/").get(getAllTeachers);
@@ -23,7 +23,7 @@ router.route("/stats").get(showStats);
 router
   .route("/:id")
   .get(getSingleTeacher)
-  .patch(validateIdParam, validateStudentInput, updateTeacher)
+  .patch(validateIdParam, validateCandidateInput, updateTeacher)
   .delete(validateIdParam, deleteTeacher);
 
 export default router;

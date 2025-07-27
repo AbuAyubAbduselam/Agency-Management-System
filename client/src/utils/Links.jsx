@@ -9,35 +9,39 @@ import {
 
 const links = [
   {
-    text: "Students",
+    text: "All Candidates",
     path: ".",
     icon: <TeamOutlined />,
   },
-  {
-    text: "Teachers",
-    path: "teachers",
-    icon: <UserOutlined />,
-  },
-  {
-    text: "Attendance",
+
+ /* {
+    text: "Selected Candidates",  
     path: "",
     icon: <ScheduleOutlined />,
     subLinks: [
-      { text: "Student Attendance", path: "student-attendance" },
+      { text: "Candidate Attendance", path: "candidate-attendance" },
       { text: "Teacher Attendance", path: "teacher-attendance" },
       { text: "View Attendance", path: "attendance-detail" },
     ],
   },
-  { text: "Results", path: "results", icon: <ReadOutlined /> },
+  */
+
+  {
+    text: "Selected Candidates",
+    path: "candidate-attendance",
+    icon: <ScheduleOutlined />,
+  },
+  {
+    text: "CV",
+    path: "teachers",
+    icon: <UserOutlined />,
+  },
+  { text: "Reports", path: "results", icon: <ReadOutlined /> },
   { text: "Finance", path: "finance", icon: <DollarOutlined /> },
   {
     text: "Stats",
-    path: "",
+    path: "candidates-stats",
     icon: <BarChartOutlined />,
-    subLinks: [
-      { text: "Student", path: "students-stats" },
-      { text: "Attendance", path: "attendance-stats" },
-    ],
   },
 ];
 

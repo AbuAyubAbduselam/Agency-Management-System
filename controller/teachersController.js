@@ -30,13 +30,13 @@ export const getAllTeachers = async (req, res) => {
   }
 };
 
-//==============CREATE STUDENT====================//
+//==============CREATE CANDIDATE====================//
 
 export const createTeacher = async (req, res) => {
   try {
-    const studentDetail = { ...req.body };
+    const candidateDetail = { ...req.body };
 
-    const teacher = await Teacher.create(studentDetail);
+    const teacher = await Teacher.create(candidateDetail);
     res.status(StatusCodes.CREATED).json({ teacher });
   } catch (error) {
     console.error(error);
@@ -46,7 +46,7 @@ export const createTeacher = async (req, res) => {
   }
 };
 
-//=============GET SINGLE STUDENT================
+//=============GET SINGLE CANDIDATE================
 export const getSingleTeacher = async (req, res) => {
   console.log(11111111);
   const { id } = req.params;
@@ -69,7 +69,7 @@ export const getSingleTeacher = async (req, res) => {
   }
 };
 
-//---------------UPDATE STUDENT
+//---------------UPDATE CANDIDATES
 export const updateTeacher = async (req, res) => {
   console.log(33333333, req.body);
   const { id } = req.params;
@@ -97,7 +97,7 @@ export const updateTeacher = async (req, res) => {
   }
 };
 
-//-----------------DELETE STUDENT
+//-----------------DELETE CANDIDATE
 export const deleteTeacher = async (req, res) => {
   const { id } = req.params;
 
@@ -123,9 +123,9 @@ export const deleteTeacher = async (req, res) => {
 
 export const showStats = async (req, res) => {
   try {
-    let stats = await Student.aggregate([
+    let stats = await Candidate.aggregate([
       { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
-      { $group: { _id: "$studentStatus", count: { $sum: 1 } } },
+      { $group: { _id: "$candidateStatus", count: { $sum: 1 } } },
     ]);
 
     stats = stats.reduce((acc, curr) => {
@@ -140,7 +140,7 @@ export const showStats = async (req, res) => {
       declined: stats.declined || 0,
     };
 
-    let monthlyApplications = await Students.aggregate([
+    let monthlyApplications = await Candidates.aggregate([
       { $match: { createdBy: new mongoose.Types.ObjectId(req.user.userId) } },
       {
         $group: {

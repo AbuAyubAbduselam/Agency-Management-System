@@ -4,7 +4,7 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
 
-  .student-icon {
+  .candidate-icon {
     font-size: 1rem;
     margin-right: 1rem;
     display: flex;
@@ -13,12 +13,12 @@ const Wrapper = styled.div`
       color: var(--text-secondary-color);
     }
   }
-  .student-label {
+  .candidate-label {
     text-transform: capitalize;
     letter-spacing: var(--letter-spacing);
     margin-right: 8px;
   }
-  .student-text {
+  .candidate-text {
     text-transform: capitalize;
     letter-spacing: var(--letter-spacing);
   }

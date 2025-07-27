@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const StudentAttendanceSchema = new mongoose.Schema(
+const CandidateAttendanceSchema = new mongoose.Schema(
   {
     firstName: String,
     middleName: String,
@@ -15,15 +15,13 @@ const StudentAttendanceSchema = new mongoose.Schema(
 
     date: Date,
 
-    idNumber: {
-      type: String,
-    },
+    
   },
   { timestamps: true }
 );
 
-const StudentAttendance =
-  mongoose.models.StudentAttendance ||
-  mongoose.model("StudentAttendance", StudentAttendanceSchema);
+const CandidateAttendance =
+  mongoose.models.CandidateAttendance ||
+  mongoose.model("CandidateAttendance", CandidateAttendanceSchema);
 
-export default StudentAttendance;
+export default CandidateAttendance;

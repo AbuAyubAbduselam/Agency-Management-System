@@ -18,7 +18,7 @@ const StatsContainer = ({ defaultStats }) => {
       bcg: "#e0e8f9",
     },
     {
-      title: "students declined",
+      title: "candidates declined",
       count: defaultStats?.declined || 0,
       icon: <FaBug />,
       color: "#d66a6a",

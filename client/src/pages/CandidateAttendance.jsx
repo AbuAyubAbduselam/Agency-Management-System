@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { StudentAttendanceContainer } from "../components";
+import { CandidateAttendanceContainer } from "../components";
 import customFetch from "../utils/customFetch";
 import { useLoaderData } from "react-router-dom";
 import { useContext, createContext } from "react";
@@ -11,9 +11,10 @@ export const loader = async ({ request }) => {
   ]);
 
   try {
-    const { data } = await customFetch.get("/students", {
+    const { data } = await customFetch.get("/attendance/selected", {
       params,
     });
+
 
     return { data, selectedParams: { ...params } };
   } catch (error) {
@@ -22,20 +23,21 @@ export const loader = async ({ request }) => {
   }
 };
 
-const AllStudentsAttendanceContext = createContext();
+const AllCandidatesAttendanceContext = createContext();
 
-const StudentAttendance = () => {
+const CandidateAttendance = () => {
   const { data, selectedParams } = useLoaderData();
 
+
   return (
-    <AllStudentsAttendanceContext.Provider value={{ data, selectedParams }}>
+    <AllCandidatesAttendanceContext.Provider value={{ data, selectedParams }}>
       <SearchContainer2 />
-      <StudentAttendanceContainer />
-    </AllStudentsAttendanceContext.Provider>
+      <CandidateAttendanceContainer />
+    </AllCandidatesAttendanceContext.Provider>
   );
 };
 
-export const UseAllStudentsAttendanceContext = () =>
-  useContext(AllStudentsAttendanceContext);
+export const UseAllCandidatesAttendanceContext = () =>
+  useContext(AllCandidatesAttendanceContext);
 
-export default StudentAttendance;
+export default CandidateAttendance;

@@ -33,7 +33,7 @@ const Landing = () => {
           <div className="info">
             <img src={main} alt="quran" className="img main-img2" />
 
-            <h1>ANSAR MESJID MEDRESA </h1>
+            <h1>MUBAREK AGENCY </h1>
             <div className="two-login">
               <Link to="/teacher-login" className="btn">
                 User Login

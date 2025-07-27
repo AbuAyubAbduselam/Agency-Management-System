@@ -9,14 +9,14 @@ const Wrapper = styled.section`
     font-weight: 700;
     margin-bottom: 1.5rem;
   }
-  .students {
+  .candidates {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
   }
 
   @media (max-width: 600px) {
-    .students {
+    .candidates {
       grid-template-columns: 1fr;
       row-gap: 2rem;
     }

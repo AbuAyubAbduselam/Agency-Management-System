@@ -92,7 +92,7 @@ const SearchContainerTeachers = () => {
 
         <div className="form-control">
           <Link
-            to="/dashboard/all-students"
+            to="/dashboard/all-candidates"
             className="btn btn-error w-full lg:w-auto"
             onClick={handleReset}
           >

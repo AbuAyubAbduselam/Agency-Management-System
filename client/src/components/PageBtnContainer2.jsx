@@ -1,12 +1,12 @@
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
 import Wrapper from "../assets/wrappers/PageBtnContainer";
 import { useLocation, useNavigate } from "react-router-dom";
-import { UseAllStudentsAttendanceContext } from "../pages/StudentAttendance";
+import { UseAllCandidatesAttendanceContext } from "../pages/CandidateAttendance";
 
 const PageBtnContainer2 = () => {
   const {
     data: { numOfPages, currentPage },
-  } = UseAllStudentsAttendanceContext();
+  } = UseAllCandidatesAttendanceContext();
   const { search, pathname } = useLocation();
   const navigate = useNavigate();
 

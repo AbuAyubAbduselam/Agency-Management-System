@@ -1,29 +1,31 @@
-import Student from "../models/studentModels.js";
-import StudentAttendance from "../models/StudentAttendanceModel.js";
+import Candidate from "../models/candidateModel.js";
+import CandidateAttendance from "../models/CandidateAttendanceModel.js";
 import { StatusCodes } from "http-status-codes";
 
-export const numOfStudents = async (req, res) => {
+export const numOfCandidates = async (req, res) => {
   try {
-    // Get total number of students
-    const numOfAllStudent = await Student.countDocuments({});
+    // Get total number of candidates
+    const numOfAllCandidate = await Candidate.countDocuments({});
 
-    // Get number of male and female students
-    const numOfMaleStudents = await Student.countDocuments({ gender: "male" });
-    const numOfFemaleStudents = await Student.countDocuments({
+    // Get number of male and female candidates
+    
+    const numOfMaleCandidates = await Candidate.countDocuments({ gender: "male" });
+    const numOfFemaleCandidates = await Candidate.countDocuments({
       gender: "female",
     });
 
-    // Get number of students in each class
-    const numOfClass1 = await Student.countDocuments({ classes: "1" });
-    const numOfClass2 = await Student.countDocuments({ classes: "2" });
-    const numOfClass3 = await Student.countDocuments({ classes: "3" });
-    const numOfClass4 = await Student.countDocuments({ classes: "4" });
+    // Get number of candidates in each class
+    const numOfClass1 = await Candidate.countDocuments({ classes: "1" });
+    const numOfClass2 = await Candidate.countDocuments({ classes: "2" });
+    const numOfClass3 = await Candidate.countDocuments({ classes: "3" });
+    const numOfClass4 = await Candidate.countDocuments({ classes: "4" });
 
     // Return the data in the response
     return res.status(StatusCodes.OK).json({
-      totalStudents: numOfAllStudent,
-      maleStudents: numOfMaleStudents,
-      femaleStudents: numOfFemaleStudents,
+      totalCandidates: numOfAllCandidate,
+      maleCandidates: numOfMaleCandidates,
+      femaleCandidates:numOfFemaleCandidates,
+      
       classBreakdown: {
         1: numOfClass1,
         2: numOfClass2,
@@ -48,7 +50,7 @@ export const attendanceStats = async (req, res) => {
     const startOfMonth = new Date(selectedYear, selectedMonth, 1);
     const endOfMonth = new Date(selectedYear, selectedMonth + 1, 0);
 
-    const attendanceData = await StudentAttendance.aggregate([
+    const attendanceData = await CandidateAttendance.aggregate([
       {
         $match: {
           date: {

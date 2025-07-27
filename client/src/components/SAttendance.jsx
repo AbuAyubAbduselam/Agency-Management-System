@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Wrapper from "../assets/wrappers/Student";
+import Wrapper from "../assets/wrappers/Candidate";
 import { Form } from "react-router-dom";
 import day from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -12,7 +12,7 @@ import {
 
 day.extend(advancedFormat);
 
-const Student = ({
+const Candidate = ({
   _id,
   avatar,
   fullName,
@@ -80,7 +80,7 @@ const Student = ({
               <td>{qiratLevel}</td>
               <td>{qiratLevel}</td>
               <td>
-                <Link to={`../edit-student/${_id}`}>
+                <Link to={`../edit-candidate/${_id}`}>
                   <Button
                     icon={<EditOutlined />}
                     type="primary"
@@ -110,7 +110,7 @@ const Student = ({
               <td>{academicStatus}</td>
               <td>20</td>
               <td>
-                <Form method="post" action={`../delete-student/${_id}`}>
+                <Form method="post" action={`../delete-candidate/${_id}`}>
                   <Button
                     icon={<DeleteOutlined />}
                     type="primary"
@@ -128,4 +128,4 @@ const Student = ({
   );
 };
 
-export default Student;
+export default Candidate;

@@ -1,15 +1,10 @@
 import { useRef, useState } from "react";
-import Student from "./Student";
-import Wrapper from "../assets/wrappers/StudentsContainer";
-import { AddStudent, AddTeacher } from "../pages";
+import Wrapper from "../assets/wrappers/CandidatesContainer"; 
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import PageBtnContainerTeachers from "./PageBtnContainerTeachers";
-import Teacher from "./Teacher";
-import TeacherAttendance, {
-  useTeacherAttendanceContext,
-} from "../pages/TeacherAttendance";
 import TeacherAttend from "./TeacherAttend";
+import { useTeacherAttendanceContext } from "../pages/TeacherAttendance";
 
 const TeachersAttendanceContainer = () => {
   const { data } = useTeacherAttendanceContext();
@@ -17,7 +12,6 @@ const TeachersAttendanceContainer = () => {
   console.log(data);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   const modalRef = useRef(null);
 
   const showModal = () => {
@@ -31,7 +25,7 @@ const TeachersAttendanceContainer = () => {
   if (teachers.length === 0) {
     return (
       <Wrapper>
-        <h2>No teachers to display...</h2>
+        <h2>No cvs to display...</h2>
       </Wrapper>
     );
   }
@@ -44,11 +38,12 @@ const TeachersAttendanceContainer = () => {
         </h5>
       </div>
 
-      <div className="students">
+      <div className="teachers">
         {teachers.map((teacher) => (
           <TeacherAttend key={teacher._id} {...teacher} />
         ))}
       </div>
+
       {numOfPages > 1 && <PageBtnContainerTeachers />}
     </Wrapper>
   );

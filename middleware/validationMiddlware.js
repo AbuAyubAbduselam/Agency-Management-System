@@ -5,7 +5,7 @@ import {
   UnauthorizedError,
 } from "../errors/customErrors.js";
 import mongoose from "mongoose";
-import Student from "../models/studentModels.js";
+import Candidate from "../models/candidateModel.js";
 import User from "../models/userModel.js";
 
 const withValidationErrors = (validateValues) => {
@@ -16,7 +16,7 @@ const withValidationErrors = (validateValues) => {
       console.log(566666, errors);
       if (!errors.isEmpty()) {
         const errorMessages = errors.array().map((error) => error.msg);
-        if (errorMessages[0].startsWith("no student")) {
+        if (errorMessages[0].startsWith("no candidate with id")) {
           throw new NotFoundError(errorMessages);
         }
         if (errorMessages[0].startsWith("Not authorized")) {
@@ -29,40 +29,82 @@ const withValidationErrors = (validateValues) => {
   ];
 };
 
-export const validateStudentInput = withValidationErrors([
+export const validateCandidateInput = withValidationErrors([
   body("firstName").notEmpty().withMessage("First name is required"),
   body("middleName").notEmpty().withMessage("Middle name is required"),
-  body("lastName").notEmpty().withMessage("last name is required"),
   body("gender").notEmpty().withMessage("Gender is required"),
+
   body("dateOfBirth")
     .notEmpty()
     .withMessage("Date of birth is required")
     .isISO8601()
     .withMessage("Invalid date format, use YYYY-MM-DD"),
-  body("schoolName").notEmpty().withMessage("School name is required"),
-  body("classes")
+
+  body("passportNo").notEmpty().withMessage("Passport No. is required"),
+
+  body("phoneNo")
     .notEmpty()
-    .withMessage("Class is required")
-    .isInt({ min: 1 })
-    .withMessage("Class must be a valid number"),
-  body("address").notEmpty().withMessage("Address is required"),
-  body("parentName").notEmpty().withMessage("Parent name is required"),
-  body("parentPhoneNumber")
-    .notEmpty()
-    .withMessage("Parent phone number is required")
+    .withMessage("Phone number is required")
     .isMobilePhone()
     .withMessage("Invalid phone number"),
+
+  body("narrativePhoneNo")
+    .optional()
+    .isMobilePhone()
+    .withMessage("Invalid narrative phone number"),
+
+  body("laborId").notEmpty().withMessage("Labor ID is required"),
+
+  body("religion")
+    .notEmpty()
+    .withMessage("Religion is required")
+    .isIn(["muslim", "non-muslim"])
+    .withMessage("Religion is required"),
+  body("cvStatus")
+    .notEmpty()
+    .withMessage("CV Status is required")
+    .isIn(["done", "waiting"])
+    .withMessage("CV Status required"),
+
+  body("cocStatus")
+    .notEmpty()
+    .withMessage("COC Status is required")
+    .isIn(["done", "waiting","booked"])
+    .withMessage("COC Status required"),
+
+  body("musanedStatus")
+    .notEmpty()
+    .withMessage("Musaned Status is required")
+    .isIn(["done","pending-release", "waiting"])
+    .withMessage("Musaned Status required"),
+
+  body("medicalStatus")
+    .notEmpty()
+    .withMessage("Medical Status is required")
+    .isIn(["done", "waiting"])
+    .withMessage("Medical Status required"),
+
+  body("experienceOutside")
+    .notEmpty()
+    .withMessage("Experience Outside Country is required"),
+
+  body("availabilityStatus")
+    .notEmpty()
+    .withMessage("Availability status is required")
+    .isIn(["available", "uavailable", "selected"])
+    .withMessage("Availability status must be required"),
 ]);
+
 
 export const validateIdParam = withValidationErrors([
   param("id").custom(async (value, { req }) => {
     const isValidId = mongoose.Types.ObjectId.isValid(value);
     if (!isValidId) throw new BadRequestError("invalid MongoDB id");
-    const student = await Student.findById(value);
-    console.log(111333, student);
-    if (!student) throw new NotFoundError(`no student with id : ${value}`);
+    const candidate = await Candidate.findById(value);
+    console.log(111333, candidate);
+    if (!candidate) throw new NotFoundError(`no candidate with id : ${value}`);
     const isAdmin = req.user.role === "admin";
-    const isOwner = req.user.userId === student.createdBy.toString();
+    const isOwner = req.user.userId === candidate.createdBy.toString();
     if (!isAdmin && !isOwner)
       throw new UnauthorizedError("Not authorized to access this route");
   }),

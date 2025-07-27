@@ -16,7 +16,7 @@ const AttendanceDetail = () => {
 
   const fetchAttendance = async () => {
     try {
-      const url = `/attendance/students?date=${selectedDate}&classes=${selectedClass}`;
+      const url = `/attendance/candidates?date=${selectedDate}&classes=${selectedClass}`;
       console.log("Fetching attendance with URL:", url);
       const response = await customFetch.get(url);
       setAttendanceRecords(response.data);

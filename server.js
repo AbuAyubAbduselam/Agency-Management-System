@@ -10,7 +10,7 @@ import upload from "express-fileupload";
 import cloudinary from "cloudinary";
 
 //routes
-import studentRouter from "./routes/studentRouter.js";
+import candidateRouter from "./routes/candidateRouter.js";
 import teacherRouter from "./routes/teacherRouter.js";
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
@@ -49,7 +49,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(path.resolve(__dirname, "./public")));
 
-app.use("/api/v1/students", authenticateUser, studentRouter);
+app.use("/api/v1/candidates", authenticateUser, candidateRouter);
 app.use("/api/v1/teachers", authenticateUser, teacherRouter);
 app.use("/api/v1/users", authenticateUser, userRouter);
 app.use("/api/v1/auth", authRouter);
@@ -67,6 +67,9 @@ app.use("*", (req, res) => {
 app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 5200;
+
+
+
 
 try {
   await mongoose.connect(process.env.MONGO_URL);

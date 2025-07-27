@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import Student from "./Student";
-import Wrapper from "../assets/wrappers/StudentsContainer";
-import { AddStudent, AddTeacher } from "../pages";
+import Candidate from "./Candidate";
+import Wrapper from "../assets/wrappers/CandidatesContainer";
+import { AddCandidate, AddTeacher } from "../pages";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useTeachersContext } from "../pages/Teachers";
@@ -33,7 +33,7 @@ const TeachersContainer = () => {
             onClick={showModal}
             icon={<PlusOutlined />}
           >
-            <span className="ml-3">Add Teacher</span>
+            <span className="ml-3">Add CVs</span>
           </Button>
           {isModalVisible && (
             <div className="modal modal-open">
@@ -52,7 +52,7 @@ const TeachersContainer = () => {
             </div>
           )}
         </div>
-        <h2>No teachers to display...</h2>
+        <h2>No cvs to display...</h2>
       </Wrapper>
     );
   }
@@ -88,7 +88,7 @@ const TeachersContainer = () => {
         )}
       </div>
 
-      <div className="students">
+      <div className="candidates">
         {teachers.map((teacher) => (
           <Teacher key={teacher._id} {...teacher} />
         ))}
