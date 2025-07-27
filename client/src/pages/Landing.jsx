@@ -1,6 +1,6 @@
 import Wrapper from "../assets/wrappers/LandingPage";
 import { Humberger, Logo } from "../components";
-import main from "../assets/images/main.svg";
+import agency from "../assets/images/agency.jpeg";
 import wave from "../assets/images/wave.svg";
 import { Link } from "react-router-dom";
 
@@ -18,29 +18,29 @@ const Landing = () => {
         <div className="humster">
           <Humberger links={links} />
         </div>
-        <Link to="/contact" className="btn contact">
+        <Link to="#" className="btn contact">
           contact us
         </Link>
-        <Link to="/about" className="btn about">
+        <Link to="#" className="btn about">
           about
         </Link>
-        <Link to="/admin-login" className="btn admin">
+        <Link to="#" className="btn admin">
           Admin
         </Link>
       </nav>
       <div>
         <div className="container page">
           <div className="info">
-            <img src={main} alt="quran" className="img main-img2" />
+            <img src={agency} alt="flight" className="img main-img2" />
 
-            <h1>MUBAREK AGENCY </h1>
+            <h1>AGENCY MANAGEMENT SYSTEM </h1>
             <div className="two-login">
-              <Link to="/teacher-login" className="btn">
+              <Link to="/user-login" className="btn">
                 User Login
               </Link>
             </div>
           </div>
-          <img src={main} alt="quran" className="img main-img" />
+          <img src={agency} alt="flight" className="img main-img" />
         </div>
 
         <img src={wave} alt="wave" className="wave" />
