@@ -66,7 +66,7 @@ app.use("*", (req, res) => {
 
 app.use(errorHandlerMiddleware);
 
-const port = process.env.PORT || 5200;
+const port = process.env.PORT || 6000;
 
 
 
