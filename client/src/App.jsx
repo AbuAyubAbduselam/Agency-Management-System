@@ -91,6 +91,10 @@ const router = createBrowserRouter([
             loader: allCandidatesLoader,
           },
           {
+            path: "add-candidate",
+            element: <AddCandidate />,
+          },
+          {
             path: "candidates-stats",
             element: <Stats />,
             loader: statsLoader,

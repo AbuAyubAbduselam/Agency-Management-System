@@ -133,11 +133,13 @@ const CandidateAttendanceContainer = () => {
                 <th>Medical Status</th>
                 <th>Selected By</th>
                 <th>Tasheer</th>
+                <th>Tasheer Date</th>
                 <th>Wokala</th>
                 <th>Visa Status</th>
                 <th>Coc Status</th>
                 <th>LMIS</th>
                 <th>Ticket</th>
+                <th>Ticket Date</th>
                 <th>Edit</th>
               </tr>
             </thead>
@@ -162,11 +164,13 @@ const CandidateAttendanceContainer = () => {
                 <th>Medical Status</th>
                 <th>Selected By</th>
                 <th>Tasheer</th>
+                <th>Tasheer Date</th>
                 <th>Wokala</th>
                 <th>Visa Status</th>
                 <th>Coc Status</th>
                 <th>LMIS</th>
                 <th>Ticket</th>
+                <th>Ticket Date</th>
                 <th>Edit</th>
               </tr>
             </tfoot>

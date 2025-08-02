@@ -17,7 +17,7 @@ import { checkForTestUser } from "../middleware/authMiddleware.js";
 import { getAllSelectedCandidates } from "../controller/attendanceController.js";
 
 //router.get("/", getAllCandidates);
-router.post("/", checkForTestUser, validateCandidateInput, createCandidate);
+router.post("/", checkForTestUser, createCandidate);
 
 router.route("/").get(getAllCandidates);
 

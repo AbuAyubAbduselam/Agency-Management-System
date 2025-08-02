@@ -4,12 +4,16 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { renderStatus } from "../utils/colorStatus";
+import dayjs from "dayjs";
+import { UserOutlined } from "@ant-design/icons";
 
 day.extend(advancedFormat);
 
 const Attendance = ({
   _id,
   avatar,
+  ticketDate,
+  tasheerDate,
   firstName,
   middleName,
   contractCreationDate,
@@ -28,6 +32,9 @@ const Attendance = ({
 }) => {
 
   const contractDate = day(contractCreationDate).format("DD MMMM YYYY");
+  const formattedTicketDate = dayjs(ticketDate).format("YYYY-MM-DD HH:mm:ss");
+  const formattedTasheerDate = dayjs(tasheerDate).format("YYYY-MM-DD HH:mm:ss");
+
 
   return (
     <tbody>
@@ -44,7 +51,16 @@ const Attendance = ({
           <div className="flex items-center gap-3">
             <div className="avatar">
               <div className="mask mask-squircle h-12 w-12">
-                <img src={avatar} alt="Photo" />
+               {avatar ? (
+  <img src={avatar} alt="Photo" />
+) : (
+  <div className="flex items-center justify-center bg-gray-200 w-full h-full">
+    <span className="text-xl text-gray-500">
+      <UserOutlined />
+    </span>
+  </div>
+)}
+
               </div>
             </div>
           </div>
@@ -62,11 +78,13 @@ const Attendance = ({
         <td>{renderStatus("medicalStatus", medicalStatus)}</td>
         <td>{renderStatus("selectedBy", selectedBy)}</td>
         <td>{renderStatus("tasheer", tasheer)}</td>
+          <td>{formattedTasheerDate}</td>
         <td>{renderStatus("wokala", wokala)}</td>
         <td>{renderStatus("visaStatus", visaStatus)}</td>
         <td>{renderStatus("cocStatus", cocStatus)}</td>
         <td>{renderStatus("lmis", lmis)}</td>
         <td>{renderStatus("ticket", ticket)}</td>
+          <td>{formattedTicketDate}</td>
         <td>
           <Link to={`../edit-candidate-attendance/${_id}`}>
             <Button

@@ -5,14 +5,23 @@ import {
   ReadOutlined,
   BarChartOutlined,
   DollarOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 
 const links = [
+
+  
+  {
+    text: "Add Candidate",
+    path: "add-candidate",
+    icon: <UserAddOutlined/>
+  },
   {
     text: "All Candidates",
     path: ".",
     icon: <TeamOutlined />,
   },
+
 
  /* {
     text: "Selected Candidates",  

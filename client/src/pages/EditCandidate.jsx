@@ -51,41 +51,55 @@ const EditCandidate = () => {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      if (key !== "avatar" && key !== "fullSizePhoto") {
-        formData.append(key, value);
-      }
-    });
-  
-    if (values.avatar && values.avatar.file) {
-      formData.append("avatar", values.avatar.file.originFileObj);
+  const formData = new FormData();
+
+  Object.entries(values).forEach(([key, value]) => {
+    if (key !== "avatar" && key !== "fullSizePhoto") {
+      formData.append(key, value);
     }
-  
-    if (values.fullSizePhoto && values.fullSizePhoto.file) {
-      formData.append("fullSizePhoto", values.fullSizePhoto.file.originFileObj);
-    }
-  
-    const avatarFile = formData.get("avatar");
-    if (avatarFile && avatarFile.size > 500000) {
+  });
+
+  const avatarList = values.avatar;
+  const fullPhotoList = values.fullSizePhoto;
+
+  if (avatarList && avatarList.length > 0) {
+    const avatarFile = avatarList[0].originFileObj;
+    if (avatarFile.size > 500000) {
       toast.error("Avatar image size too large");
       return;
     }
-  
-    const fullPhotoFile = formData.get("fullSizePhoto");
-    if (fullPhotoFile && fullPhotoFile.size > 2000000) {
+    formData.append("avatar", avatarFile);
+  }
+
+  if (fullPhotoList && fullPhotoList.length > 0) {
+    const fullPhotoFile = fullPhotoList[0].originFileObj;
+    if (fullPhotoFile.size > 2000000) {
       toast.error("Full-size photo is too large (max 2MB)");
       return;
     }
-  
-    try {
-      await customFetch.patch(`/candidates/${candidate._id}`, formData);
-      toast.success("Candidate edited successfully");
-      navigate("/dashboard");
-    } catch (error) {
-      toast.error(error?.response?.data?.msg || "Edit failed");
-    }
-  };
+    formData.append("fullSizePhoto", fullPhotoFile);
+  }
+
+  const passportScanList = values.passportScan;
+if (passportScanList && passportScanList.length > 0) {
+  const passportFile = passportScanList[0].originFileObj;
+  if (passportFile.size > 3000000) {
+    toast.error("Passport scan is too large (max 3MB)");
+    return;
+  }
+  formData.append("passportScan", passportFile);
+}
+
+
+  try {
+    await customFetch.patch(`/candidates/${candidate._id}`, formData);
+    toast.success("Candidate edited successfully");
+    navigate("/dashboard");
+  } catch (error) {
+    toast.error(error?.response?.data?.msg || "Edit failed");
+  }
+};
+
   
   return (
     <Wrapper>
@@ -175,6 +189,36 @@ const EditCandidate = () => {
     <Button icon={<UploadOutlined />}>Upload Full Size</Button>
   </Upload>
 </Form.Item>
+
+<Form.Item
+  label="Passport Scan"
+  name="passportScan"
+  valuePropName="fileList"
+  getValueFromEvent={(e) => e?.fileList}
+>
+  <Upload
+    name="passportScan"
+    listType="picture"
+    maxCount={1}
+    accept="image/*,.pdf"
+    beforeUpload={() => false}
+    defaultFileList={
+      candidate.passportScan
+        ? [
+            {
+              uid: "-3",
+              name: "Current Passport Scan",
+              status: "done",
+              url: candidate.passportScan,
+            },
+          ]
+        : []
+    }
+  >
+    <Button icon={<UploadOutlined />}>Upload Passport Scan</Button>
+  </Upload>
+</Form.Item>
+
 
 
           <Form.Item label="First Name" name="firstName" rules={[{ required: true }]}>

@@ -97,6 +97,8 @@ export const createCandidate = async (req, res) => {
     req.body.createdBy = req.user.userId;
     const candidateDetail = { ...req.body };
 
+    console.log(candidateDetail)
+
     // Handle avatar upload
     if (req.files?.avatar) {
       const avatarFile = req.files.avatar;
@@ -120,6 +122,20 @@ export const createCandidate = async (req, res) => {
       candidateDetail.fullSizePhoto = response.secure_url;
       candidateDetail.fullSizePhotoPublicId = response.public_id;
     }
+
+    // Handle passportScan upload
+if (req.files?.passportScan) {
+  const passportScanFile = req.files.passportScan;
+  const response = await cloudinary.v2.uploader.upload(passportScanFile.tempFilePath, {
+    folder: 'passportScans',
+    resource_type: "auto", // Supports images and PDFs
+  });
+  await fs.unlink(passportScanFile.tempFilePath);
+
+  candidateDetail.passportScan = response.secure_url;
+  candidateDetail.passportScanPublicId = response.public_id;
+}
+
 
     const candidate = await Candidate.create(candidateDetail);
     res.status(StatusCodes.CREATED).json({ candidate });
@@ -161,8 +177,19 @@ export const updateCandidate = async (req, res) => {
   const { id } = req.params;
 
   try {
+    const candidate = await Candidate.findById(id);
+
+    if (!candidate) {
+      return res.status(StatusCodes.NOT_FOUND).json({ msg: "Candidate not found" });
+    }
+
     // Upload avatar if provided
     if (req.files && req.files.avatar) {
+      // Delete previous avatar from Cloudinary if it exists
+      if (candidate.avatarPublicId) {
+        await cloudinary.v2.uploader.destroy(candidate.avatarPublicId);
+      }
+
       const avatarFile = req.files.avatar;
       const avatarRes = await cloudinary.v2.uploader.upload(avatarFile.tempFilePath, {
         folder: "avatars",
@@ -174,36 +201,55 @@ export const updateCandidate = async (req, res) => {
 
     // Upload fullSizePhoto if provided
     if (req.files && req.files.fullSizePhoto) {
+      // Delete previous fullSizePhoto from Cloudinary if it exists
+      if (candidate.fullSizePhotoPublicId) {
+        await cloudinary.v2.uploader.destroy(candidate.fullSizePhotoPublicId);
+      }
+
       const fullPhotoFile = req.files.fullSizePhoto;
       const fullPhotoRes = await cloudinary.v2.uploader.upload(fullPhotoFile.tempFilePath, {
-        folder: "fullsize-photos",
+        folder: "fullSizePhotos", // fixed to match createCandidate folder
       });
       await fs.unlink(fullPhotoFile.tempFilePath);
       req.body.fullSizePhoto = fullPhotoRes.secure_url;
       req.body.fullSizePhotoPublicId = fullPhotoRes.public_id;
     }
 
+    // Upload passportScan if provided
+if (req.files && req.files.passportScan) {
+  // Delete previous passportScan from Cloudinary if it exists
+  if (candidate.passportScanPublicId) {
+    await cloudinary.v2.uploader.destroy(candidate.passportScanPublicId);
+  }
+
+  const passportScanFile = req.files.passportScan;
+  const passportScanRes = await cloudinary.v2.uploader.upload(passportScanFile.tempFilePath, {
+    folder: "passportScans",
+    resource_type: "auto",
+  });
+  await fs.unlink(passportScanFile.tempFilePath);
+  req.body.passportScan = passportScanRes.secure_url;
+  req.body.passportScanPublicId = passportScanRes.public_id;
+}
+
+
     const updatedCandidate = await Candidate.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
 
-    if (!updatedCandidate) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ msg: "Candidate not found" });
-    }
-
-    res
-      .status(StatusCodes.OK)
-      .json({ msg: "Candidate is modified", candidate: updatedCandidate });
+    res.status(StatusCodes.OK).json({
+      msg: "Candidate is modified",
+      candidate: updatedCandidate,
+    });
   } catch (error) {
     console.error(error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Error updating candidate" });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: "Error updating candidate",
+    });
   }
 };
+
 
 
 //-----------------DELETE CANDIDATE

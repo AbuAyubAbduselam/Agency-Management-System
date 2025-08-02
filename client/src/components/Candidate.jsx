@@ -56,13 +56,8 @@ const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "N/A";
             </div>
           </div>
         </td>
-        <td>
-          <div>
-            <div className="font-bold">
-              {firstName} <span className="font-bold">{middleName}</span>
-            </div>
-          </div>
-        </td>
+             <td>{[firstName, middleName, lastName].filter(Boolean).join(" ")}</td>
+
         <td>{gender}</td>
         <td>{age}</td>
         <td>{passportNo}</td>
