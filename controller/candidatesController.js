@@ -9,12 +9,15 @@ import fs from "fs/promises"; // Use fs/promises for async/await
 export const getAllCandidates = async (req, res) => {
   const { search, sort, medicalStatus, gender, religion, cvStatus, cocStatus, musanedStatus, availabilityStatus, cvSentTo } = req.query;
 
-  const queryObject = {};
+  const queryObject = { availabilityStatus: { $ne: 'selected' } };
+
 
   if (search) {
     queryObject.$or = [
       { firstName: { $regex: search, $options: "i" } },
       { middleName: { $regex: search, $options: "i" } },
+      { lastName: { $regex: search, $options: "i" } },
+      { passportNo: { $regex: search, $options: "i" } },
     ];
   }
 
@@ -95,11 +98,21 @@ export const getCheckedCandidates = async (req, res) => {
 export const createCandidate = async (req, res) => {
   try {
     req.body.createdBy = req.user.userId;
+
+    // ✅ Parse skills if it's a JSON string (from FormData)
+    if (req.body.skills && typeof req.body.skills === 'string') {
+      try {
+        console.log(8888888888888)
+        req.body.skills = JSON.parse(req.body.skills);
+      } catch (err) {
+        console.warn('Failed to parse skills field:', req.body.skills);
+        req.body.skills = {}; // fallback to empty object
+      }
+    }
+
     const candidateDetail = { ...req.body };
 
-    console.log(candidateDetail)
-
-    // Handle avatar upload
+    // ✅ Handle avatar upload
     if (req.files?.avatar) {
       const avatarFile = req.files.avatar;
       const response = await cloudinary.v2.uploader.upload(avatarFile.tempFilePath, {
@@ -107,11 +120,11 @@ export const createCandidate = async (req, res) => {
       });
       await fs.unlink(avatarFile.tempFilePath);
 
-      candidateDetail.avatar = response.secure_url;
+      candidateDetail.avatar = response.secure_url.replace("/upload/", "/upload/q_auto:best/");
       candidateDetail.avatarPublicId = response.public_id;
     }
 
-    // Handle fullSizePhoto upload
+    // ✅ Handle fullSizePhoto upload
     if (req.files?.fullSizePhoto) {
       const fullPhotoFile = req.files.fullSizePhoto;
       const response = await cloudinary.v2.uploader.upload(fullPhotoFile.tempFilePath, {
@@ -119,24 +132,24 @@ export const createCandidate = async (req, res) => {
       });
       await fs.unlink(fullPhotoFile.tempFilePath);
 
-      candidateDetail.fullSizePhoto = response.secure_url;
+      candidateDetail.fullSizePhoto = response.secure_url.replace("/upload/", "/upload/q_auto:best/");
       candidateDetail.fullSizePhotoPublicId = response.public_id;
     }
 
-    // Handle passportScan upload
-if (req.files?.passportScan) {
-  const passportScanFile = req.files.passportScan;
-  const response = await cloudinary.v2.uploader.upload(passportScanFile.tempFilePath, {
-    folder: 'passportScans',
-    resource_type: "auto", // Supports images and PDFs
-  });
-  await fs.unlink(passportScanFile.tempFilePath);
+    // ✅ Handle passportScan upload
+    if (req.files?.passportScan) {
+      const passportScanFile = req.files.passportScan;
+      const response = await cloudinary.v2.uploader.upload(passportScanFile.tempFilePath, {
+        folder: 'passportScans',
+        resource_type: "auto", // Supports images and PDFs
+      });
+      await fs.unlink(passportScanFile.tempFilePath);
 
-  candidateDetail.passportScan = response.secure_url;
-  candidateDetail.passportScanPublicId = response.public_id;
-}
+      candidateDetail.passportScan = response.secure_url.replace("/upload/", "/upload/q_auto:best/");
+      candidateDetail.passportScanPublicId = response.public_id;
+    }
 
-
+    // ✅ Create candidate
     const candidate = await Candidate.create(candidateDetail);
     res.status(StatusCodes.CREATED).json({ candidate });
   } catch (error) {
@@ -146,6 +159,112 @@ if (req.files?.passportScan) {
     });
   }
 };
+
+
+export const updateCandidate = async (req, res) => {
+  const { id } = req.params;
+  console.log(req.body.skills)
+
+  try {
+    const candidate = await Candidate.findById(id);
+    if (!candidate) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ msg: "Candidate not found" });
+    }
+
+    // ✅ Handle skills if sent as an object (FormData key/values)
+  if (req.body.skills) {
+  req.body.skills = JSON.parse(req.body.skills);
+
+  // ✅ Convert Mongoose Map (or any doc property) to plain object
+  const existingSkills = candidate.skills instanceof Map
+    ? Object.fromEntries(candidate.skills)
+    : candidate.skills?.toObject?.() || {};
+
+  req.body.skills = {
+    ...existingSkills,
+    ...req.body.skills
+  };
+}
+
+
+    // === Handle avatar upload ===
+    if (req.files && req.files.avatar) {
+      if (candidate.avatarPublicId) {
+        await cloudinary.v2.uploader.destroy(candidate.avatarPublicId);
+      }
+      const avatarFile = req.files.avatar;
+      const avatarRes = await cloudinary.v2.uploader.upload(
+        avatarFile.tempFilePath,
+        { folder: "avatars" }
+      );
+      await fs.unlink(avatarFile.tempFilePath);
+      req.body.avatar = avatarRes.secure_url.replace(
+        "/upload/",
+        "/upload/q_auto:best/"
+      );
+      req.body.avatarPublicId = avatarRes.public_id;
+    }
+
+    // === Handle fullSizePhoto upload ===
+    if (req.files && req.files.fullSizePhoto) {
+      if (candidate.fullSizePhotoPublicId) {
+        await cloudinary.v2.uploader.destroy(candidate.fullSizePhotoPublicId);
+      }
+      const fullPhotoFile = req.files.fullSizePhoto;
+      const fullPhotoRes = await cloudinary.v2.uploader.upload(
+        fullPhotoFile.tempFilePath,
+        { folder: "fullSizePhotos" }
+      );
+      await fs.unlink(fullPhotoFile.tempFilePath);
+      req.body.fullSizePhoto = fullPhotoRes.secure_url.replace(
+        "/upload/",
+        "/upload/q_auto:best/"
+      );
+      req.body.fullSizePhotoPublicId = fullPhotoRes.public_id;
+    }
+
+    // === Handle passportScan upload ===
+    if (req.files && req.files.passportScan) {
+      if (candidate.passportScanPublicId) {
+        await cloudinary.v2.uploader.destroy(candidate.passportScanPublicId);
+      }
+      const passportScanFile = req.files.passportScan;
+      const passportScanRes = await cloudinary.v2.uploader.upload(
+        passportScanFile.tempFilePath,
+        {
+          folder: "passportScans",
+          resource_type: "auto",
+        }
+      );
+      await fs.unlink(passportScanFile.tempFilePath);
+      req.body.passportScan = passportScanRes.secure_url.replace(
+        "/upload/",
+        "/upload/q_auto:best/"
+      );
+      req.body.passportScanPublicId = passportScanRes.public_id;
+    }
+
+    // === Update candidate ===
+    const updatedCandidate = await Candidate.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(StatusCodes.OK).json({
+      msg: "Candidate is modified",
+      candidate: updatedCandidate,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ msg: "Error updating candidate" });
+  }
+};
+
+
 
 
 //=============GET SINGLE CANDIDATE================
@@ -173,82 +292,7 @@ export const getSingleCandidate = async (req, res) => {
 //---------------UPDATE CANDIDATE
 
 
-export const updateCandidate = async (req, res) => {
-  const { id } = req.params;
 
-  try {
-    const candidate = await Candidate.findById(id);
-
-    if (!candidate) {
-      return res.status(StatusCodes.NOT_FOUND).json({ msg: "Candidate not found" });
-    }
-
-    // Upload avatar if provided
-    if (req.files && req.files.avatar) {
-      // Delete previous avatar from Cloudinary if it exists
-      if (candidate.avatarPublicId) {
-        await cloudinary.v2.uploader.destroy(candidate.avatarPublicId);
-      }
-
-      const avatarFile = req.files.avatar;
-      const avatarRes = await cloudinary.v2.uploader.upload(avatarFile.tempFilePath, {
-        folder: "avatars",
-      });
-      await fs.unlink(avatarFile.tempFilePath);
-      req.body.avatar = avatarRes.secure_url;
-      req.body.avatarPublicId = avatarRes.public_id;
-    }
-
-    // Upload fullSizePhoto if provided
-    if (req.files && req.files.fullSizePhoto) {
-      // Delete previous fullSizePhoto from Cloudinary if it exists
-      if (candidate.fullSizePhotoPublicId) {
-        await cloudinary.v2.uploader.destroy(candidate.fullSizePhotoPublicId);
-      }
-
-      const fullPhotoFile = req.files.fullSizePhoto;
-      const fullPhotoRes = await cloudinary.v2.uploader.upload(fullPhotoFile.tempFilePath, {
-        folder: "fullSizePhotos", // fixed to match createCandidate folder
-      });
-      await fs.unlink(fullPhotoFile.tempFilePath);
-      req.body.fullSizePhoto = fullPhotoRes.secure_url;
-      req.body.fullSizePhotoPublicId = fullPhotoRes.public_id;
-    }
-
-    // Upload passportScan if provided
-if (req.files && req.files.passportScan) {
-  // Delete previous passportScan from Cloudinary if it exists
-  if (candidate.passportScanPublicId) {
-    await cloudinary.v2.uploader.destroy(candidate.passportScanPublicId);
-  }
-
-  const passportScanFile = req.files.passportScan;
-  const passportScanRes = await cloudinary.v2.uploader.upload(passportScanFile.tempFilePath, {
-    folder: "passportScans",
-    resource_type: "auto",
-  });
-  await fs.unlink(passportScanFile.tempFilePath);
-  req.body.passportScan = passportScanRes.secure_url;
-  req.body.passportScanPublicId = passportScanRes.public_id;
-}
-
-
-    const updatedCandidate = await Candidate.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-
-    res.status(StatusCodes.OK).json({
-      msg: "Candidate is modified",
-      candidate: updatedCandidate,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      msg: "Error updating candidate",
-    });
-  }
-};
 
 
 

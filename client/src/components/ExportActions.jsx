@@ -2,19 +2,325 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import day from "dayjs";
 import {
-  Font,
+  Document,
   Page,
   Text,
   View,
-  Document,
   StyleSheet,
+  Font,
   Image,
 } from "@react-pdf/renderer";
-import amiri from "../assets/fonts/Amiri-Regular.ttf";
+import * as XLSX from "xlsx";
 
+
+import noto from "../assets/fonts/Cairo-Regular.ttf";
+import notoBold from "../assets/fonts/Cairo-Bold.ttf";
+import dayjs from "dayjs";
+
+Font.register({
+  family: "Cairo",
+  fonts: [
+    { src: noto, fontWeight: "normal" },
+    { src: notoBold, fontWeight: "bold" },
+  ],
+});
+
+const styles = StyleSheet.create({
+  page: {
+    padding: 20,
+    fontSize: 9,
+    fontFamily: "Cairo",
+  },
+  rtlText: {
+    direction: "rtl",
+  },
+  mainHeader: {
+    backgroundColor: "#1d4ed8",
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 5,
+    padding: 15,
+    fontSize: 14,
+    fontWeight: "bold",
+    height: 60,
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    border: "1px solid #ccc",
+  },
+  headerCellLeft: {
+    backgroundColor: "#0891b2",
+    color: "#fff",
+    textAlign: "center",
+    padding: 3,
+    fontSize: 10,
+    fontWeight: "bold",
+    height: 25,
+    width: "50%",
+  },
+  headerCellRight: {
+    backgroundColor: "#3b82f6",
+    color: "#fff",
+    textAlign: "center",
+    padding: 3,
+    fontSize: 10,
+    fontWeight: "bold",
+    height: 25,
+    width: "50%",
+  },
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 3,
+    border: "1px solid #ccc",
+  },
+  infoCell: {
+    width: "33%",
+    textAlign: "center",
+    backgroundColor: "#e5e7eb",
+    fontSize: "0.87rem",
+    fontWeight: "bold",
+    border: "1px solid #ccc",
+  },
+  infoCellMiddle: {
+    backgroundColor: "#ffffff",
+  },
+  infoCellRight: {
+    fontWeight: "bold",
+  },
+  rtlInfoCell: {
+    direction: "rtl",
+  },
+  rightInfoRow: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginRight: 320,
+    padding: 3,
+    width: "52%",
+    border: "1px solid #ccc",
+  },
+  rightHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginRight: 330,
+    width: "52%",
+  },
+  rowGroup: {
+    flexDirection: "row",
+  },
+  columnLeft: {
+    width: "52.2%",
+  },
+  columnRight: {
+    width: "47%",
+    marginTop: -80,
+    marginLeft: 8,
+  },
+  smallCell: {
+    width: "33%",
+    textAlign: "center",
+    backgroundColor: "#e5e7eb",
+    fontSize: 9,
+  },
+  image: {
+    position: "absolute",
+    top: 216,
+    left: 335,
+    width: 278,
+    height: 375,
+    objectFit: "contain",
+    border: "1px solid #ccc",
+    marginLeft: 7,
+  },
+});
+
+// 🔷 Shared Components
+const InfoRow = ({ label, value, repeatLabel, containerStyle }) => (
+  <View style={[styles.infoRow, containerStyle]}>
+    <Text style={[styles.infoCell]}>{label}</Text>
+    <Text style={[styles.infoCell, styles.infoCellMiddle]}>{value}</Text>
+    <Text style={[styles.infoCell, styles.infoCellRight, styles.rtlText]}>{repeatLabel}</Text>
+  </View>
+);
+
+const HeaderRow = ({ codeText, headerText, containerStyle }) => (
+  <View style={[styles.headerRow, containerStyle]}>
+    <Text style={styles.headerCellLeft}>{codeText}</Text>
+    <Text style={styles.headerCellRight}>{headerText}</Text>
+  </View>
+);
+
+const RightAlignedInfoRow = ({ label, value, repeatLabel }) => (
+  <View style={styles.rightInfoRow}>
+    <Text style={[styles.smallCell,{fontWeight:"bold"}]}>{label}</Text>
+    <Text style={[styles.smallCell, { backgroundColor: "#fff",border: "1px solid #ccc" }]}>{value}</Text>
+    <Text style={[styles.smallCell, styles.rtlText,{ border: "1px solid #ccc",fontWeight:"bold"}]}>{repeatLabel}</Text>
+  </View>
+);
+
+// 🔷 Main Page Component
+export const CandidateCVPages = ({ candidate, agentName, agentLogo }) => {
+  const age = day().diff(day(candidate.dateOfBirth), "year");
+  const dateOfBirth = day(candidate.dateOfBirth).format("DD MMMM YYYY");
+  const dateOfExpiry = day(candidate.passportExpiryDate).format("DD MMMM YYYY");
+  const dateOfIssue = day(candidate.passportIssueDate).format("DD MMMM YYYY");
+
+  return (
+    <>
+      <Page size={{ width: 640, height: 890 }} style={styles.page}>
+        
+        {/* 🔹 Replace mainHeader with agent name + logo */}
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10, border: "1px solid #0967aa",paddingVertical:"20"
+ }}>
+          {agentLogo && (
+            <Image
+              src={agentLogo}
+              style={{ width: 60, height: 60, objectFit: "contain", marginRight: 10 }}
+            />
+          )}
+          <Text style={{  flex: 1,   
+      fontSize: 16,
+      fontWeight: "bold",
+      textAlign: "center"}}>{agentName || candidate.cvSentTo}</Text>
+        </View>
+
+        <HeaderRow codeText={`Code ${candidate.code}`} headerText="APPLICATION FOR EMPLOYMENT" />
+        
+        <InfoRow label="FULL NAME" value={`${candidate.firstName} ${candidate.middleName} ${candidate.lastName}`} repeatLabel="الاسم الكامل" />
+        <InfoRow label="CONTRACT PERIOD" value="2 YEARS" repeatLabel="مدة العقد" />
+        <InfoRow label="POSITION" value={candidate.position} repeatLabel="الوظيفة" />
+        <InfoRow label="SALARY" value={`${candidate.salary} SAR`} repeatLabel="الراتب" />
+
+        <HeaderRow codeText="PASSPORT DETAIL" headerText="بيانات جواز السفر" containerStyle={styles.rightHeaderRow} />
+        <RightAlignedInfoRow label="NUMBER" value={candidate.passportNo} repeatLabel="رقم الجواز" />
+        <RightAlignedInfoRow label="DATE OF ISSUE" value={dateOfIssue} repeatLabel="تاريخ الإصدار" />
+        <RightAlignedInfoRow label="DATE OF EXPIRY" value={dateOfExpiry} repeatLabel="تاريخ الانتهاء" />
+        <RightAlignedInfoRow label="PLACE OF ISSUE" value={candidate.passportIssuePlace} repeatLabel="مكان الإصدار" />
+
+        <HeaderRow codeText="LANGUAGE AND EDUCATION" headerText="اللغة والتعليم" containerStyle={styles.rightHeaderRow} />
+        <RightAlignedInfoRow label="ENGLISH" value={candidate.english} repeatLabel="اللغة الإنجليزية" />
+        <RightAlignedInfoRow label="ARABIC" value={candidate.arabic} repeatLabel="اللغة العربية" />
+
+        <HeaderRow codeText="EXPERIENCE ABROAD" headerText="الخبرة خارج البلاد" containerStyle={styles.rightHeaderRow} />
+        <RightAlignedInfoRow label="COUNTRY" value={candidate.experienceCountry} repeatLabel="الدولة" />
+        <RightAlignedInfoRow label="PERIOD" value={candidate.experiencePeriod} repeatLabel="المدة" />
+
+        <HeaderRow codeText="PERSONAL DATA" headerText="معلومات شخصية" containerStyle={styles.rightHeaderRow} />
+        <RightAlignedInfoRow label="NATIONALITY" value="ETHIOPIA" repeatLabel="الجنسية" />
+        <RightAlignedInfoRow label="RELIGION" value="MUSLIM" repeatLabel="الديانة" />
+        <RightAlignedInfoRow label="DATE OF BIRTH" value={dateOfBirth} repeatLabel="تاريخ الميلاد" />
+        <RightAlignedInfoRow label="PLACE OF BIRTH" value={candidate.placeOfBirth} repeatLabel="مكان الميلاد" />
+        <RightAlignedInfoRow label="LIVING TOWN" value={candidate.livingTown} repeatLabel="مكان الإقامة" />
+
+        <View style={styles.rowGroup}>
+          <View style={styles.columnLeft}>
+            <InfoRow label="AGE" value={age.toString()} repeatLabel="العمر" />
+            <InfoRow label="MARITAL STATUS" value={candidate.maritalStatus} repeatLabel="الحالة الاجتماعية" />
+            <InfoRow label="CHILDREN" value={candidate.children} repeatLabel=" عدد الأطفال" />
+            <InfoRow label="WEIGHT" value={`${candidate.weight} kg`} repeatLabel="الوزن" />
+            <InfoRow label="HEIGHT" value={`${candidate.height} cm`} repeatLabel="الطول" />
+            <InfoRow label="PHONE" value={candidate.phone} repeatLabel="رقم الهاتف" />
+          </View>
+
+          <View style={styles.columnRight}>
+            <HeaderRow codeText="SKILLS" headerText="المهارات" />
+            <InfoRow label="CLEANING" value={candidate.skills.cleaning} repeatLabel="تنظيف" />
+            <InfoRow label="WASHING" value={candidate.skills.washing} repeatLabel="غسيل" />
+            <InfoRow label="IRONING" value={candidate.skills.ironing} repeatLabel="كي" />
+            <InfoRow label="COOKING" value={candidate.skills.cooking} repeatLabel="الطبخ العادي" />
+            <InfoRow label="ARABIC COOKING" value={candidate.skills.arabicCooking} repeatLabel="الطبخ العربي" />
+            <InfoRow label="CHILDREN CARE" value={candidate.skills.childrenCare} repeatLabel="العناية بالأطفال" />
+            <InfoRow label="DRIVING" value={candidate.skills.driving} repeatLabel="القيادة" />
+            <InfoRow label="SEWING" value={candidate.skills.sewing} repeatLabel="الخياطة" />
+          </View>
+        </View>
+
+        <InfoRow label="REMARK" value={candidate.remark} repeatLabel="ملاحظة" />
+        {candidate.fullSizePhoto && <Image src={candidate.fullSizePhoto} style={styles.image} />}
+      </Page>
+
+      {candidate.passportScan && (
+        <Page size="LETTER" style={[styles.page, { alignItems: "center", justifyContent: "center" }]}>
+          <Text style={{ fontSize: 22, marginBottom: 10, color: "#25a0d1" }}>Passport Scan</Text>
+          <Image src={candidate.passportScan} style={{ width: 400, height: 550, objectFit: "contain" }} />
+        </Page>
+      )}
+    </>
+  );
+};
+
+export const CombinedPDFDocument = ({ candidates, agentName, agentLogo }) => (
+  <Document>
+    {candidates.map((candidate, index) => (
+      <CandidateCVPages
+        key={index}
+        candidate={candidate}
+        agentName={agentName}
+        agentLogo={agentLogo}
+      />
+    ))}
+  </Document>
+);
+
+
+// 🔷 Table Export
 export const exportCandidatesTableToPDF = (candidates, selectedFields) => {
   const doc = new jsPDF();
 
+  const fieldLabels = {
+    "Full Name": "Full Name", 
+    gender: "Gender",
+    age: "Age",
+    phoneNo: "Phone",
+    passportNo: "Passport No.",
+    cvStatus: "CV Status",
+    medicalStatus: "Medical",
+    narrativePhoneNo: "Narrative Phone",
+    religion: "Religion",
+    availabilityStatus: "Availability",
+    laborId: "Labor ID",
+    cocStatus: "COC Status",
+    musanedStatus: "Musaned Status",
+    medicalDate: "Medical Days",
+    experienceOutside: "Experience Outside",
+    cvSentTo: "CV Sent To",
+  };
+
+    const head = [["No.", ...selectedFields.map((field) => fieldLabels[field] || field)]];
+
+
+   const body = candidates.map((s, index) => {
+    const row = [index + 1];
+    selectedFields.forEach((field) => {
+      if (field === "Full Name") {
+        row.push([s.firstName, s.middleName, s.lastName].filter(Boolean).join(" "));
+      } else if (field === "age") {
+        row.push(s.dateOfBirth ? dayjs().diff(dayjs(s.dateOfBirth), "year") : "");
+      } else if (field === "medicalDate") {
+        row.push(s.medicalDate ? dayjs().diff(dayjs(s.medicalDate), "day") + " days" : "");
+      } else {
+        row.push(s[field] || "");
+      }
+    });
+    return row;
+  });
+
+  autoTable(doc, {
+    head,
+    body,
+    styles: { fontSize: 10, cellPadding: 2, halign: "center" },
+    headStyles: { fillColor: [22, 160, 133], textColor: 255 },
+    startY: 20,
+  });
+
+  const blob = doc.output("blob");
+  const blobUrl = URL.createObjectURL(blob);
+  window.open(blobUrl, "_blank");
+};
+
+
+export const exportCandidatesTableToExcel = (candidates, selectedFields) => {
   const fieldLabels = {
     "Full Name": "Full Name",
     gender: "Gender",
@@ -34,339 +340,25 @@ export const exportCandidatesTableToPDF = (candidates, selectedFields) => {
     cvSentTo: "CV Sent To",
   };
 
-  const head = [
-    [
-      "No.",
-      ...selectedFields.map((field) => fieldLabels[field] || field),
-    ],
-  ];
-
-  const body = candidates.map((s, index) => {
-    const row = [index + 1];
-
+  const data = candidates.map((c) => {
+    const row = {};
     selectedFields.forEach((field) => {
       if (field === "Full Name") {
-        const fullName = [s.firstName, s.middleName, s.lastName]
-          .filter(Boolean)
-          .join(" ");
-        row.push(fullName);
+        row[fieldLabels[field]] = [c.firstName, c.middleName, c.lastName].filter(Boolean).join(" ");
       } else if (field === "age") {
-        row.push(s.dateOfBirth ? day().diff(day(s.dateOfBirth), "year") : "");
+        row[fieldLabels[field]] = c.dateOfBirth ? dayjs().diff(dayjs(c.dateOfBirth), "year") : "";
       } else if (field === "medicalDate") {
-        row.push(s.medicalDate ? day().diff(day(s.medicalDate), "day") + " days" : "");
+        row[fieldLabels[field]] = c.medicalDate ? dayjs().diff(dayjs(c.medicalDate), "day") + " days" : "";
       } else {
-        row.push(s[field] || "");
+        row[fieldLabels[field] || field] = c[field] || "";
       }
     });
-
     return row;
   });
 
-  autoTable(doc, {
-    head,
-    body,
-    styles: {
-      fontSize: 10,
-      cellPadding: 2,
-      halign: "center",
-    },
-    headStyles: {
-      fillColor: [22, 160, 133],
-      textColor: 255,
-    },
-    startY: 20,
-  });
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Candidates");
 
-  doc.save("selected-candidates.pdf");
+  XLSX.writeFile(workbook, "CandidatesTable.xlsx");
 };
-
-
-
-
-
-
-// Register Arabic Font
-Font.register({
-  family: "Amiri",
-  src: amiri,
-  fonts: [
-    {
-      src: amiri,
-      fontWeight: "normal",
-    },
-  ],
-});
-
-// Reusable Components
-const InfoRow = ({ label, value, repeatLabel }) => (
-  <View style={styles.small_container}>
-    <Text style={styles.cell}>{label}</Text>
-    <Text style={[styles.cell, styles.middleCell]}>{value}</Text>
-    <Text style={[styles.cell, styles.rightCell, styles.rtlText]}>{repeatLabel}</Text>
-  </View>
-);
-
-const HeaderRow = ({ codeText, headerText, containerStyle }) => (
-  <View style={[styles.sub_header_container, containerStyle]}>
-    <Text style={styles.code}>{codeText}</Text>
-    <Text style={styles.sub_header}>{headerText}</Text>
-  </View>
-);
-
-const RightAlignedInfoRow = ({ label, value, repeatLabel }) => (
-  <View style={styles.rightAlignedContainer}>
-    <Text style={styles.cellRight}>{label}</Text>
-    <Text style={styles.cellRight}>{value}</Text>
-    <Text style={[styles.cellRight, styles.rtlText]}>{repeatLabel}</Text>
-  </View>
-);
-
-// Styles
-const styles = StyleSheet.create({
-  page: {
-    padding: 20,
-    fontSize: 9,
-    fontFamily: "Amiri",
-  },
-  rtlText: {
-    direction: "rtl",
-    fontFamily: "Amiri",
-  },
-  header: {
-    backgroundColor: "#007bff",
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 5,
-    padding: 15,
-    fontSize: 14,
-    fontWeight: "bold",
-    height: 60,
-  },
-  sub_header_container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignContent: "center",
-    marginVertical: 2,
-  },
-  sub_header: {
-    backgroundColor: "#25a0d1",
-    color: "#fff",
-    textAlign: "center",
-    padding: 3,
-    fontSize: 10,
-    fontWeight: "bold",
-    height: 25,
-    width: "50%",
-  },
-  code: {
-    backgroundColor: "#25a0d1",
-    color: "#fff",
-    textAlign: "center",
-    padding: 3,
-    fontSize: 10,
-    fontWeight: "bold",
-    height: 25,
-    width: "50%",
-  },
-  small_container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  cell: {
-    width: "30%",
-    padding: 2.5,
-    textAlign: "center",
-    backgroundColor: "#adbccc",
-    fontSize: 8,
-  },
-  middleCell: {
-    width: "45%",
-    fontSize: 8,
-  },
-  rightCell: {
-    width: "25%",
-    fontSize: 8,
-  },
-  rightAlignedContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    marginVertical: 0.5,
-    marginRight: 320,
-    width: "50%",
-  },
-  rightAlignedHeaderContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    marginVertical: 0.5,
-    marginRight: 330,
-    width: "49.5%",
-  },
-  parallelRowContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    marginVertical: 0,
-  },
-  parallelLeftColumn: {
-    width: "50%",
-  },
-  parallelRightColumn: {
-    width: "50%",
-  },
-  cellRight: {
-    width: "33%",
-    padding: 2.5,
-    textAlign: "center",
-    backgroundColor: "#adbccc",
-    fontSize: 9,
-  },
-  body: {
-    flexDirection: "row",
-  },
-  image: {
-    position: "absolute",
-    top: 190,
-    left: 305,
-    width: 286,
-    height: 390,
-    objectFit: "contain",
-  },
-});
-
-const arabicLabels = {
-  'FULL NAME': 'الاسم الكامل',
-  'NAME': 'الاسم',
-  'CONTRACT PERIOD': 'مدة العقد',
-  'POSITION': 'الوظيفة',
-  'SALARY': 'الراتب',
-  'NUMBER': 'رقم الجواز',
-  'DATE OF ISSUE': 'تاريخ الإصدار',
-  'DATE OF EXPIRY': 'تاريخ الانتهاء',
-  'PLACE OF ISSUE': 'مكان الإصدار',
-  'ENGLISH': 'اللغة الإنجليزية',
-  'ARABIC': 'اللغة العربية',
-  'COUNTRY': 'الدولة',
-  'PERIOD': 'المدة',
-  'NATIONALITY': 'الجنسية',
-  'RELIGION': 'الديانة',
-  'DATE OF BIRTH': 'تاريخ الميلاد',
-  'PLACE OF BIRTH': 'مكان الميلاد',
-  'LIVING TOWN': 'مكان الإقامة',
-  'MARITAL STATUS': 'الحالة الاجتماعية',
-  'SPOKEN LANGUAGES': 'اللغات المحكية',
-  'NEXT OF KIN': 'أقرب الأقارب',
-'KIN PHONE': 'هاتف القريب',
-  'CHILDREN':'عدد الأطفال',
-  'WEIGHT':'الوزن',
-  'HEIGHT':'الطول',
-  'AGE':'العمر',
-  'PHONE':'رقم الهاتف',
-  'BABY SITTING': 'رعاية الأطفال',
-  'CHILDREN CARE': 'العناية بالأطفال',
-  'CLEANING': 'تنظيف',
-  'WASHING': 'غسيل',
-  'IRONING': 'كي',
-  'ARABIC COOKING': 'الطبخ العربي',
-  'TUTORING': 'التدريس',
-  'DISABLE CARE': 'رعاية المعاقين',
-  'DRIVING': 'القيادة',
-  'SEWING': 'الخياطة',
-  'REMARK': 'ملاحظة',
-};
-
-// PDF Document
-const CandidateCVDocument = ({ candidate }) => {
-  const age = day().diff(day(candidate.dateOfBirth), "year");
-
-  console.log(candidate.fullSizePhoto)
-
-  return (
-    <Document>
-      {/* --- CV Page --- */}
-      <Page size="LETTER" style={styles.page}>
-        <Text style={styles.header}>MUBAREK AHMED FOREIGN EMPLOYMENT AGENT</Text>
-
-        <HeaderRow codeText="Code 2020" headerText="APPLICATION FOR EMPLOYMENT" />
-        <InfoRow label="FULL NAME" value={`${candidate.firstName} ${candidate.middleName}`} repeatLabel="الاسم الكامل" />
-        <InfoRow label="CONTRACT PERIOD" value="2 YEARS" repeatLabel="مدة العقد" />
-        <InfoRow label="POSITION" value="HOUSE MAID" repeatLabel="الوظيفة" />
-        <InfoRow label="SALARY" value="1000 SAR" repeatLabel="الراتب" />
-
-        <HeaderRow codeText="PASSPORT DETAIL" headerText="بيانات جواز السفر" containerStyle={styles.rightAlignedHeaderContainer} />
-        <RightAlignedInfoRow label="NUMBER" value={candidate.passportNo || "EP1011282"} repeatLabel="رقم الجواز" />
-        <RightAlignedInfoRow label="DATE OF ISSUE" value="12/2/2014" repeatLabel="تاريخ الإصدار" />
-        <RightAlignedInfoRow label="DATE OF EXPIRY" value="12/2/2014" repeatLabel="تاريخ الانتهاء" />
-        <RightAlignedInfoRow label="PLACE OF ISSUE" value="ADDIS ABABA" repeatLabel="مكان الإصدار" />
-
-        <HeaderRow codeText="LANGUAGE AND EDUCATION" headerText="اللغة والتعليم" containerStyle={styles.rightAlignedHeaderContainer} />
-        <RightAlignedInfoRow label="ENGLISH" value="YES" repeatLabel="اللغة الإنجليزية" />
-        <RightAlignedInfoRow label="ARABIC" value="YES" repeatLabel="اللغة العربية" />
-
-        <HeaderRow codeText="EXPERIENCE ABROAD" headerText="الخبرة خارج البلاد" containerStyle={styles.rightAlignedHeaderContainer} />
-        <RightAlignedInfoRow label="COUNTRY" value="SAUDI" repeatLabel="الدولة" />
-        <RightAlignedInfoRow label="PERIOD" value="2 YEARS" repeatLabel="المدة" />
-
-        <HeaderRow codeText="PERSONAL DATA" headerText="معلومات شخصية" containerStyle={styles.rightAlignedHeaderContainer} />
-        <RightAlignedInfoRow label="NATIONALITY" value="ETHIOPIA" repeatLabel="الجنسية" />
-        <RightAlignedInfoRow label="RELIGION" value="MUSLIM" repeatLabel="الديانة" />
-        <RightAlignedInfoRow label="DATE OF BIRTH" value="23/09/2003" repeatLabel="تاريخ الميلاد" />
-        <RightAlignedInfoRow label="PLACE OF BIRTH" value="ADDIS ABABA" repeatLabel="مكان الميلاد" />
-        <RightAlignedInfoRow label="LIVING TOWN" value="ADDIS ABABA" repeatLabel="مكان الإقامة" />
-
-        <View style={styles.parallelRowContainer}>
-          <View style={styles.parallelLeftColumn}>
-            <InfoRow label="AGE" value={age.toString()} repeatLabel="العمر" />
-            <InfoRow label="MARITAL STATUS" value="SINGLE" repeatLabel="الحالة الاجتماعية" />
-            <InfoRow label="CHILDREN" value="0" repeatLabel=" عدد الأطفال" />
-            <InfoRow label="WEIGHT" value="60" repeatLabel="الوزن" />
-            <InfoRow label="HEIGHT" value="155" repeatLabel="الطول" />
-            <InfoRow label="PHONE" value="0912334566" repeatLabel="رقم الهاتف" />
-            <InfoRow label="NEXT OF KIN" value="abdu" repeatLabel="أقرب الأقارب" />
-            <InfoRow label="KIN PHONE" value="0912334566" repeatLabel="هاتف القريب" />
-          </View>
-
-          <View style={styles.parallelRightColumn}>
-            <HeaderRow codeText="SKILLS" headerText="المهارات" />
-            <InfoRow label="CLEANING" value="YES" repeatLabel="تنظيف" />
-            <InfoRow label="WASHING" value="YES" repeatLabel="غسيل" />
-            <InfoRow label="IRONING" value="YES" repeatLabel="كي" />
-            <InfoRow label="ARABIC COOKING" value="YES" repeatLabel="الطبخ العربي" />
-            <InfoRow label="CHILDREN CARE" value="YES" repeatLabel="العناية بالأطفال" />
-            <InfoRow label="DRIVING" value="NO" repeatLabel="القيادة" />
-            <InfoRow label="SEWING" value="NO" repeatLabel="الخياطة" />
-          </View>
-        </View>
-        <InfoRow label="REMARK" value=" " repeatLabel="ملاحظة" />
-
-        {candidate.fullSizePhoto && (
-          <Image src={candidate.fullSizePhoto} style={styles.image} />
-        )}
-      </Page>
-
-      {/* --- Passport Scan Page --- */}
-      {candidate.passportScan && (
-        <Page size="LETTER" style={[styles.page, { alignItems: "center", justifyContent: "center" }]}>
-          <Text style={{ fontSize: 22, marginBottom: 10, color: "#25a0d1"}}>Passport Scan</Text>
-          <Image
-            src={candidate.passportScan}
-            style={{
-              width: 400,
-              height: 550,
-              objectFit: "contain",
-            }}
-          />
-        </Page>
-      )}
-    </Document>
-  );
-};
-
-
-// Export multiple PDFs
-export const exportCandidateCVs = (candidates) => {
-  return candidates.map((candidate) => ({
-    filename: `CV-${candidate.firstName}-${candidate.middleName}.pdf`,
-    document: <CandidateCVDocument candidate={candidate} />,
-  }));
-};
-
-export default CandidateCVDocument;

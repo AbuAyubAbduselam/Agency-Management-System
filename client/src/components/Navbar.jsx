@@ -1,5 +1,4 @@
 import Wrapper from "../assets/wrappers/Navbar";
-import { useDashboardContext } from "../pages/DashboardLayout";
 import LogoutContainer from "./LogoutContainer";
 import Toggle from "./Drawer";
 

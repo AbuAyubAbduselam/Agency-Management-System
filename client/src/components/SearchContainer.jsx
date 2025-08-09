@@ -107,7 +107,7 @@ const SearchContainer2 = () => {
           name="availabilityStatus"
           value={availabilityStatus}
           onChange={handleSelectChange}
-          options={["Availability Status", "available", "selected", "unavailable"]}
+          options={["Availability Status", "available", "unavailable"]}
         />
         <FormSelectGroup
           name="cvSentTo"

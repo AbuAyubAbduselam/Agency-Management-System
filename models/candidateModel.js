@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const CandidateSchema = new mongoose.Schema(
   {
+    code: { type: String, default: "" },
     firstName: { type: String, default: "" },
     middleName: { type: String, default: "" },
     lastName: { type: String, default: "" },
@@ -41,6 +42,11 @@ const CandidateSchema = new mongoose.Schema(
       enum: ["", "waiting", "done", "pending-release"],
       default: "",
     },
+    passportStatus: {
+      type: String,
+      enum: ["", "original", "scan"],
+      default: "",
+    },
 
     medicalStatus: {
       type: String,
@@ -48,7 +54,11 @@ const CandidateSchema = new mongoose.Schema(
       default: "",
     },
 
-    medicalDate: Date,
+    
+    medicalDate: {
+      type: Date,
+      default: () => new Date(),
+    },
     ticketDate: {
       type: Date,
       default: () => new Date(),
@@ -95,13 +105,13 @@ const CandidateSchema = new mongoose.Schema(
 
     cvSentTo: {
       type: String,
-      enum: ["", "A", "B", "C"],
+      enum: ["", "SARAYA AL-RIYADH RECRUITMENT", "QUICK TICKET FOR RECRUITMENT"],
       default: "",
     },
 
     selectedBy: {
       type: String,
-      enum: ["", "A", "B", "C"],
+      enum: ["", "SARAYA AL-RIYADH RECRUITMENT", "QUICK TICKET FOR RECRUITMENT"],
       default: "",
     },
 
@@ -121,8 +131,8 @@ const CandidateSchema = new mongoose.Schema(
     experienceOutside: { type: String, default: "" },
 
     spokenLanguages: { type: String, default: "" },
-    nextOfKin: { type: String, default: "" },
-    kinPhone: { type: String, default: "" },
+    code: { type: String, default: "" },
+    narrative: { type: String, default: "" },
     children: Number,
     weight: { type: String, default: "" },
     height: { type: String, default: "" },
@@ -136,35 +146,44 @@ const CandidateSchema = new mongoose.Schema(
       default: "",
     },
 
-    nationality: { type: String, default: "" },
+    nationality: { type: String, default: "Ethiopia" },
     passportIssueDate: Date,
     passportExpiryDate: Date,
     passportIssuePlace: { type: String, default: "" },
-    contractPeriod: { type: String, default: "" },
+    contractPeriod: { type: String, default: "2 years" },
     position: { type: String, default: "" },
     salary: { type: String, default: "" },
 
-    languageEnglish: {
+    languageEnglish: { 
       type: String,
-      enum: ["", "yes", "no"],
+      enum: ["","veryGood", "good", "poor"],
       default: "",
     },
 
     languageArabic: {
       type: String,
-      enum: ["", "yes", "no"],
+      enum: ["", "veryGood", "good","poor"],
       default: "",
     },
 
     experienceCountry: { type: String, default: "" },
     experiencePeriod: { type: String, default: "" },
     remark: { type: String, default: "" },
-    skills: { type: [String], default: [] },
+    skills: {
+  type: Map,
+  of: {
+    type: String,
+    enum: ["", "yes", "no"],
+    default: "",
+  },
+  default: {},
+},
+
 
     avatar: {
       type: String,
       default:
-        "https://ui-avatars.com/api/?name=User&background=ccc&color=555",
+        "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png",
     },
 
     fullSizePhoto: { type: String, default: "" },

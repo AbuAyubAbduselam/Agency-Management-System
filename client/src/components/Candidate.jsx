@@ -29,6 +29,8 @@ const Candidate = ({
   medicalDate,
   isSelected,
   onCheckboxChange,
+  narrative,
+  code
 }) => {
   const age = day().diff(day(dateOfBirth), "year");
 const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "N/A";
@@ -61,10 +63,11 @@ const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "N/A";
         <td>{gender}</td>
         <td>{age}</td>
         <td>{passportNo}</td>
-        <td>{phoneNo}</td>
-        <td>{narrativePhoneNo}</td>
-        <td>{religion}</td>
         <td>{laborId}</td>
+        <td>{code}</td>
+        <td>{phoneNo}</td>
+        <td>{narrative}</td>
+        <td>{religion}</td>
         <td>{renderStatus("cvStatus", cvStatus)}</td>
         <td>{cvSentTo}</td>
         <td>{renderStatus("cocStatus", cocStatus)}</td>

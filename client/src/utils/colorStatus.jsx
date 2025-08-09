@@ -53,9 +53,8 @@ export const statusColorMap = {
       done: "bg-green-500 text-white",
     },
     cvSentTo: {
-      "A": "bg-blue-500 text-white",
-      "B": "bg-green-500 text-white",
-      "C": "bg-yellow-500 text-black",
+      "SARAYA AL-RIYADH RECRUITMENT": "bg-blue-500 text-white",
+      "QUICK TICKET FOR RECUITMENT": "bg-green-500 text-white",
       " ": "bg-gray-300 text-black",
     },
     selectedBy: {

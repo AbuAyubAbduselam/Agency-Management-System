@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Layout, Button, Input, Select } from "antd";
 import customFetch from "../utils/customFetch";
-import { CLASSES } from "../../../utils/constant";
 import Wrapper from "../assets/wrappers/DashboardFormPage";
 import { useMediaQuery } from "react-responsive";
 

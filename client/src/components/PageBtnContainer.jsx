@@ -4,9 +4,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAllCandidatesContext } from "../pages/AllCandidates";
 
 const PageBtnContainer = () => {
-  const {
-    data: { numOfPages, currentPage },
-  } = useAllCandidatesContext();
+const {
+  data: { numOfPages },
+  selectedParams,
+} = useAllCandidatesContext();
+
+const currentPage = parseInt(selectedParams.page || "1", 10);
+
   const { search, pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -29,58 +33,58 @@ const PageBtnContainer = () => {
   };
 
   const renderPageButtons = () => {
-    const pageButtons = [];
+  const pageButtons = [];
 
-    // Add the first page button
+  const maxPagesToShow = 10;
+  const pagesToShowEachSide = Math.floor(maxPagesToShow / 2);
+
+  let start = Math.max(2, currentPage - pagesToShowEachSide);
+  let end = Math.min(numOfPages - 1, currentPage + pagesToShowEachSide);
+
+  // Adjust range if near the start or end
+  if (currentPage <= pagesToShowEachSide) {
+    end = Math.min(numOfPages - 1, maxPagesToShow + 1);
+  }
+  if (currentPage >= numOfPages - pagesToShowEachSide) {
+    start = Math.max(2, numOfPages - maxPagesToShow);
+  }
+
+  // Always show first page
+  pageButtons.push(
+    addPageButton({ pageNumber: 1, activeClass: currentPage === 1 })
+  );
+
+  // Left ellipsis
+  if (start > 2) {
     pageButtons.push(
-      addPageButton({ pageNumber: 1, activeClass: currentPage === 1 })
+      <span className="page-btn dots" key="dots-start">...</span>
     );
-    // Add the dots before the current page if there are more than 3 pages
-    if (currentPage > 3) {
-      pageButtons.push(
-        <span className="page-btn dots" key="dots-1">
-          ....
-        </span>
-      );
-    }
-    // one before current page
-    if (currentPage !== 1 && currentPage !== 2) {
-      pageButtons.push(
-        addPageButton({ pageNumber: currentPage - 1, activeClass: false })
-      );
-    }
+  }
 
-    // Add the current page button
-    if (currentPage !== 1 && currentPage !== numOfPages) {
-      pageButtons.push(
-        addPageButton({ pageNumber: currentPage, activeClass: true })
-      );
-    }
-
-    // one after current page
-    if (currentPage !== numOfPages && currentPage !== numOfPages - 1) {
-      pageButtons.push(
-        addPageButton({ pageNumber: currentPage + 1, activeClass: false })
-      );
-    }
-    if (currentPage < numOfPages - 2) {
-      pageButtons.push(
-        <span className=" page-btn dots" key="dots+1">
-          ....
-        </span>
-      );
-    }
-
-    // Add the last page button
+  // Page numbers in range
+  for (let i = start; i <= end; i++) {
     pageButtons.push(
-      addPageButton({
-        pageNumber: numOfPages,
-        activeClass: currentPage === numOfPages,
-      })
+      addPageButton({ pageNumber: i, activeClass: currentPage === i })
     );
+  }
 
-    return pageButtons;
-  };
+  // Right ellipsis
+  if (end < numOfPages - 1) {
+    pageButtons.push(
+      <span className="page-btn dots" key="dots-end">...</span>
+    );
+  }
+
+  // Always show last page
+  if (numOfPages > 1) {
+    pageButtons.push(
+      addPageButton({ pageNumber: numOfPages, activeClass: currentPage === numOfPages })
+    );
+  }
+
+  return pageButtons;
+};
+
 
   return (
     <Wrapper>

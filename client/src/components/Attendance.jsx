@@ -4,7 +4,6 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { renderStatus } from "../utils/colorStatus";
-import dayjs from "dayjs";
 import { UserOutlined } from "@ant-design/icons";
 
 day.extend(advancedFormat);
@@ -32,8 +31,9 @@ const Attendance = ({
 }) => {
 
   const contractDate = day(contractCreationDate).format("DD MMMM YYYY");
-  const formattedTicketDate = dayjs(ticketDate).format("YYYY-MM-DD HH:mm:ss");
-  const formattedTasheerDate = dayjs(tasheerDate).format("YYYY-MM-DD HH:mm:ss");
+  const formattedTicketDate = day(ticketDate).format("DD MMMM YYYY hh:mm: A");
+const formattedTasheerDate = day(tasheerDate).format("DD MMMM YYYY hh:mm: A");
+
 
 
   return (

@@ -1,5 +1,5 @@
 import { useSubmit, Link } from "react-router-dom";
-import { JOB_SORT_BY, CLASSES } from "../../../utils/constant";
+import { JOB_SORT_BY } from "../../../utils/constant";
 import { UseAllCandidatesAttendanceContext } from "../pages/CandidateAttendance";
 import FormSelectGroup from "./FormSelectGroup";
 
