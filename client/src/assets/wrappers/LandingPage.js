@@ -98,8 +98,15 @@ const Wrapper = styled.section`
     .main-img2 {
       display: block;
       width: 60%;
-      margin-top: 5rem;
+      margin-top: 7rem;
+      margin-bottom: 2rem;
     }
+    h1 {
+    font-weight: 1000;
+    text-align: center;
+    font-size: 30px;
+   
+  }
 
     .main-img {
       display: none;
