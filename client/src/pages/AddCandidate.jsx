@@ -259,7 +259,7 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
 
           {/* --- Submit Button --- */}
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="bg-[#059669] text-white">
+            <Button type="primary" htmlType="submit" >
               Submit
             </Button>
           </Form.Item>

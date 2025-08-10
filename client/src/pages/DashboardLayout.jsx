@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
+import { notification } from "antd";
 
 const DashboardContext = createContext();
 
@@ -47,7 +48,8 @@ const DashboardLayout = ({ isDarkThemeEnabled }) => {
   const logoutUser = async () => {
     try {
       await customFetch.get("/auth/logout");
-      toast.success("Logout Successfully");
+    notification.success({ message: "Logout successfully", duration: 0.3 });
+      
       navigate("/"); // Redirect after successful logout
     } catch (error) {
       toast.error("Failed to logout");

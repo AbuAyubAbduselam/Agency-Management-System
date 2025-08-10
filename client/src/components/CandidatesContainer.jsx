@@ -277,12 +277,7 @@ useEffect(() => {
   if (!candidates.length) {
     return (
       <Wrapper>
-        <div className="flex justify-between mb-10">
-          <Button className="btn flex" onClick={showModal} icon={<PlusOutlined />}><span className="ml-3">Register</span></Button>
-          <CandidateModal isVisible={isModalVisible} closeModal={closeModal} modalRef={modalRef}>
-            <AddCandidate closeModal={closeModal} />
-          </CandidateModal>
-        </div>
+       
         <h2>No candidates to display...</h2>
       </Wrapper>
     );
@@ -292,10 +287,7 @@ useEffect(() => {
     <Wrapper>
       <div className="flex justify-between mb-10">
         <h5 className="font-bold">{totalCandidates} {totalCandidates > 1 ? "candidates" : "candidate"} found</h5>
-        <Button className="btn flex" onClick={showModal} icon={<PlusOutlined />}><span className="ml-3">Register</span></Button>
-        <CandidateModal isVisible={isModalVisible} closeModal={closeModal} modalRef={modalRef}>
-          <AddCandidate closeModal={closeModal} />
-        </CandidateModal>
+     
       </div>
       <BulkStatusUpdater
         bulkField={bulkField}

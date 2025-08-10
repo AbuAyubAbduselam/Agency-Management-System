@@ -58,7 +58,6 @@ const AttendanceDetail = () => {
               <Button
                 type="primary"
                 onClick={fetchAttendance}
-                className=" bg-[#059669] hover:bg-green-600 text-white px-4 py-2 rounded-md h-[35px]"
               >
                 View Attendance
               </Button>

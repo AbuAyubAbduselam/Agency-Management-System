@@ -152,7 +152,7 @@ const CandidateSchema = new mongoose.Schema(
     passportIssuePlace: { type: String, default: "" },
     contractPeriod: { type: String, default: "2 years" },
     position: { type: String, default: "" },
-    salary: { type: String, default: "" },
+    salary: { type: String, default: "" }, 
 
     languageEnglish: { 
       type: String,

@@ -5,7 +5,7 @@ const Wrapper = styled.section`
     height: var(--nav-height);
     display: flex;
     align-items: center;
-    background-color: #059669;
+    background-color: #3b82f6; 
   }
   .logo {
     width: 70px;
@@ -31,11 +31,10 @@ const Wrapper = styled.section`
     align-items: center;
   }
   h1 {
-    font-weight: 700;
+    font-weight: 1000;
     text-align: center;
-    span {
-      color: var(--primary-500);
-    }
+    font-size: 60px;
+   
   }
 
   .btn {

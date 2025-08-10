@@ -83,7 +83,6 @@ const Teacher = ({
               <Button
                 icon={<EditOutlined />}
                 type="primary"
-                className="edit-btn !bg-[#059669]"
               />
             </Link>
             <Form method="post" action={`../delete-teacher/${_id}`}>

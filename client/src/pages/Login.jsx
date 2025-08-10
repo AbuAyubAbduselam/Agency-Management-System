@@ -16,10 +16,10 @@ export const action = async ({ request }) => {
   }
   try {
     await customFetch.post("/auth/login", data);
-    notification.success({ message: "Login successful" });
+    notification.success({ message: "Login successful", duration: 0.3 });
     return redirect("/dashboard");
   } catch (error) {
-    notification.error({ message: error.response.data.msg });
+    notification.error({ message: error.response.data.msg, duration: 2 });
     return errors;
   }
 };

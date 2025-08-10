@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import { CandidatesContainer, SearchContainer } from "../components";
 import customFetch from "../utils/customFetch";
 import { useLoaderData } from "react-router-dom";
-import { useContext, createContext } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 
 export const loader = async ({ request }) => {
   const params = Object.fromEntries([
@@ -24,10 +24,25 @@ export const loader = async ({ request }) => {
 const AllCandidatesContext = createContext();
 
 const AllCandidates = () => {
-  const { data, selectedParams } = useLoaderData();
+  // load data + params from loader (initial values)
+  const { data, selectedParams: initialParams } = useLoaderData();
+
+  // Make selectedParams reactive state so we can update it inside SearchContainer
+  const [selectedParams, setSelectedParams] = useState(initialParams || {});
+
+  // Optional: if loader params change, sync state (rare case)
+  useEffect(() => {
+    setSelectedParams(initialParams || {});
+  }, [initialParams]);
 
   return (
-    <AllCandidatesContext.Provider value={{ data, selectedParams }}>
+    <AllCandidatesContext.Provider
+      value={{
+        data,
+        selectedParams,
+        setSelectedParams, // <-- expose setter here!
+      }}
+    >
       <SearchContainer />
       <CandidatesContainer />
     </AllCandidatesContext.Provider>

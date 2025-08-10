@@ -25,9 +25,9 @@ const Toggle = () => {
         <Button
           icon={<MenuOutlined />}
           onClick={showDrawer}
-          className="!bg-[#059669] text-cyan-50"
+          type="primary"
         >
-          Menu
+          
         </Button>
       </Space>
       <Drawer

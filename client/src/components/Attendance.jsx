@@ -90,7 +90,7 @@ const formattedTasheerDate = day(tasheerDate).format("DD MMMM YYYY hh:mm: A");
             <Button
               icon={<EditOutlined />}
               type="primary"
-              className="edit-btn !bg-[#059669]"
+              
             />
           </Link>
         </td>

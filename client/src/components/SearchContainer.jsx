@@ -2,6 +2,7 @@ import { useSubmit, Link } from "react-router-dom";
 import { JOB_SORT_BY } from "../../../utils/constant";
 import { useAllCandidatesContext } from "../pages/AllCandidates";
 import FormSelectGroup from "../components/FormSelectGroup"; // Adjust path if needed
+import { Button } from "antd";
 
 const SearchContainer2 = () => {
   const { selectedParams, setSelectedParams } = useAllCandidatesContext();
@@ -123,11 +124,11 @@ const SearchContainer2 = () => {
         />
 
         <div className="mt-5 flex justify-center">
-          <button className="bg-emerald-600 text-white h-8 px-4 rounded">
-            <Link to="/dashboard" onClick={handleReset}>
-              Reset
-            </Link>
-          </button>
+            <Button type="primary"  onClick={handleReset}>
+  <Link to="/dashboard" >
+    Reset
+  </Link>
+</Button>
         </div>
       </form>
     </div>

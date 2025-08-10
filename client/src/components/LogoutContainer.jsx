@@ -10,8 +10,7 @@ const LogoutContainer = () => {
   return (
     <Wrapper>
       <Button
-        type="button"
-        className="text-cyan-50  bg-[#059669] hover:bg-green-550 logout-btn"
+        type="primary"
         onClick={() => {
           setShowLogout(!showLogout);
         }}
@@ -26,9 +25,9 @@ const LogoutContainer = () => {
       </Button>
 
       <div className={showLogout ? "dropdown show-dropdown" : "dropdown"}>
-        <button type="button" className="dropdown-btn" onClick={logoutUser}>
+        <Button type="primary" onClick={logoutUser}>
           logout
-        </button>
+        </Button>
       </div>
     </Wrapper>
   );

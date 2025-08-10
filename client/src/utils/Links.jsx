@@ -10,16 +10,16 @@ import {
 
 const links = [
 
+  {
+    text: "All Candidates",
+    path: ".",
+    icon: <TeamOutlined />,
+  },
   
   {
     text: "Add Candidate",
     path: "add-candidate",
     icon: <UserAddOutlined/>
-  },
-  {
-    text: "All Candidates",
-    path: ".",
-    icon: <TeamOutlined />,
   },
 
 

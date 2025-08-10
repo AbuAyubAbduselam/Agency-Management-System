@@ -33,7 +33,7 @@ const Landing = () => {
           <div className="info">
             <img src={agency} alt="flight" className="img main-img2" />
 
-            <h1>AGENCY MANAGEMENT SYSTEM </h1>
+            <h1>MUBAREK FOREIGN EMPLOYMENT AGENCY </h1>
             <div className="two-login">
               <Link to="/teacher-login" className="btn">
                 User Login

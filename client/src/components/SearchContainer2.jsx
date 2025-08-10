@@ -2,6 +2,7 @@ import { useSubmit, Link } from "react-router-dom";
 import { JOB_SORT_BY } from "../../../utils/constant";
 import { UseAllCandidatesAttendanceContext } from "../pages/CandidateAttendance";
 import FormSelectGroup from "./FormSelectGroup";
+import { Button } from "antd";
 
 const SearchContainer2 = () => {
   const { selectedParams, setSelectedParams } =
@@ -81,7 +82,7 @@ const SearchContainer2 = () => {
           options={["Ticket", "waiting", "booked", "done"]}
           onChange={(e) => submit(e.currentTarget.form)}
         />
-        <FormSelectGroup  
+        <FormSelectGroup   
           label="Wokala"
           name="wokala"
           value={wokala}
@@ -121,11 +122,11 @@ const SearchContainer2 = () => {
       </form>
 
       <div className="mt-5 flex justify-center">
-        <button className="bg-emerald-600 text-white h-8 px-4 rounded">
+        <Button type="primary">
           <Link to="/dashboard/candidate-attendance" onClick={handleReset}>
             Reset
           </Link>
-        </button>
+        </Button>
       </div>
     </div>
   );

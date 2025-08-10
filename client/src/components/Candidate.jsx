@@ -1,9 +1,10 @@
-import { Link, Form } from "react-router-dom";
+import { Link, Form, useSubmit } from "react-router-dom";
 import day from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { renderStatus } from "../utils/colorStatus"; // Assuming you have a utility function for rendering status
+import { renderStatus } from "../utils/colorStatus";
+
 day.extend(advancedFormat);
 
 const Candidate = ({
@@ -24,7 +25,7 @@ const Candidate = ({
   musanedStatus,
   medicalStatus,
   experienceOutside,
-  availabilityStatus, 
+  availabilityStatus,
   cvSentTo,
   medicalDate,
   isSelected,
@@ -33,15 +34,27 @@ const Candidate = ({
   code
 }) => {
   const age = day().diff(day(dateOfBirth), "year");
-const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "N/A";
+  const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "N/A";
 
+  const submit = useSubmit();
 
-
+  const showDeleteConfirm = () => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this candidate?",
+      content: "This action cannot be undone.",
+      okText: "Continue",
+      cancelText: "Cancel",
+      okType: "danger",
+      onOk() {
+        submit(null, { method: "post", action: `../dashboard/delete-candidate/${_id}` });
+      }
+    });
+  };
 
   return (
     <tbody>
       <tr>
-      <th>
+        <th>
           <input
             type="checkbox"
             className="checkbox"
@@ -58,8 +71,7 @@ const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "N/A";
             </div>
           </div>
         </td>
-             <td>{[firstName, middleName, lastName].filter(Boolean).join(" ")}</td>
-
+        <td>{[firstName, middleName, lastName].filter(Boolean).join(" ")}</td>
         <td>{gender}</td>
         <td>{age}</td>
         <td>{passportNo}</td>
@@ -73,29 +85,21 @@ const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "N/A";
         <td>{renderStatus("cocStatus", cocStatus)}</td>
         <td>{renderStatus("musanedStatus", musanedStatus)}</td>
         <td>{renderStatus("medicalStatus", medicalStatus)}</td>
-
         <td>{medicalDays} days ago</td>
         <td>{experienceOutside}</td>
         <td>{renderStatus("availabilityStatus", availabilityStatus)}</td>
         <td>
           <Link to={`../dashboard/edit-candidate/${_id}`}>
-            <Button
-              icon={<EditOutlined />}
-              type="primary"
-              className="edit-btn !bg-[#059669]"
-            />
+            <Button icon={<EditOutlined />} type="primary" />
           </Link>
         </td>
         <td>
-          <Form method="post" action={`../dashboard/delete-candidate/${_id}`}>
-            <Button
-              icon={<DeleteOutlined />}
-              type="primary"
-              danger
-              className="delete-btn !bg-[#059669]"
-              htmlType="submit"
-            />
-          </Form>
+          <Button
+            icon={<DeleteOutlined />}
+            type="primary"
+            danger
+            onClick={showDeleteConfirm}
+          />
         </td>
       </tr>
     </tbody>

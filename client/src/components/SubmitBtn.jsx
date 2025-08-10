@@ -1,15 +1,22 @@
 import { useNavigation } from "react-router-dom";
+import { Button } from "antd";
+
 const SubmitBtn = ({ formBtn }) => {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+
   return (
-    <button
-      type="submit"
-      className={`btn btn-block ${formBtn && "form-btn"}`}
+    <Button
+      type="primary"
+      htmlType="submit"
+      block
+      className="mt-5"
+      loading={isSubmitting}
       disabled={isSubmitting}
     >
-      {isSubmitting ? "submitting..." : "submit"}
-    </button>
+      {isSubmitting ? "" : "Login"}
+    </Button>
   );
 };
+
 export default SubmitBtn;
