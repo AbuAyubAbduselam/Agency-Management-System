@@ -7,7 +7,7 @@ import fs from "fs/promises"; // Use fs/promises for async/await
 
 //===============GET ALL CANDIDATE==================//
 export const getAllSelectedCandidates = async (req, res) => {
-  const { search, sort, gender,visaStatus,ticket,wokala,selectedBy,medicalStatus,tasheer,cocStatus,lmis } = req.query;
+  const { search, sort, gender,visaStatus,ticket,wokala,selectedBy,medicalStatus,tasheer,cocStatus,lmis,insideOffice } = req.query;
 
   const queryObject = { availabilityStatus: 'selected' };
 
@@ -19,6 +19,9 @@ export const getAllSelectedCandidates = async (req, res) => {
   }
   if (visaStatus && visaStatus !== "Visa Status") {
     queryObject.visaStatus = visaStatus;
+  }
+  if (insideOffice && insideOffice !== "Office Inside") {
+    queryObject.insideOffice = insideOffice;
   }
   if (ticket && ticket !== "Ticket") {  
     queryObject.ticket = ticket;

@@ -86,6 +86,9 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
         scrollToFirstError
         className="[&_.ant-form-item-label>label]:font-semibold [&_.ant-form-item-label>label]:text-gray-950"
       >
+        <Button onClick={() => navigate(-1)} style={{ marginBottom: "1rem" }}>
+                  ← Back
+                </Button>
         <h4 className="form-title">Add Candidate</h4>
 
         <div className="form-center">
@@ -139,15 +142,10 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
           <Form.Item label="Place of Birth" name="placeOfBirth"><Input /></Form.Item>
           <Form.Item label="Living Town" name="livingTown"><Input /></Form.Item>
           <Form.Item label="Marital Status" name="maritalStatus">
-            <Select>
-              <Option value="single">Single</Option>
-              <Option value="married">Married</Option>
-              <Option value="divorced">Divorced</Option>
-              <Option value="widowed">Widowed</Option>
-            </Select>
+            <Select options={statusOptions.maritalStatus}/>  
           </Form.Item>
           <Form.Item label="Religion" name="religion">
-            <Select><Option value="muslim">Muslim</Option><Option value="non-muslim">Non Muslim</Option></Select>
+            <Select options={statusOptions.gender}/>
           </Form.Item>
 
           {/* --- Passport Info --- */}
@@ -199,10 +197,12 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
           <Form.Item label="Availability Status" name="availabilityStatus"><Select options={statusOptions.availabilityStatus} /></Form.Item>
           <Form.Item label="Contract Date" name="contractDate"><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
           <Form.Item label="Selected By" name="selectedBy"><Select options={statusOptions.selectedBy} /></Form.Item>
+          <Form.Item label="Office Inside" name="insideOffice"><Select options={statusOptions.insideOffice} /></Form.Item>
           <Form.Item label="Tasheer" name="tasheer"><Select options={statusOptions.tasheer} /></Form.Item>
           <Form.Item label="Wokala" name="wokala"><Select options={statusOptions.wokala} /></Form.Item>
           <Form.Item label="Visa Status" name="visaStatus"><Select options={statusOptions.visaStatus} /></Form.Item>
           <Form.Item label="LMIS" name="lmis"><Select options={statusOptions.lmis} /></Form.Item>
+          <Form.Item label="QR code" name="QrCode"><Select options={statusOptions.qrCode} /></Form.Item>
           <Form.Item label="Ticket" name="ticket"><Select options={statusOptions.ticket} /></Form.Item>
            <Form.Item label="Medical Date" name="medicalDate"><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
          <Form.Item label="Tasheer Date & Time" name="tasheerDate">
@@ -220,6 +220,8 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
     style={{ width: "100%" }}
   />
 </Form.Item>
+          <Form.Item label="Arival City" name="arrivalCity"><Input type="text" /></Form.Item>
+
 
           {/* --- Skills --- */}
         <Form.Item label="Skills">

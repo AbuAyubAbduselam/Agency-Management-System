@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   },
   image: {
     position: "absolute",
-    top: 216,
+    top: 227,
     left: 335,
     width: 278,
     height: 375,
@@ -171,19 +171,59 @@ export const CandidateCVPages = ({ candidate, agentName, agentLogo }) => {
       <Page size={{ width: 640, height: 890 }} style={styles.page}>
         
         {/* 🔹 Replace mainHeader with agent name + logo */}
-        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10, border: "1px solid #0967aa",paddingVertical:"20"
- }}>
-          {agentLogo && (
-            <Image
-              src={agentLogo}
-              style={{ width: 60, height: 60, objectFit: "contain", marginRight: 10 }}
-            />
-          )}
-          <Text style={{  flex: 1,   
-      fontSize: 16,
-      fontWeight: "bold",
-      textAlign: "center"}}>{agentName || candidate.cvSentTo}</Text>
-        </View>
+       <View
+  style={{
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    border: "1px solid #ccc",
+    padding: 5,
+    minHeight: 60, // ensure consistent height
+  }}
+>
+  {agentLogo ? (
+    <Image
+      src={agentLogo}
+      style={{
+        width: 60,
+        height: 60,
+        objectFit: "contain",
+        marginRight: 10,
+      }}
+    />
+  ) : (
+    <View
+      style={{
+        width: 60,
+        height: 60,
+        marginRight: 10,
+        backgroundColor: "#e5e7eb",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Text style={{ fontSize: 10, color: "#666" }}></Text>
+    </View>
+  )}
+
+  {agentName || candidate.cvSentTo ? (
+    <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+      {agentName || candidate.cvSentTo}
+    </Text>
+  ) : (
+    <View
+      style={{
+        height: 60,
+        justifyContent: "center",
+      }}
+    >
+      <Text style={{ fontSize: 16, fontWeight: "bold", color: "#666" }}>
+        
+      </Text>
+    </View>
+  )}
+</View>
+
 
         <HeaderRow codeText={`Code ${candidate.code}`} headerText="APPLICATION FOR EMPLOYMENT" />
         
@@ -269,7 +309,7 @@ export const exportCandidatesTableToPDF = (candidates, selectedFields) => {
   const doc = new jsPDF();
 
   const fieldLabels = {
-    "Full Name": "Full Name", 
+    "Full Name": "Full Name",
     gender: "Gender",
     age: "Age",
     phoneNo: "Phone",

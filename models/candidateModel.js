@@ -1,4 +1,8 @@
 import mongoose from "mongoose";
+import { statusOptions } from "../client/src/utils/constants.js";
+
+// Helper function to get only `value` items from statusOptions arrays
+const enumValues = (key) => statusOptions[key]?.map(opt => opt.value) || [];
 
 const CandidateSchema = new mongoose.Schema(
   {
@@ -10,7 +14,7 @@ const CandidateSchema = new mongoose.Schema(
 
     gender: {
       type: String,
-      enum: ["", "male", "female"],
+      enum: enumValues("gender"),
       default: "",
     },
 
@@ -21,117 +25,109 @@ const CandidateSchema = new mongoose.Schema(
 
     religion: {
       type: String,
-      enum: ["", "muslim", "non-muslim"],
+      enum: enumValues("religion"),
       default: "",
     },
 
     cvStatus: {
       type: String,
-      enum: ["", "done", "waiting"],
+      enum: enumValues("cvStatus"),
       default: "",
     },
 
     cocStatus: {
       type: String,
-      enum: ["", "done", "booked", "waiting"],
+      enum: enumValues("cocStatus"),
       default: "",
     },
 
     musanedStatus: {
       type: String,
-      enum: ["", "waiting", "done", "pending-release"],
+      enum: enumValues("musanedStatus"),
       default: "",
     },
+
     passportStatus: {
       type: String,
-      enum: ["", "original", "scan"],
+      enum: enumValues("passportStatus"),
       default: "",
     },
 
     medicalStatus: {
       type: String,
-      enum: ["", "fit", "waiting", "unfit", "in progress", "booked"],
+      enum: enumValues("medicalStatus"),
       default: "",
     },
 
-    
-    medicalDate: {
-      type: Date,
-      default: () => new Date(),
-    },
-    ticketDate: {
-      type: Date,
-      default: () => new Date(),
-    },
-    tasheerDate: {
-      type: Date,
-      default: () => new Date(),
-    },
+    medicalDate: { type: Date, default: "" },
+    ticketDate: { type: Date, default: "" },
+    tasheerDate: { type: Date, default: "" },
 
     availabilityStatus: {
       type: String,
-      enum: ["", "available", "unavailable", "selected"],
+      enum: enumValues("availabilityStatus"),
       default: "",
     },
 
     tasheer: {
       type: String,
-      enum: ["", "waiting", "booked", "done"],
+      enum: enumValues("tasheer"),
       default: "",
     },
 
     wokala: {
       type: String,
-      enum: ["", "waiting", "waiting tasdeeq", "done"],
+      enum: enumValues("wokala"),
       default: "",
     },
 
-    contractCreationDate: {
-      type: Date,
-      default: Date.now,
-    },
+    contractCreationDate: { type: Date, default: "" },
 
     lmis: {
       type: String,
-      enum: ["", "draft", "pending", "issued", "rejected"],
+      enum: enumValues("lmis"),
+      default: "",
+    },
+
+    qrCode: {
+      type: String,
+      enum: enumValues("qrCode"),
       default: "",
     },
 
     ticket: {
       type: String,
-      enum: ["", "waiting", "booked", "done"],
+      enum: enumValues("ticket"),
       default: "",
     },
 
     cvSentTo: {
       type: String,
-      enum: ["", "SARAYA AL-RIYADH RECRUITMENT", "QUICK TICKET FOR RECRUITMENT"],
+      enum: enumValues("cvSentTo"),
       default: "",
     },
 
     selectedBy: {
       type: String,
-      enum: ["", "SARAYA AL-RIYADH RECRUITMENT", "QUICK TICKET FOR RECRUITMENT"],
+      enum: enumValues("selectedBy"),
+      default: "",
+    },
+
+    insideOffice: {
+      type: String,
+      enum: enumValues("insideOffice"),
       default: "",
     },
 
     visaStatus: {
       type: String,
-      enum: [
-        "",
-        "ready for embassy",
-        "sent to embassy",
-        "visa issued",
-        "visa canceled",
-        "arrived ksa",
-      ],
+      enum: enumValues("visaStatus"),
       default: "",
     },
 
     experienceOutside: { type: String, default: "" },
 
     spokenLanguages: { type: String, default: "" },
-    code: { type: String, default: "" },
     narrative: { type: String, default: "" },
     children: Number,
     weight: { type: String, default: "" },
@@ -142,7 +138,7 @@ const CandidateSchema = new mongoose.Schema(
 
     maritalStatus: {
       type: String,
-      enum: ["", "single", "married", "divorced", "widowed"],
+      enum: enumValues("maritalStatus"),
       default: "",
     },
 
@@ -151,34 +147,42 @@ const CandidateSchema = new mongoose.Schema(
     passportExpiryDate: Date,
     passportIssuePlace: { type: String, default: "" },
     contractPeriod: { type: String, default: "2 years" },
-    position: { type: String, default: "" },
-    salary: { type: String, default: "" }, 
 
-    languageEnglish: { 
+    position: {
       type: String,
-      enum: ["","veryGood", "good", "poor"],
+      enum: enumValues("position"),
+      default: "",
+    },
+
+    salary: { type: String, default: "" },
+
+    languageEnglish: {
+      type: String,
+      enum: enumValues("language"),
       default: "",
     },
 
     languageArabic: {
       type: String,
-      enum: ["", "veryGood", "good","poor"],
+      enum: enumValues("language"),
       default: "",
     },
 
     experienceCountry: { type: String, default: "" },
     experiencePeriod: { type: String, default: "" },
-    remark: { type: String, default: "" },
-    skills: {
-  type: Map,
-  of: {
-    type: String,
-    enum: ["", "yes", "no"],
-    default: "",
-  },
-  default: {},
-},
+    arrivalCity: { type: String, default: "" },
 
+    remark: { type: String, default: "" },
+
+    skills: {
+      type: Map,
+      of: {
+        type: String,
+        enum: ["", "yes", "no"],
+        default: "",
+      },
+      default: {},
+    },
 
     avatar: {
       type: String,

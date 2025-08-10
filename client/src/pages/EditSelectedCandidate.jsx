@@ -224,7 +224,7 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
             </Form.Item>
 
             <Form.Item label="Gender" name="gender" >
-            <Select><Option value="male">Male</Option><Option value="female">Female</Option></Select>
+            <Select options={statusOptions.gender}/>
             </Form.Item>
             <Form.Item label="Date of Birth" name="dateOfBirth"><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
             <Form.Item label="Place of Birth" name="placeOfBirth"><Input /></Form.Item>
@@ -251,7 +251,8 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
             <Form.Item label="Medical Status" name="medicalStatus"><Select options={statusOptions.medicalStatus} /></Form.Item>
             <Form.Item label="COC Status" name="cocStatus"><Select options={statusOptions.cocStatus} /></Form.Item>
             <Form.Item label="Availability Status" name="availabilityStatus"><Select options={statusOptions.availabilityStatus} /></Form.Item>
-            <Form.Item label="Selected By" name="selectedBy"><Select options={[{ label: "A", value: "A" }, { label: "B", value: "B" }, { label: "C", value: "C" }]} /></Form.Item>
+            <Form.Item label="Selected By" name="selectedBy"><Select options={statusOptions.selectedBy}/></Form.Item>
+            <Form.Item label="Office Inside" name="insideOffice"><Select options={statusOptions.insideOffice} /></Form.Item>
              <Form.Item label="Contract Date" name="contractCreationDate"><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
             
             <Form.Item label="Tasheer" name="tasheer"><Select options={statusOptions.tasheer} /></Form.Item>

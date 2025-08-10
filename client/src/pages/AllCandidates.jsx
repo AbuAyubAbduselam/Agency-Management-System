@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
-import { CandidatesContainer, SearchContainer } from "../components";
+import { CandidatesContainer, SearchContainer, Loading } from "../components";
 import customFetch from "../utils/customFetch";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigation } from "react-router-dom";
 import { useContext, createContext, useState, useEffect } from "react";
 
 export const loader = async ({ request }) => {
@@ -10,10 +10,7 @@ export const loader = async ({ request }) => {
   ]);
 
   try {
-    const { data } = await customFetch.get("/candidates", {
-      params,
-    });
-
+    const { data } = await customFetch.get("/candidates", { params });
     return { data, selectedParams: { ...params } };
   } catch (error) {
     toast.error(error?.response?.data?.msg);
@@ -24,13 +21,11 @@ export const loader = async ({ request }) => {
 const AllCandidatesContext = createContext();
 
 const AllCandidates = () => {
-  // load data + params from loader (initial values)
   const { data, selectedParams: initialParams } = useLoaderData();
-
-  // Make selectedParams reactive state so we can update it inside SearchContainer
   const [selectedParams, setSelectedParams] = useState(initialParams || {});
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
 
-  // Optional: if loader params change, sync state (rare case)
   useEffect(() => {
     setSelectedParams(initialParams || {});
   }, [initialParams]);
@@ -40,10 +35,15 @@ const AllCandidates = () => {
       value={{
         data,
         selectedParams,
-        setSelectedParams, // <-- expose setter here!
+        setSelectedParams,
       }}
     >
       <SearchContainer />
+      {isLoading && (
+        <div className="my-4">
+          <Loading />
+        </div>
+      )}
       <CandidatesContainer />
     </AllCandidatesContext.Provider>
   );

@@ -2,19 +2,13 @@ import Wrapper from "../assets/wrappers/CandidatesContainer";
 import { UseAllCandidatesAttendanceContext } from "../pages/CandidateAttendance";
 import Attendance from "./Attendance";
 import PageBtnContainer2 from "./PageBtnContainer2";
-import { useEffect, useState,useRef } from "react";
-import { Button, Dropdown, Menu} from "antd";
+import { useEffect, useState, useRef } from "react";
+import { Button, Dropdown, Menu } from "antd";
 import customFetch from "../utils/customFetch";
-import { exportCandidatesTableToExcel } from "./ExportActions";
-
-import {
-  exportCandidatesTableToPDF,
-} from "./ExportActions";
-
+import { exportCandidatesTableToExcel, exportCandidatesTableToPDF } from "./ExportActions";
 import BulkUpdateFieldSelector from "./BulkUpdateFieldSelector";
 import { statusOptions } from "../utils/constants";
-
-
+import { useSubmit } from "react-router-dom";
 
 const fieldOptions = [
   { key: "Full Name", label: "Full Name" },
@@ -32,15 +26,19 @@ const fieldOptions = [
   { key: "ticketDate", label: "Ticket Date" },
 ];
 
-
 const CandidateAttendanceContainer = () => {
-  const { data } = UseAllCandidatesAttendanceContext();
+  const { data, selectedParams, setSelectedParams } = UseAllCandidatesAttendanceContext();
   const { selectedCandidates, totalSelectedCandidates, numOfPages } = data;
+
+  const submit = useSubmit();
 
   const [selectedCandidateIds, setSelectedCandidateIds] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedFields, setSelectedFields] = useState([
-    "Full Name", "passportNo", "laborId", "medicalStatus"
+    "Full Name",
+    "passportNo",
+    "laborId",
+    "medicalStatus",
   ]);
 
   const [bulkField, setBulkField] = useState("");
@@ -75,73 +73,145 @@ const CandidateAttendanceContainer = () => {
       prev.includes(key) ? prev.filter((f) => f !== key) : [...prev, key]
     );
   };
+
   const [showFieldSelector, setShowFieldSelector] = useState(false);
-const fieldSelectorRef = useRef(null);
+  const fieldSelectorRef = useRef(null);
 
-// Close field selector if clicked outside
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      fieldSelectorRef.current &&
-      !fieldSelectorRef.current.contains(event.target)
-    ) {
-      setShowFieldSelector(false);
-    }
+  // Close field selector if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (fieldSelectorRef.current && !fieldSelectorRef.current.contains(event.target)) {
+        setShowFieldSelector(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleExportPDF = () => {
+    const selected = selectedCandidates.filter((c) =>
+      selectedCandidateIds.includes(c._id)
+    );
+    if (selected.length === 0 || selectedFields.length === 0) return;
+    exportCandidatesTableToPDF(selected, selectedFields);
   };
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
+
+  const handleExportExcel = () => {
+    const selected = selectedCandidates.filter((c) =>
+      selectedCandidateIds.includes(c._id)
+    );
+    if (selected.length === 0 || selectedFields.length === 0) return;
+    exportCandidatesTableToExcel(selected, selectedFields);
   };
-}, []);
-
-const handleExportPDF = () => {
-  const selected = selectedCandidates.filter((c) =>
-    selectedCandidateIds.includes(c._id)
-  );
-  if (selected.length === 0 || selectedFields.length === 0) return;
-
-  exportCandidatesTableToPDF(selected, selectedFields);
-};
-
-const handleExportExcel = () => {
-  const selected = selectedCandidates.filter((c) =>
-    selectedCandidateIds.includes(c._id)
-  );
-  if (selected.length === 0 || selectedFields.length === 0) return;
-
-  exportCandidatesTableToExcel(selected, selectedFields);
-};
-
-
-
 
   const handleBulkStatusUpdate = async () => {
-  if (!bulkField || !bulkValue || selectedCandidateIds.length === 0) {
-    alert("Please select a field, value, and at least one candidate.");
-    return;
-  }
+    if (!bulkField || !bulkValue || selectedCandidateIds.length === 0) {
+      alert("Please select a field, value, and at least one candidate.");
+      return;
+    }
+    try {
+      await Promise.all(
+        selectedCandidateIds.map((id) =>
+          customFetch.patch(`/candidates/${id}`, {
+            [bulkField]: bulkValue,
+          })
+        )
+      );
+      alert("Statuses updated successfully");
+      window.location.reload();
+    } catch (error) {
+      console.error("Bulk update failed:", error.response?.data || error.message);
+      alert("Failed to update status.");
+    }
+  };
 
-  try {
-    await Promise.all(
-      selectedCandidateIds.map((id) =>
-        customFetch.patch(`/candidates/${id}`, {
-          [bulkField]: bulkValue,
-        })
-      )
-    );
-    alert("Statuses updated successfully");
-    window.location.reload();
-  } catch (error) {
-    console.error("Bulk update failed:", error.response?.data || error.message);
-    alert("Failed to update status.");
-  }
+  // Handle insideOffice filter click
+ const handleFilterClick = (officeName) => {
+  setSelectedParams((prev) => ({
+    ...prev,
+    insideOffice: officeName || "" // If empty, show all
+  }));
+  submit({ insideOffice: officeName || "" });
 };
 
 
   if (selectedCandidates.length === 0) {
     return (
       <Wrapper>
-        <h2>No candidates to display...</h2>
+             <div className="flex items-center gap-4 my-4 overflow-x-auto">
+        <BulkUpdateFieldSelector
+          statusOptions={statusOptions}
+          bulkField={bulkField}
+          bulkValue={bulkValue}
+          setBulkField={setBulkField}
+          setBulkValue={setBulkValue}
+          onApply={handleBulkStatusUpdate}
+        />
+      </div>
+
+      <div className="flex flex-wrap gap-4 my-4">
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item key="summary" onClick={handleExportPDF}>
+                Download PDF
+              </Menu.Item>
+              <Menu.Item key="excel" onClick={handleExportExcel}>
+                Download Excel
+              </Menu.Item>
+            </Menu>
+          }
+          disabled={selectedCandidateIds.length === 0}
+        >
+          <Button>Download Options</Button>
+        </Dropdown>
+
+        <div className="relative" ref={fieldSelectorRef}>
+          <Button onClick={() => setShowFieldSelector((prev) => !prev)}>
+            Select Fields
+          </Button>
+          {showFieldSelector && (
+            <div className="absolute z-50 bg-white shadow-lg border rounded mt-2 p-4 max-h-64 overflow-y-auto w-64">
+              {fieldOptions.map(({ key, label }) => (
+                <label key={key} className="flex items-center space-x-2 mb-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedFields.includes(key)}
+                    onChange={() => toggleField(key)}
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Inside Office Filter Buttons */}
+      <div className="flex gap-2 mb-4">
+  <Button
+    type={!selectedParams.insideOffice ? "primary" : "default"}
+    onClick={() => handleFilterClick("")}
+  >
+    All
+  </Button>
+  <Button
+    type={selectedParams.insideOffice === "Mubarek Agency" ? "primary" : "default"}
+    onClick={() => handleFilterClick("Mubarek Agency")}
+  >
+    Mubarek Agency
+  </Button>
+
+  <Button
+    type={selectedParams.insideOffice === "Kalid Agency" ? "primary" : "default"}
+    onClick={() => handleFilterClick("Kalid Agency")}
+  >
+    Kalid Agency
+  </Button>
+
+</div>
+
+      </div>
+        <h3 className="mt-14 smal normal-case">No candidates to display...</h3>
       </Wrapper>
     );
   }
@@ -150,63 +220,84 @@ const handleExportExcel = () => {
     <Wrapper>
       <div className="flex justify-between mb-6">
         <h5 className="font-bold">
-          {totalSelectedCandidates} {totalSelectedCandidates > 1 ? "candidates" : "candidate"} found
+          {totalSelectedCandidates}{" "}
+          {totalSelectedCandidates > 1 ? "candidates" : "candidate"} found
         </h5>
       </div>
 
       {/* Bulk Update UI */}
-      <div className="flex items-center gap-4 my-4">
-      <BulkUpdateFieldSelector
-  statusOptions={statusOptions}
-  bulkField={bulkField}
-  bulkValue={bulkValue}
-  setBulkField={setBulkField}
-  setBulkValue={setBulkValue}
-  onApply={handleBulkStatusUpdate}
-/>
+      <div className="flex items-center gap-4 my-4 overflow-x-auto">
+        <BulkUpdateFieldSelector
+          statusOptions={statusOptions}
+          bulkField={bulkField}
+          bulkValue={bulkValue}
+          setBulkField={setBulkField}
+          setBulkValue={setBulkValue}
+          onApply={handleBulkStatusUpdate}
+        />
       </div>
 
-       <div className="flex flex-wrap gap-4 my-4">
-<Dropdown
-  overlay={
-    <Menu>
-      <Menu.Item key="summary" onClick={handleExportPDF}>
-        Download PDF
-      </Menu.Item>
-      <Menu.Item key="excel" onClick={handleExportExcel}>
-        Download Excel
-      </Menu.Item>
-    </Menu>
-  }
-  disabled={selectedCandidateIds.length === 0}
->
-  <Button>Download Options</Button>
-</Dropdown>
+      <div className="flex flex-wrap gap-4 my-4">
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item key="summary" onClick={handleExportPDF}>
+                Download PDF
+              </Menu.Item>
+              <Menu.Item key="excel" onClick={handleExportExcel}>
+                Download Excel
+              </Menu.Item>
+            </Menu>
+          }
+          disabled={selectedCandidateIds.length === 0}
+        >
+          <Button>Download Options</Button>
+        </Dropdown>
 
+        <div className="relative" ref={fieldSelectorRef}>
+          <Button onClick={() => setShowFieldSelector((prev) => !prev)}>
+            Select Fields
+          </Button>
+          {showFieldSelector && (
+            <div className="absolute z-50 bg-white shadow-lg border rounded mt-2 p-4 max-h-64 overflow-y-auto w-64">
+              {fieldOptions.map(({ key, label }) => (
+                <label key={key} className="flex items-center space-x-2 mb-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedFields.includes(key)}
+                    onChange={() => toggleField(key)}
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
 
+        <div className="flex gap-2 mb-4">
+  <Button
+    type={!selectedParams.insideOffice ? "primary" : "default"}
+    onClick={() => handleFilterClick("")}
+  >
+    All
+  </Button>
+  <Button
+    type={selectedParams.insideOffice === "Mubarek Agency" ? "primary" : "default"}
+    onClick={() => handleFilterClick("Mubarek Agency")}
+  >
+    Mubarek Agency
+  </Button>
 
-  <div className="relative" ref={fieldSelectorRef}>
-    <Button onClick={() => setShowFieldSelector((prev) => !prev)}>
-      Select Fields
-    </Button>
-
-    {showFieldSelector && (
-      <div className="absolute z-50 bg-white shadow-lg border rounded mt-2 p-4 max-h-64 overflow-y-auto w-64">
-        {fieldOptions.map(({ key, label }) => (
-          <label key={key} className="flex items-center space-x-2 mb-2">
-            <input
-              type="checkbox"
-              checked={selectedFields.includes(key)}
-              onChange={() => toggleField(key)}
-            />
-            <span>{label}</span>
-          </label>
-        ))}
-      </div>
-    )}
-  </div>
+  <Button
+    type={selectedParams.insideOffice === "Kalid Agency" ? "primary" : "default"}
+    onClick={() => handleFilterClick("Kalid Agency")}
+  >
+    Kalid Agency
+  </Button>
 
 </div>
+
+      </div>
 
       {/* Table */}
       <div className="candidates overflow-x-auto">
