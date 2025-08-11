@@ -162,7 +162,7 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
 
           {/* --- Contact Info --- */}
           <Form.Item label="Phone No." name="phoneNo"><Input /></Form.Item>
-          <Form.Item label="Narrative" name="narative" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item label="Narrative" name="narrative" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item label="Narrative Phone No." name="narrativePhoneNo"><Input /></Form.Item>
 
           {/* --- Experience & Language --- */}
