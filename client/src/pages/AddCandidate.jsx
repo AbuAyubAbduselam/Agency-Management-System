@@ -131,14 +131,14 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
 
 
           {/* --- Personal Info --- */}
-          <Form.Item label="Code" name="code"><Input /></Form.Item>
-          <Form.Item label="First Name" name="firstName"><Input /></Form.Item>
-          <Form.Item label="Middle Name" name="middleName"><Input /></Form.Item>
-          <Form.Item label="Last Name" name="lastName"><Input /></Form.Item>
-          <Form.Item label="Gender" name="gender">
-            <Select><Option value="male">Male</Option><Option value="female">Female</Option></Select>
+          <Form.Item label="Code" name="code" ><Input type="number"/></Form.Item>
+          <Form.Item label="First Name" name="firstName"  rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item label="Middle Name" name="middleName" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item label="Last Name" name="lastName" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item label="Gender" name="gender" rules={[{ required: true }]}>
+            <Select options={statusOptions.gender}/>
           </Form.Item>
-          <Form.Item label="Date of Birth" name="dateOfBirth"><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
+          <Form.Item label="Date of Birth" name="dateOfBirth" rules={[{ required: true }]}><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
           <Form.Item label="Place of Birth" name="placeOfBirth"><Input /></Form.Item>
           <Form.Item label="Living Town" name="livingTown"><Input /></Form.Item>
           <Form.Item label="Marital Status" name="maritalStatus">
@@ -149,10 +149,10 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
           </Form.Item>
 
           {/* --- Passport Info --- */}
-          <Form.Item label="Passport No" name="passportNo"><Input /></Form.Item>
+          <Form.Item label="Passport No" name="passportNo" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item label="Labour ID" name="labourId"><Input /></Form.Item>
-          <Form.Item label="Date of Issue" name="passportIssueDate"><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
-          <Form.Item label="Date of Expiry" name="passportExpiryDate"><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
+          <Form.Item label="Date of Issue" name="passportIssueDate" rules={[{ required: true }]}><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
+          <Form.Item label="Date of Expiry" name="passportExpiryDate" rules={[{ required: true }]}><DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} /></Form.Item>
           <Form.Item label="Place of Issue" name="passportIssuePlace"><Input /></Form.Item>
 
           {/* --- Work Info --- */}
@@ -162,7 +162,7 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
 
           {/* --- Contact Info --- */}
           <Form.Item label="Phone No." name="phoneNo"><Input /></Form.Item>
-          <Form.Item label="Narrative" name="narative"><Input /></Form.Item>
+          <Form.Item label="Narrative" name="narative" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item label="Narrative Phone No." name="narrativePhoneNo"><Input /></Form.Item>
 
           {/* --- Experience & Language --- */}
@@ -188,7 +188,7 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
          
 
           {/* --- Status Selects --- */}
-          <Form.Item label="Passport Status" name="passportStatus"><Select options={statusOptions.passportStatus} /></Form.Item>
+          <Form.Item label="Passport Status" name="passportStatus" rules={[{ required: true }]}><Select options={statusOptions.passportStatus} /></Form.Item>
           <Form.Item label="CV Status" name="cvStatus"><Select options={statusOptions.cvStatus} /></Form.Item>
           <Form.Item label="Medical Status" name="medicalStatus"><Select options={statusOptions.medicalStatus} /></Form.Item>
           <Form.Item label="COC Status" name="cocStatus"><Select options={statusOptions.cocStatus} /></Form.Item>

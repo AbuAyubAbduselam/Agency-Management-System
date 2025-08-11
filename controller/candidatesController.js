@@ -9,7 +9,7 @@ import fs from "fs/promises"; // Use fs/promises for async/await
 export const getAllCandidates = async (req, res) => {
   const { search, sort, medicalStatus, gender, religion, cvStatus, cocStatus, musanedStatus, availabilityStatus, cvSentTo } = req.query;
 
-  const queryObject = { availabilityStatus: { $ne: 'selected' } };
+  const queryObject =  {};
 
 
   if (search) {

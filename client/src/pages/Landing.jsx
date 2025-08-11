@@ -35,7 +35,7 @@ const Landing = () => {
 
             <h1>MUBAREK FOREIGN EMPLOYMENT AGENCY </h1>
             <div className="two-login">
-              <Link to="/teacher-login" className="btn">
+              <Link to="/login" className="btn">
                 User Login
               </Link>
             </div>

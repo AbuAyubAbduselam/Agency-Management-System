@@ -31,10 +31,11 @@ const Candidate = ({
   isSelected,
   onCheckboxChange,
   narrative,
-  code
+  code,
+
 }) => {
-  const age = day().diff(day(dateOfBirth), "year");
-  const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "N/A";
+  const age = dateOfBirth? day().diff(day(dateOfBirth), "year"): "-";
+  const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "--";
 
   const submit = useSubmit();
 

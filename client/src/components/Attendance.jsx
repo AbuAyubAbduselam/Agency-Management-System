@@ -28,11 +28,14 @@ const Attendance = ({
   ticket,
   isSelected,
   onCheckboxChange,
+    qrCode,
+  arrivalCity,
+  medicalDate
 }) => {
 
-  const contractDate = day(contractCreationDate).format("DD MMMM YYYY");
-  const formattedTicketDate = day(ticketDate).format("DD MMMM YYYY hh:mm: A");
-const formattedTasheerDate = day(tasheerDate).format("DD MMMM YYYY hh:mm: A");
+  const contractDate = contractCreationDate? day(contractCreationDate).format("DD MMMM YYYY"): "-----";
+  const formattedTicketDate = ticketDate? day(ticketDate).format("DD MMMM YYYY hh:mm: A"): "-----";
+const formattedTasheerDate = tasheerDate? day(tasheerDate).format("DD MMMM YYYY hh:mm: A"):"-----";
 
 
 
@@ -40,7 +43,7 @@ const formattedTasheerDate = day(tasheerDate).format("DD MMMM YYYY hh:mm: A");
     <tbody>
       <tr>
       <th>
-          <input
+          <input 
             type="checkbox"
             className="checkbox"
             checked={isSelected}
@@ -76,6 +79,7 @@ const formattedTasheerDate = day(tasheerDate).format("DD MMMM YYYY hh:mm: A");
         <td>{laborId}</td>
         <td>{contractDate}</td>
         <td>{renderStatus("medicalStatus", medicalStatus)}</td>
+        <td>{medicalDate}</td>
         <td>{renderStatus("selectedBy", selectedBy)}</td>
         <td>{renderStatus("tasheer", tasheer)}</td>
           <td>{formattedTasheerDate}</td>
@@ -83,10 +87,12 @@ const formattedTasheerDate = day(tasheerDate).format("DD MMMM YYYY hh:mm: A");
         <td>{renderStatus("visaStatus", visaStatus)}</td>
         <td>{renderStatus("cocStatus", cocStatus)}</td>
         <td>{renderStatus("lmis", lmis)}</td>
+        <td>{qrCode}</td>
+        <td>{arrivalCity}</td>
         <td>{renderStatus("ticket", ticket)}</td>
           <td>{formattedTicketDate}</td>
         <td>
-          <Link to={`../edit-candidate-attendance/${_id}`}>
+          <Link to={`../edit-candidate/${_id}`}>
             <Button
               icon={<EditOutlined />}
               type="primary"

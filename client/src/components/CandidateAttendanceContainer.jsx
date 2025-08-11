@@ -321,6 +321,7 @@ const CandidateAttendanceContainer = () => {
               <th>Labor ID</th>
               <th>Contract Date</th>
               <th>Medical Status</th>
+              <th>Medical Days</th>
               <th>Selected By</th>
               <th>Tasheer</th>
               <th>Tasheer Date</th>
@@ -328,6 +329,8 @@ const CandidateAttendanceContainer = () => {
               <th>Visa Status</th>
               <th>COC Status</th>
               <th>LMIS</th>
+              <th>QR code</th>
+              <th>Arrival City</th>
               <th>Ticket</th>
               <th>Ticket Date</th>
               <th>Edit</th>

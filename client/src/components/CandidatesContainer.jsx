@@ -340,26 +340,7 @@ useEffect(() => {
 
 
 
-  <div className="relative" ref={fieldSelectorRef}>
-    <Button onClick={() => setShowFieldSelector((prev) => !prev)}>
-      Select Fields
-    </Button>
-
-    {showFieldSelector && (
-      <div className="absolute z-50 bg-white shadow-lg border rounded mt-2 p-4 max-h-64 overflow-y-auto w-64">
-        {fieldOptions.map(({ key, label }) => (
-          <label key={key} className="flex items-center space-x-2 mb-2">
-            <input
-              type="checkbox"
-              checked={selectedFields.includes(key)}
-              onChange={() => toggleField(key)}
-            />
-            <span>{label}</span>
-          </label>
-        ))}
-      </div>
-    )}
-  </div>
+ 
 
 </div>
  <div className="candidates overflow-x-auto w-full">

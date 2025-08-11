@@ -28,18 +28,22 @@ export const statusOptions = {
     { label: "Booked", value: "Booked" },
   ],
   cvStatus: [
+    { label: "", value: "" },
     { label: "Done", value: "Done" },
     { label: "Waiting", value: "Waiting" },
   ],
   gender: [
+    { label: "", value: "" },
     { label: "Male", value: "Male" },
     { label: "Female", value: "Female" },
   ],
   religion: [
+    { label: "", value: "" },
     { label: "Muslim", value: "Muslim" },
     { label: "Non Muslim", value: "Non Muslim" },
   ],
   passportStatus: [
+    { label: "", value: "" },
     { label: "Original", value: "Original" },
     { label: "Scan", value: "Scan" },
   ],
@@ -59,16 +63,19 @@ export const statusOptions = {
     { label: "In progress", value: "In Progress" },
   ],
   musanedStatus: [
+    { label: "", value: "" },
     { label: "Done", value: "Done" },
     { label: "Waiting", value: "Waiting" },
     { label: "Pending release", value: "Pending release" },
   ],
   availabilityStatus: [
+    { label: "", value: "" },
     { label: "Available", value: "Available" },
     { label: "Selected", value: "Selected" },
     { label: "Unavailable", value: "Unavailable" },
   ],
   language: [
+    { label: "", value: "" },
     { label: "Good", value: "Good" },
     { label: "Very Good", value: "Very good" },
     { label: "Poor", value: "Poor" },
@@ -114,6 +121,7 @@ export const statusOptions = {
     { label: "Done", value: "Done" },
   ],
   position: [
+    { label: "", value: "" },
     { label: "House Maid", value: "House Maid" },
     { label: "House worker", value: "House Worker" },
     { label: "Driver", value: "Driver" },
