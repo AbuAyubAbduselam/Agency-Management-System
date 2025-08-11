@@ -28,8 +28,6 @@ const CandidateAttendance = () => {
   const [selectedParams, setSelectedParams] = useState(initialParams || {});
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
-    const { insideOffice } = selectedParams;
-    console.log(selectedParams)
 
   useEffect(() => {
     setSelectedParams(initialParams || {});

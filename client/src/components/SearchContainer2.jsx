@@ -3,10 +3,11 @@ import { JOB_SORT_BY } from "../../../utils/constant";
 import { UseAllCandidatesAttendanceContext } from "../pages/CandidateAttendance";
 import FormSelectGroup from "./FormSelectGroup";
 import { Button, Spin } from "antd";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { statusOptions } from "../utils/constants";
 
 // ✅ debounce function outside
-const debounce = (callback, delay = 9000) => {
+const debounce = (callback, delay = 900) => {
   let timeoutId;
   return (...args) => {
     clearTimeout(timeoutId);
@@ -47,8 +48,15 @@ const SearchContainer2 = () => {
   const handleReset = () => {
     const resetParams = {
       search: "",
-      classes: "all",
       sort: "newest",
+      visaStatus: "",
+      ticket: "",
+      wokala: "",
+      selectedBy: "",
+      medicalStatus: "",
+      tasheer: "",
+      cocStatus: "",
+      lmis: "",
     };
     setSelectedParams(resetParams);
     setLocalSearch("");
@@ -65,14 +73,15 @@ const SearchContainer2 = () => {
         className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
         onSubmit={(e) => e.preventDefault()} // prevent full reload
       >
+        {/* Search box */}
         <div className="form-control flex-1">
           <input
             type="search"
             name="search"
             value={localSearch}
             onChange={(e) => {
-              setLocalSearch(e.target.value); // update local state only
-              debouncedSubmit(e.currentTarget.form); // trigger submit after delay
+              setLocalSearch(e.target.value);
+              debouncedSubmit(e.currentTarget.form);
             }}
             placeholder="Search"
             className="input input-bordered bg-white w-full"
@@ -85,11 +94,12 @@ const SearchContainer2 = () => {
           />
         </div>
 
+        {/* Dropdowns using statusOptions */}
         <FormSelectGroup
           label="Medical Status"
           name="medicalStatus"
           value={medicalStatus}
-          options={["Medical Status", "fit", "unfit", "waiting", "booked"]}
+          options={statusOptions.medicalStatus}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -97,7 +107,7 @@ const SearchContainer2 = () => {
           label="CoC Status"
           name="cocStatus"
           value={cocStatus}
-          options={["CoC Status", "done", "waiting", "booked"]}
+          options={statusOptions.cocStatus}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -105,14 +115,7 @@ const SearchContainer2 = () => {
           label="Visa Status"
           name="visaStatus"
           value={visaStatus}
-          options={[
-            "Visa Status",
-            "ready for embassy",
-            "sent to embassy",
-            "visa issued",
-            "visa canceled",
-            "arrived ksa",
-          ]}
+          options={statusOptions.visaStatus}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -120,7 +123,7 @@ const SearchContainer2 = () => {
           label="Ticket"
           name="ticket"
           value={ticket}
-          options={["Ticket", "waiting", "booked", "done"]}
+          options={statusOptions.ticket}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -128,7 +131,7 @@ const SearchContainer2 = () => {
           label="Wokala"
           name="wokala"
           value={wokala}
-          options={["Wokala", "waiting tasdeeq", "waiting", "done"]}
+          options={statusOptions.wokala}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -136,7 +139,7 @@ const SearchContainer2 = () => {
           label="Selected By"
           name="selectedBy"
           value={selectedBy}
-          options={["Selected By", "A", "B", "C"]}
+          options={statusOptions.selectedBy}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -144,7 +147,7 @@ const SearchContainer2 = () => {
           label="Tasheer"
           name="tasheer"
           value={tasheer}
-          options={["Tasheer", "waiting", "booked", "done"]}
+          options={statusOptions.tasheer}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -152,18 +155,22 @@ const SearchContainer2 = () => {
           label="LMIS"
           name="lmis"
           value={lmis}
-          options={["LMIS", "draft", "pending", "issued", "rejected"]}
+          options={statusOptions.lmis}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
         <FormSelectGroup
           name="sort"
           value={sort}
+          options={Object.values(JOB_SORT_BY).map((item) => ({
+            label: item,
+            value: item,
+          }))}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
-          options={Object.values(JOB_SORT_BY)}
         />
       </form>
 
+      {/* Reset Button */}
       <div className="mt-5 flex justify-center">
         <Button type="primary">
           <Link to="/dashboard/candidate-attendance" onClick={handleReset}>
@@ -172,6 +179,7 @@ const SearchContainer2 = () => {
         </Button>
       </div>
 
+      {/* Loading Indicator */}
       {loading && (
         <div className="mt-3 flex justify-center">
           <Spin />
