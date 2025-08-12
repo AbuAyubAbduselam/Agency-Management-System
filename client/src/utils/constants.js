@@ -17,6 +17,7 @@ export const fieldOptions = [
   { key: "medicalDate", label: "Medical Days" },
   { key: "experienceOutside", label: "Experience Outside" },
   { key: "availabilityStatus", label: "Availability Status" },
+  { key: "tasheerDate", label: "Tasheet Date" },
 
 ];
 
