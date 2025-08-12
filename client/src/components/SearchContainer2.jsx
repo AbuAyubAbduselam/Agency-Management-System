@@ -1,9 +1,10 @@
 import { useSubmit, Link } from "react-router-dom";
-import { JOB_SORT_BY } from "../../../utils/constant";
+import { JOB_SORT_BY } from "../../../utils/constant"; 
 import { UseAllCandidatesAttendanceContext } from "../pages/CandidateAttendance";
 import FormSelectGroup from "./FormSelectGroup";
 import { Button, Spin } from "antd";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { statusOptions } from "../utils/constants";
 
 // ✅ debounce function outside
 const debounce = (callback, delay = 9000) => {
@@ -89,7 +90,7 @@ const SearchContainer2 = () => {
           label="Medical Status"
           name="medicalStatus"
           value={medicalStatus}
-          options={["Medical Status", "fit", "unfit", "waiting", "booked"]}
+          options={statusOptions.medicalStatus.map((o) => o.label || o.value)}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -97,7 +98,7 @@ const SearchContainer2 = () => {
           label="CoC Status"
           name="cocStatus"
           value={cocStatus}
-          options={["CoC Status", "done", "waiting", "booked"]}
+          options={statusOptions.cocStatus.map((o) => o.label || o.value)}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -105,14 +106,7 @@ const SearchContainer2 = () => {
           label="Visa Status"
           name="visaStatus"
           value={visaStatus}
-          options={[
-            "Visa Status",
-            "ready for embassy",
-            "sent to embassy",
-            "visa issued",
-            "visa canceled",
-            "arrived ksa",
-          ]}
+          options={statusOptions.visaStatus.map((o) => o.label || o.value)}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -120,7 +114,7 @@ const SearchContainer2 = () => {
           label="Ticket"
           name="ticket"
           value={ticket}
-          options={["Ticket", "waiting", "booked", "done"]}
+          options={statusOptions.ticket.map((o) => o.label || o.value)}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -128,7 +122,7 @@ const SearchContainer2 = () => {
           label="Wokala"
           name="wokala"
           value={wokala}
-          options={["Wokala", "waiting tasdeeq", "waiting", "done"]}
+          options={statusOptions.wokala.map((o) => o.label || o.value)}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -136,7 +130,7 @@ const SearchContainer2 = () => {
           label="Selected By"
           name="selectedBy"
           value={selectedBy}
-          options={["Selected By", "A", "B", "C"]}
+          options={statusOptions.selectedBy.map((o) => o.label || o.value)}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -144,7 +138,7 @@ const SearchContainer2 = () => {
           label="Tasheer"
           name="tasheer"
           value={tasheer}
-          options={["Tasheer", "waiting", "booked", "done"]}
+          options={statusOptions.tasheer.map((o) => o.label || o.value)}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 
@@ -152,7 +146,7 @@ const SearchContainer2 = () => {
           label="LMIS"
           name="lmis"
           value={lmis}
-          options={["LMIS", "draft", "pending", "issued", "rejected"]}
+          options={statusOptions.lmis.map((o) => o.label || o.value)}
           onChange={(e) => submit(e.currentTarget.form, { replace: true })}
         />
 

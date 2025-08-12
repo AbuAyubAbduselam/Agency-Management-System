@@ -9,22 +9,9 @@ import { exportCandidatesTableToExcel, exportCandidatesTableToPDF } from "./Expo
 import BulkUpdateFieldSelector from "./BulkUpdateFieldSelector";
 import { statusOptions } from "../utils/constants";
 import { useSubmit } from "react-router-dom";
+import { fieldOptions } from "../utils/constants";
 
-const fieldOptions = [
-  { key: "Full Name", label: "Full Name" },
-  { key: "passportNo", label: "Passport No." },
-  { key: "laborId", label: "Labor ID" },
-  { key: "contractCreationDate", label: "Contract Date" },
-  { key: "medicalStatus", label: "Medical Status" },
-  { key: "selectedBy", label: "Selected By" },
-  { key: "tasheer", label: "Tasheer" },
-  { key: "tasheerDate", label: "Tasheer Date" },
-  { key: "wokala", label: "Wokala" },
-  { key: "visaStatus", label: "Visa Status" },
-  { key: "lmis", label: "LMIS" },
-  { key: "ticket", label: "Ticket" },
-  { key: "ticketDate", label: "Ticket Date" },
-];
+
 
 const CandidateAttendanceContainer = () => {
   const { data, selectedParams, setSelectedParams } = UseAllCandidatesAttendanceContext();

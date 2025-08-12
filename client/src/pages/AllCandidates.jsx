@@ -23,6 +23,9 @@ const AllCandidatesContext = createContext();
 const AllCandidates = () => {
   const { data, selectedParams: initialParams } = useLoaderData();
   const [selectedParams, setSelectedParams] = useState(initialParams || {});
+  const [selectedIds, setSelectedIds] = useState(new Set()); // ⬅ Persistent selection state
+  const [selectAllGlobal, setSelectAllGlobal] = useState(false); // ⬅ Persistent global select
+
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
 
@@ -36,6 +39,10 @@ const AllCandidates = () => {
         data,
         selectedParams,
         setSelectedParams,
+        selectedIds,
+        setSelectedIds,
+        selectAllGlobal,
+        setSelectAllGlobal,
       }}
     >
       <SearchContainer />

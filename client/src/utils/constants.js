@@ -134,8 +134,9 @@ export const statusOptions = {
   ],
   cvSentTo: [
     { label: "", value: "" },
-    { label: "SARAYA AL-RIYADH RECRUITMENT", value: "SARAYA AL-RIYADH RECRUITMENT" },
-    { label: "QUICK TICKET FOR RECRUITMENT", value: "QUICK TICKET FOR RECRUITMENT" },
+    { label: "Saraya Al-riyadh Recruitment", value: "Saraya Al-riyadh Recruitmen" },
+    { label: "Quick Ticket for Recruitment", value: "Quick Ticket for Recruitment" },
+    { label: "Speed Recruitment", value: "Speed Recruitment" },
   ],
   insideOffice: [
     { label: "", value: "" },

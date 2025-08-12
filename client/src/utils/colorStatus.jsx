@@ -53,16 +53,18 @@ export const statusColorMap = {
       done: "bg-green-500 text-white",
     },
     cvSentTo: {
-      "SARAYA AL-RIYADH RECRUITMENT": "bg-blue-500 text-white",
-      "QUICK TICKET FOR RECUITMENT": "bg-green-500 text-white",
+      "Saraya Al-riyadh Recruitmen": "bg-blue-500 text-white",
+      "Quick Ticket for Recruitment": "bg-green-500 text-white",
+      "Speed Recruitment": "bg-green-500 text-white",
       " ": "bg-gray-300 text-black",
     },
     selectedBy: {
-      "A": "bg-blue-500 text-white",
-      "B": "bg-green-500 text-white",
-      "C": "bg-yellow-500 text-black",
+      "Saraya Al-riyadh Recruitmen": "bg-blue-500 text-white",
+      "Quick Ticket for Recruitment": "bg-green-500 text-white",
+      "Speed Recruitment": "bg-purple-500 text-white",
       " ": "bg-gray-300 text-black",
     },
+    
   };
 
   export const renderStatus = (type, value) => {

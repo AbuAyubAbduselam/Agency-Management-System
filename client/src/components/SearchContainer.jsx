@@ -1,7 +1,8 @@
 import { useSubmit, Link } from "react-router-dom";
 import { JOB_SORT_BY } from "../../../utils/constant";
 import { useAllCandidatesContext } from "../pages/AllCandidates";
-import FormSelectGroup from "../components/FormSelectGroup"; // Adjust path if needed
+import FormSelectGroup from "../components/FormSelectGroup";
+import { statusOptions } from "../utils/constants";
 import { Button } from "antd";
 
 const SearchContainer2 = () => {
@@ -35,15 +36,15 @@ const SearchContainer2 = () => {
   const handleReset = () => {
     const resetParams = {
       search: "",
-      gender: "Gender",
+      gender: "",
       sort: "newest",
-      medicalStatus: "Medical Status",
-      religion: "Religion",
-      cvStatus: "CV Status",
-      cocStatus: "CoC Status",
-      musanedStatus: "Musaned Status",
-      availabilityStatus: "Availability Status",
-      cvSentTo: "CV Sent To",
+      medicalStatus: "",
+      religion: "",
+      cvStatus: "",
+      cocStatus: "",
+      musanedStatus: "",
+      availabilityStatus: "",
+      cvSentTo: "",
     };
     setSelectedParams(resetParams);
     submit();
@@ -51,11 +52,14 @@ const SearchContainer2 = () => {
 
   const handleSelectChange = (e) => submit(e.currentTarget.form);
 
+  // Helper to convert {label, value}[] → string[] for FormSelectGroup
+  const getStringOptions = (optionsArr) =>
+    optionsArr.map((opt) => opt.label || "");
+
   return (
     <div className="p-6 bg-white shadow-md rounded-md">
       <h5 className="text-lg font-bold mb-4">Search Form</h5>
-      <form className="grid 
-            grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <form className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <div className="form-control flex-1">
           <input
             type="search"
@@ -68,53 +72,52 @@ const SearchContainer2 = () => {
         </div>
 
         <FormSelectGroup
-          
           name="gender"
           value={gender}
           onChange={handleSelectChange}
-          options={["Gender", "male", "female"]}
+          options={getStringOptions(statusOptions.gender)}
         />
         <FormSelectGroup
           name="medicalStatus"
           value={medicalStatus}
           onChange={handleSelectChange}
-          options={["Medical Status", "fit", "unfit", "waiting", "booked"]}
+          options={getStringOptions(statusOptions.medicalStatus)}
         />
         <FormSelectGroup
           name="religion"
           value={religion}
           onChange={handleSelectChange}
-          options={["Religion", "muslim", "non-muslim"]}
+          options={getStringOptions(statusOptions.religion)}
         />
         <FormSelectGroup
           name="cvStatus"
           value={cvStatus}
           onChange={handleSelectChange}
-          options={["CV Status", "done", "waiting"]}
+          options={getStringOptions(statusOptions.cvStatus)}
         />
         <FormSelectGroup
           name="cocStatus"
           value={cocStatus}
           onChange={handleSelectChange}
-          options={["CoC Status", "done", "waiting", "booked"]}
+          options={getStringOptions(statusOptions.cocStatus)}
         />
         <FormSelectGroup
           name="musanedStatus"
           value={musanedStatus}
           onChange={handleSelectChange}
-          options={["Musaned Status", "done", "waiting", "pending-release"]}
+          options={getStringOptions(statusOptions.musanedStatus)}
         />
         <FormSelectGroup
           name="availabilityStatus"
           value={availabilityStatus}
           onChange={handleSelectChange}
-          options={["Availability Status", "available", "unavailable"]}
+          options={getStringOptions(statusOptions.availabilityStatus)}
         />
         <FormSelectGroup
           name="cvSentTo"
           value={cvSentTo}
           onChange={handleSelectChange}
-          options={["CV Sent To", "A", "B", "C", " "]}
+          options={getStringOptions(statusOptions.cvSentTo)}
         />
         <FormSelectGroup
           name="sort"
@@ -124,11 +127,9 @@ const SearchContainer2 = () => {
         />
 
         <div className="mt-5 flex justify-center">
-            <Button type="primary"  onClick={handleReset}>
-  <Link to="/dashboard" >
-    Reset
-  </Link>
-</Button>
+          <Button type="primary" onClick={handleReset}>
+            <Link to="/dashboard">Reset</Link>
+          </Button>
         </div>
       </form>
     </div>
