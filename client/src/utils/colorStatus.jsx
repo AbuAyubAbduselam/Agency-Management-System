@@ -59,7 +59,7 @@ export const statusColorMap = {
       " ": "bg-gray-300 text-black",
     },
     selectedBy: {
-      "Saraya Al-riyadh Recruitmen": "bg-blue-500 text-white",
+      "Saraya Al-riyadh Recruitment": "bg-blue-500 text-white",
       "Quick Ticket for Recruitment": "bg-green-500 text-white",
       "Speed Recruitment": "bg-purple-500 text-white",
       " ": "bg-gray-300 text-black",

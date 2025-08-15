@@ -11,9 +11,7 @@ export const loader = async ({ request }) => {
   ]);
 
   try {
-    const { data } = await customFetch.get("/attendance/selected", {
-      params,
-    });
+    const { data } = await customFetch.get("/attendance/selected", { params });
     return { data, selectedParams: { ...params } };
   } catch (error) {
     toast.error(error?.response?.data?.msg);
@@ -26,8 +24,23 @@ const AllCandidatesAttendanceContext = createContext();
 const CandidateAttendance = () => {
   const { data, selectedParams: initialParams } = useLoaderData();
   const [selectedParams, setSelectedParams] = useState(initialParams || {});
+
+  // ✅ Load from sessionStorage (only persists until tab close)
+  const [selectedCandidateIds, setSelectedCandidateIds] = useState(() => {
+    const stored = sessionStorage.getItem("selectedCandidateIds_attendance");
+    return stored ? JSON.parse(stored) : [];
+  });
+
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
+
+  // ✅ Save to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem(
+      "selectedCandidateIds_attendance",
+      JSON.stringify(selectedCandidateIds)
+    );
+  }, [selectedCandidateIds]);
 
   useEffect(() => {
     setSelectedParams(initialParams || {});
@@ -35,7 +48,13 @@ const CandidateAttendance = () => {
 
   return (
     <AllCandidatesAttendanceContext.Provider
-      value={{ data, selectedParams, setSelectedParams }}
+      value={{
+        data,
+        selectedParams,
+        setSelectedParams,
+        selectedCandidateIds,
+        setSelectedCandidateIds,
+      }}
     >
       <SearchContainer2 />
       {isLoading && (

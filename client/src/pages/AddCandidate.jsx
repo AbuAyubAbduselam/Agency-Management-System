@@ -145,7 +145,7 @@ const serializeDate = (date) => (date ? dayjs(date).format("YYYY-MM-DD HH:mm") :
             <Select options={statusOptions.maritalStatus}/>  
           </Form.Item>
           <Form.Item label="Religion" name="religion">
-            <Select options={statusOptions.gender}/>
+            <Select options={statusOptions.religion}/>
           </Form.Item>
 
           {/* --- Passport Info --- */}

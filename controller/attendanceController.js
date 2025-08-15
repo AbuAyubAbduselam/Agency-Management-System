@@ -7,78 +7,95 @@ import fs from "fs/promises"; // Use fs/promises for async/await
 
 //===============GET ALL CANDIDATE==================//
 export const getAllSelectedCandidates = async (req, res) => {
-  const { search, sort, gender,visaStatus,ticket,wokala,selectedBy,medicalStatus,tasheer,cocStatus,lmis,insideOffice } = req.query;
-
-  const queryObject = { availabilityStatus: 'Selected' };
-
-  if (search) {
-    queryObject.$or = [
-      { firstName: { $regex: search, $options: "i" } },
-      { middleName: { $regex: search, $options: "i" } },
-    ];
-  }
-  if (visaStatus && visaStatus !== "Visa Status") {
-    queryObject.visaStatus = visaStatus;
-  }
-  if (insideOffice && insideOffice !== "Office Inside") {
-    queryObject.insideOffice = insideOffice;
-  }
-  if (ticket && ticket !== "Ticket") {  
-    queryObject.ticket = ticket;
-  }
-  if (wokala && wokala !== "Wokala") {
-    queryObject.wokala = wokala;
-  }
-  if (selectedBy && selectedBy !== "Selected By") {
-    queryObject.selectedBy = selectedBy;
-  }
-  if (medicalStatus && medicalStatus !== "Medical Status") {
-    queryObject.medicalStatus = medicalStatus;
-  }
-  if (tasheer && tasheer !== "Tasheer") {
-    queryObject.tasheer = tasheer;
-  }
-  if (cocStatus && cocStatus !== "CoC Status") {
-    queryObject.cocStatus = cocStatus;
-  }
-  if (lmis && lmis !== "LMIS") {
-    queryObject.lmis = lmis;
-  }
-  if (gender && gender !== "Gender") {
-    queryObject.gender = gender;
-  }
-
-  const sortOptions = {
-    newest: "-createdAt",
-    oldest: "createdAt",
-    "a-z": "position",
-    "z-a": "-position",
-  };
-
-  const sortKey = sortOptions[sort] || sortOptions.newest;
-
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 20;
-  const skip = (page - 1) * limit;
-
   try {
-    const selectedCandidates = await Candidate.find(queryObject)
-      .sort(sortKey)
-      .skip(skip)
-      .limit(limit);
-    const totalSelectedCandidates = await Candidate.countDocuments(queryObject);
-    const numOfPages = Math.ceil(totalSelectedCandidates / limit);
+    const {
+      search,
+      sort,
+      page = 1,
+      limit = 20,
+      ids, // ✅ now supports CSV string from frontend
+      startDate,
+      endDate,
+      tasheerStart,
+      tasheerEnd,
+      ticketStart,
+      ticketEnd,
+      ...filters
+    } = req.query;
 
-    res
-      .status(StatusCodes.OK)
-      .json({ totalSelectedCandidates, numOfPages, currentPage: page, selectedCandidates });
+    const queryObject = { availabilityStatus: "Selected" };
+
+    // ✅ If ids are provided, fetch only those
+    if (ids) {
+      const idsArray = Array.isArray(ids) ? ids : ids.split(",");
+      queryObject._id = { $in: idsArray };
+    }
+
+    if (search) {
+      queryObject.$or = [
+        { firstName: { $regex: search, $options: "i" } },
+        { middleName: { $regex: search, $options: "i" } },
+        { lastName: { $regex: search, $options: "i" } },
+        { passportNo: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value && value !== "All" && value !== key) {
+        const valuesArray = Array.isArray(value) ? value : String(value).split(",");
+        queryObject[key] = { $in: valuesArray };
+      }
+    });
+
+    const addDateRange = (field, start, end) => {
+      if (start || end) {
+        queryObject[field] = {};
+        if (start) queryObject[field].$gte = new Date(start);
+        if (end) queryObject[field].$lte = new Date(end);
+      }
+    };
+
+    addDateRange("contractDate", startDate, endDate);
+    addDateRange("tasheerDate", tasheerStart, tasheerEnd);
+    addDateRange("ticketDate", ticketStart, ticketEnd);
+
+    const sortOptions = {
+      newest: "-createdAt",
+      oldest: "createdAt",
+      "a-z": "position",
+      "z-a": "-position",
+    };
+    const sortKey = sortOptions[sort] || sortOptions.newest;
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    let candidatesQuery = Candidate.find(queryObject).sort(sortKey);
+
+    // ✅ If ids are given, ignore pagination
+    if (!ids) {
+      candidatesQuery = candidatesQuery.skip(skip).limit(Number(limit));
+    }
+
+    const selectedCandidates = await candidatesQuery;
+    const totalSelectedCandidates = await Candidate.countDocuments(queryObject);
+    const numOfPages = ids ? 1 : Math.ceil(totalSelectedCandidates / Number(limit));
+
+    res.status(200).json({
+      totalSelectedCandidates,
+      numOfPages,
+      currentPage: Number(page),
+      selectedCandidates,
+    });
   } catch (error) {
     console.error(error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Error fetching candidates" });
+    res.status(500).json({ msg: "Error fetching candidates" });
   }
 };
+
+
+
+
+
 
 //==============CREATE CANDIDATE====================//
 

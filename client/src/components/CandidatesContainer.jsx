@@ -1,12 +1,16 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import Candidate from "./Candidate";
 import Wrapper from "../assets/wrappers/CandidatesContainer";
 import { useAllCandidatesContext } from "../pages/AllCandidates";
 import PageBtnContainer from "./PageBtnContainer";
-import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import { Button, Select, Dropdown, Menu } from "antd";
 import customFetch from "../utils/customFetch";
-import { exportCandidatesTableToPDF, CombinedPDFDocument, CandidateCVPages, exportCandidatesTableToExcel } from "./ExportActions";
+import {
+  exportCandidatesTableToPDF,
+  CombinedPDFDocument,
+  CandidateCVPages,
+  exportCandidatesTableToExcel
+} from "./ExportActions";
 import { Document, pdf } from "@react-pdf/renderer";
 import { fieldOptions, statusOptions } from "../utils/constants";
 
@@ -35,71 +39,64 @@ const BulkStatusUpdater = ({ bulkField, setBulkField, bulkValue, setBulkValue, o
   </div>
 );
 
-const CandidateModal = ({ isVisible, closeModal, modalRef, children }) =>
-  isVisible && (
-    <div className="modal modal-open">
-      <div ref={modalRef} className="modal-box bg-white max-w-7xl relative">
-        <button className="fixed top-2 right-4 bg-transparent border-0 text-gray-500 text-lg" onClick={closeModal}>
-          <CloseOutlined />
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-
 const CandidatesContainer = () => {
-  const { data } = useAllCandidatesContext();
+  const { data, selectedIds, setSelectedIds, selectAllGlobal, setSelectAllGlobal } = useAllCandidatesContext();
   const { candidates, totalCandidates, numOfPages } = data;
 
-  const [selectedIds, setSelectedIds] = useState(new Set());
-  const [selectAllGlobal, setSelectAllGlobal] = useState(false);
   const [selectedFields, setSelectedFields] = useState(["Full Name", "gender", "passportNo"]);
   const [bulkField, setBulkField] = useState("");
   const [bulkValue, setBulkValue] = useState("");
+  const [showFieldSelector, setShowFieldSelector] = useState(false);
+  const fieldSelectorRef = useRef(null);
 
+  const handleCheckboxChange = (id) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
-  // Select/deselect a single candidate
- const handleCheckboxChange = (id) => {
-  setSelectedIds(prev => {
-    const newSet = new Set(prev);
-    if (newSet.has(id)) {
-      newSet.delete(id);
-    } else {
-      newSet.add(id);
-    }
-    return newSet;
-  });
-};
+  const handleSelectAllCurrentPage = () => {
+    const pageIds = candidates.map(c => c._id);
+    const allSelected = pageIds.every(id => selectedIds.has(id));
 
-  // Select/Deselect all on current page
- const handleSelectAllCurrentPage = () => {
-  const pageIds = candidates.map(c => c._id);
-  const allSelected = pageIds.every(id => selectedIds.has(id));
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (allSelected) {
+        pageIds.forEach(id => newSet.delete(id));
+      } else {
+        pageIds.forEach(id => newSet.add(id));
+      }
+      return newSet;
+    });
+  };
 
-  setSelectedIds(prev => {
-    const newSet = new Set(prev);
-    if (allSelected) {
-      // remove only current page IDs
-      pageIds.forEach(id => newSet.delete(id));
-    } else {
-      // add current page IDs
-      pageIds.forEach(id => newSet.add(id));
-    }
-    return newSet;
-  });
-};
-
-  // Select/Deselect all candidates in the DB (global)
- const handleSelectAllGlobal = async () => {
-  if (selectAllGlobal) {
+  const handleSelectAllGlobal = async () => {
+  // If any rows are selected → clear all
+  if (selectedIds.size > 0) {
     setSelectedIds(new Set());
     setSelectAllGlobal(false);
-  } else {
-    const { data } = await customFetch.get("/candidates", { params: { limit: 100000 } });
-    setSelectedIds(new Set(data.candidates.map(c => c._id)));
+    return;
+  }
+
+  // Else → fetch all and select all globally
+  try {
+    const { data } = await customFetch.get("/candidates", {
+      params: { limit: 100000 }
+    });
+    const allIds = new Set(data.candidates.map(c => c._id));
+    setSelectedIds(allIds);
     setSelectAllGlobal(true);
+  } catch (err) {
+    console.error("Error selecting all globally:", err);
   }
 };
+
 
   const toggleField = (key) => {
     setSelectedFields((prev) =>
@@ -107,13 +104,8 @@ const CandidatesContainer = () => {
     );
   };
 
-  const [showFieldSelector, setShowFieldSelector] = useState(false);
-  const fieldSelectorRef = useRef(null);
-
-  // Get selected candidates from current data
   const getSelectedCandidates = () => candidates.filter(c => selectedIds.has(c._id));
 
-  // Bulk status update
   const handleBulkStatusUpdate = async () => {
     try {
       await Promise.all(
@@ -129,20 +121,25 @@ const CandidatesContainer = () => {
     }
   };
 
-  // Export PDF
   const handleExportPDF = async () => {
-    let selected = [];
-    if (selectAllGlobal) {
-      const { data } = await customFetch.get("/candidates", { params: { limit: 100000 } });
-      selected = data.candidates;
-    } else {
-      selected = getSelectedCandidates();
-    }
-    if (!selected.length) return;
-    exportCandidatesTableToPDF(selected, selectedFields);
-  };
+  let selected = [];
 
-  // Export Excel
+  if (selectAllGlobal) {
+    // Fetch all candidates if "Select All (Global)" was used
+    const { data } = await customFetch.get("/candidates", { params: { limit: 100000 } });
+    selected = data.candidates;
+  } else {
+    // Fetch only selected IDs across all pages
+    const { data } = await customFetch.get("/candidates", { 
+      params: { ids: Array.from(selectedIds).join(",") } 
+    });
+    selected = data.candidates;
+  }
+
+  if (!selected.length) return;
+  exportCandidatesTableToPDF(selected, selectedFields);
+};
+
   const handleExportExcel = async () => {
     let selected = [];
     if (selectAllGlobal) {
@@ -155,7 +152,6 @@ const CandidatesContainer = () => {
     exportCandidatesTableToExcel(selected, selectedFields);
   };
 
-  // Generate CV PDF
   const handleGenerateAndPreviewPDF = async () => {
     const selected = getSelectedCandidates();
     if (!selected.length) return;
@@ -166,16 +162,6 @@ const CandidatesContainer = () => {
     const blobUrl = URL.createObjectURL(blob);
     window.open(blobUrl, "_blank");
   };
-
-  // Clear selection on logout
-  useEffect(() => {
-    const clearOnLogout = () => {
-      setSelectedIds(new Set());
-      setSelectAllGlobal(false);
-    };
-    window.addEventListener("logout", clearOnLogout);
-    return () => window.removeEventListener("logout", clearOnLogout);
-  }, []);
 
   if (!candidates.length) {
     return <Wrapper><h2>No candidates to display...</h2></Wrapper>;
@@ -196,7 +182,12 @@ const CandidatesContainer = () => {
         disabled={!bulkField || !bulkValue || selectedIds.size === 0}
       />
 
+      
+
       <div className="flex flex-wrap gap-4 my-4">
+         <Button type="primary" onClick={handleSelectAllGlobal}>
+          {selectAllGlobal ? "Deselect All" : "Select All"}
+        </Button>
         <Dropdown
           overlay={
             <Menu>
@@ -210,33 +201,29 @@ const CandidatesContainer = () => {
           <Button>Download Options</Button>
         </Dropdown>
 
-         <div className="relative" ref={fieldSelectorRef}>
-                  <Button onClick={() => setShowFieldSelector((prev) => !prev)}>
-                    Select Fields
-                  </Button>
-                  {showFieldSelector && (
-                    <div className="absolute z-50 bg-white shadow-lg border rounded mt-2 p-4 max-h-64 overflow-y-auto w-64">
-                      {fieldOptions.map(({ key, label }) => (
-                        <label key={key} className="flex items-center space-x-2 mb-2">
-                          <input
-                            type="checkbox"
-                            checked={selectedFields.includes(key)}
-                            onChange={() => toggleField(key)}
-                          />
-                          <span>{label}</span>
-                        </label>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-        <Button type="primary" onClick={handleSelectAllGlobal}>
-          {selectAllGlobal ? "Deselect All (Global)" : "Select All (Global)"}
-        </Button>
+        <div className="relative" ref={fieldSelectorRef}>
+          <Button onClick={() => setShowFieldSelector((prev) => !prev)}>
+            Select Fields
+          </Button>
+          {showFieldSelector && (
+            <div className="absolute z-50 bg-white shadow-lg border rounded mt-2 p-4 max-h-64 overflow-y-auto w-64">
+              {fieldOptions.map(({ key, label }) => (
+                <label key={key} className="flex items-center space-x-2 mb-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedFields.includes(key)}
+                    onChange={() => toggleField(key)}
+                  />
+                  <span>{label}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="candidates overflow-x-auto w-full">
-        <table className="min-w-[1400px] table">
+        <table className="min-w-[60rem] table">
           <thead>
             <tr>
               <th>
@@ -244,13 +231,30 @@ const CandidatesContainer = () => {
                   <input
                     type="checkbox"
                     className="checkbox"
-                    checked={candidates.every(c => selectedIds.has(c._id))}
+                    checked={candidates.length > 0 && candidates.every(c => selectedIds.has(c._id))}
                     onChange={handleSelectAllCurrentPage}
                   />
                   <span>({selectedIds.size})</span>
                 </div>
               </th>
-              {fieldOptions.map(({ label }) => <th key={label}>{label}</th>)}
+              <td>Photo</td>
+              <td>Full Name</td>
+              <th>Code</th>
+              <th>Gender</th>
+              <th>Age</th>
+              <th>Passport No.</th>
+              <th>Labor ID</th>
+              <th>Phone No.</th>
+              <th>Narative</th>
+              <th>Religion</th>
+              <th>CV Status</th>
+              <th>CV Sent to</th>
+              <th>COC Status</th>
+              <th>Musaned Status</th>
+              <th>Medical Status</th>
+              <th> Medical Date</th>
+              <th>Experience</th>
+              <th>Availability Status</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
@@ -263,14 +267,6 @@ const CandidatesContainer = () => {
               onCheckboxChange={handleCheckboxChange}
             />
           ))}
-          <tfoot>
-            <tr>
-              <th></th>
-              {fieldOptions.map(({ label }) => <th key={label}>{label}</th>)}
-              <th>Edit</th>
-              <th>Delete</th>
-            </tr>
-          </tfoot>
         </table>
       </div>
 

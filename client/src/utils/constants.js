@@ -18,6 +18,8 @@ export const fieldOptions = [
   { key: "experienceOutside", label: "Experience Outside" },
   { key: "availabilityStatus", label: "Availability Status" },
   { key: "tasheerDate", label: "Tasheet Date" },
+  { key: "qrCode", label: "QR code" },
+  { key: "ticketDate", label: "Ticket Date" },
 
 ];
 
@@ -62,6 +64,7 @@ export const statusOptions = {
     { label: "Unfit", value: "Unfit" },
     { label: "Waiting", value: "Waiting" },
     { label: "In progress", value: "In Progress" },
+    { label: "Expired", value: "Expired" },
   ],
   musanedStatus: [
     { label: "", value: "" },
@@ -130,8 +133,9 @@ export const statusOptions = {
   
   selectedBy: [
     { label: "", value: "" },
-    { label: "SARAYA AL-RIYADH RECRUITMENT", value: "SARAYA AL-RIYADH RECRUITMENT" },
-    { label: "QUICK TICKET FOR RECRUITMENT", value: "QUICK TICKET FOR RECRUITMENT" },
+    { label: "Saraya Al-riyadh Recruitmen", value: "Saraya Al-riyadh Recruitmen" },
+    { label: "Quick Ticket for Recruitment", value: "Quick Ticket for Recruitment" },
+    { label: "Speed Recruitment", value: "Speed Recruitment" },
   ],
   cvSentTo: [
     { label: "", value: "" },

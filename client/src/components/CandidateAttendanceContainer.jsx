@@ -7,51 +7,79 @@ import { Button, Dropdown, Menu } from "antd";
 import customFetch from "../utils/customFetch";
 import { exportCandidatesTableToExcel, exportCandidatesTableToPDF } from "./ExportActions";
 import BulkUpdateFieldSelector from "./BulkUpdateFieldSelector";
-import { statusOptions } from "../utils/constants";
+import { statusOptions, fieldOptions } from "../utils/constants";
 import { useSubmit } from "react-router-dom";
-import { fieldOptions } from "../utils/constants";
-
-
+import { toast } from "react-toastify";
 
 const CandidateAttendanceContainer = () => {
-  const { data, selectedParams, setSelectedParams } = UseAllCandidatesAttendanceContext();
+  const {
+    data,
+    selectedParams,
+    setSelectedParams,
+    selectedCandidateIds,
+    setSelectedCandidateIds,
+  } = UseAllCandidatesAttendanceContext();
+
   const { selectedCandidates, totalSelectedCandidates, numOfPages } = data;
 
   const submit = useSubmit();
-
-  const [selectedCandidateIds, setSelectedCandidateIds] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [selectAllGlobal, setSelectAllGlobal] = useState(false); // ✅ NEW: global select state
   const [selectedFields, setSelectedFields] = useState([
     "Full Name",
     "passportNo",
     "laborId",
     "medicalStatus",
   ]);
-
   const [bulkField, setBulkField] = useState("");
   const [bulkValue, setBulkValue] = useState("");
+  const [showFieldSelector, setShowFieldSelector] = useState(false);
+  const fieldSelectorRef = useRef(null);
 
+  // ✅ Toggle single row
   const handleCheckboxChange = (id) => {
     setSelectedCandidateIds((prev) =>
       prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
     );
   };
 
+  // ✅ Local page select all
   const handleSelectAllChange = () => {
+    const currentIds = selectedCandidates.map((c) => c._id);
     if (selectAll) {
-      setSelectedCandidateIds([]);
+      setSelectedCandidateIds((prev) => prev.filter((id) => !currentIds.includes(id)));
     } else {
-      const currentIds = selectedCandidates.map((c) => c._id);
-      setSelectedCandidateIds(currentIds);
+      setSelectedCandidateIds((prev) => Array.from(new Set([...prev, ...currentIds])));
     }
     setSelectAll(!selectAll);
   };
 
+  // ✅ GLOBAL select all toggle
+  const handleSelectAllGlobal = async () => {
+    if (selectedCandidateIds.length > 0) {
+      // Deselect all
+      setSelectedCandidateIds([]);
+      setSelectAllGlobal(false);
+      setSelectAll(false);
+      return;
+    }
+
+    try {
+      const { data } = await customFetch.get("/attendance/selected", {
+        params: { limit: 100000 } // fetch all
+      });
+      const allIds = data.selectedCandidates.map(c => c._id);
+      setSelectedCandidateIds(allIds);
+      setSelectAllGlobal(true);
+    } catch (err) {
+      console.error("Error fetching all candidates globally:", err);
+      toast.error("Failed to select all candidates globally");
+    }
+  };
+
   useEffect(() => {
     const currentIds = selectedCandidates.map((c) => c._id);
-    const allSelected = currentIds.every((id) =>
-      selectedCandidateIds.includes(id)
-    );
+    const allSelected = currentIds.every((id) => selectedCandidateIds.includes(id));
     setSelectAll(allSelected);
   }, [selectedCandidates, selectedCandidateIds]);
 
@@ -61,10 +89,6 @@ const CandidateAttendanceContainer = () => {
     );
   };
 
-  const [showFieldSelector, setShowFieldSelector] = useState(false);
-  const fieldSelectorRef = useRef(null);
-
-  // Close field selector if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (fieldSelectorRef.current && !fieldSelectorRef.current.contains(event.target)) {
@@ -75,20 +99,40 @@ const CandidateAttendanceContainer = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleExportPDF = () => {
-    const selected = selectedCandidates.filter((c) =>
-      selectedCandidateIds.includes(c._id)
-    );
-    if (selected.length === 0 || selectedFields.length === 0) return;
-    exportCandidatesTableToPDF(selected, selectedFields);
+  // ✅ PDF Export
+  const handleExportPDF = async () => {
+    if (selectedCandidateIds.length === 0 || selectedFields.length === 0) {
+      toast.error("Please select at least one candidate and one field.");
+      return;
+    }
+
+    try {
+      const { data } = await customFetch.get("/attendance/selected", {
+        params: { ids: selectedCandidateIds.join(",") }
+      });
+      exportCandidatesTableToPDF(data.selectedCandidates, selectedFields);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to export PDF");
+    }
   };
 
-  const handleExportExcel = () => {
-    const selected = selectedCandidates.filter((c) =>
-      selectedCandidateIds.includes(c._id)
-    );
-    if (selected.length === 0 || selectedFields.length === 0) return;
-    exportCandidatesTableToExcel(selected, selectedFields);
+  // ✅ Excel Export
+  const handleExportExcel = async () => {
+    if (selectedCandidateIds.length === 0 || selectedFields.length === 0) {
+      toast.error("Please select at least one candidate and one field.");
+      return;
+    }
+
+    try {
+      const { data } = await customFetch.get("/attendance/selected", {
+        params: { ids: selectedCandidateIds.join(",") }
+      });
+      exportCandidatesTableToExcel(data.selectedCandidates, selectedFields);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to export Excel");
+    }
   };
 
   const handleBulkStatusUpdate = async () => {
@@ -112,107 +156,22 @@ const CandidateAttendanceContainer = () => {
     }
   };
 
-  // Handle insideOffice filter click
- const handleFilterClick = (officeName) => {
-  setSelectedParams((prev) => ({
-    ...prev,
-    insideOffice: officeName || "" // If empty, show all
-  }));
-  submit({ insideOffice: officeName || "" });
-};
-
-
-  if (selectedCandidates.length === 0) {
-    return (
-      <Wrapper>
-             <div className="flex items-center gap-4 my-4 overflow-x-auto">
-        <BulkUpdateFieldSelector
-          statusOptions={statusOptions}
-          bulkField={bulkField}
-          bulkValue={bulkValue}
-          setBulkField={setBulkField}
-          setBulkValue={setBulkValue}
-          onApply={handleBulkStatusUpdate}
-        />
-      </div>
-
-      <div className="flex flex-wrap gap-4 my-4">
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item key="summary" onClick={handleExportPDF}>
-                Download PDF
-              </Menu.Item>
-              <Menu.Item key="excel" onClick={handleExportExcel}>
-                Download Excel
-              </Menu.Item>
-            </Menu>
-          }
-          disabled={selectedCandidateIds.length === 0}
-        >
-          <Button>Download Options</Button>
-        </Dropdown>
-
-        <div className="relative" ref={fieldSelectorRef}>
-          <Button onClick={() => setShowFieldSelector((prev) => !prev)}>
-            Select Fields
-          </Button>
-          {showFieldSelector && (
-            <div className="absolute z-50 bg-white shadow-lg border rounded mt-2 p-4 max-h-64 overflow-y-auto w-64">
-              {fieldOptions.map(({ key, label }) => (
-                <label key={key} className="flex items-center space-x-2 mb-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedFields.includes(key)}
-                    onChange={() => toggleField(key)}
-                  />
-                  <span>{label}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Inside Office Filter Buttons */}
-      <div className="flex gap-2 mb-4">
-  <Button
-    type={!selectedParams.insideOffice ? "primary" : "default"}
-    onClick={() => handleFilterClick("")}
-  >
-    All
-  </Button>
-  <Button
-    type={selectedParams.insideOffice === "Mubarek Agency" ? "primary" : "default"}
-    onClick={() => handleFilterClick("Mubarek Agency")}
-  >
-    Mubarek Agency
-  </Button>
-
-  <Button
-    type={selectedParams.insideOffice === "Kalid Agency" ? "primary" : "default"}
-    onClick={() => handleFilterClick("Kalid Agency")}
-  >
-    Kalid Agency
-  </Button>
-
-</div>
-
-      </div>
-        <h3 className="mt-14 smal normal-case">No candidates to display...</h3>
-      </Wrapper>
-    );
-  }
+  const handleFilterClick = (officeName) => {
+    setSelectedParams((prev) => ({
+      ...prev,
+      insideOffice: officeName || "",
+    }));
+    submit({ insideOffice: officeName || "" });
+  };
 
   return (
     <Wrapper>
       <div className="flex justify-between mb-6">
         <h5 className="font-bold">
-          {totalSelectedCandidates}{" "}
-          {totalSelectedCandidates > 1 ? "candidates" : "candidate"} found
+          {totalSelectedCandidates} {totalSelectedCandidates > 1 ? "candidates" : "candidate"} found
         </h5>
       </div>
 
-      {/* Bulk Update UI */}
       <div className="flex items-center gap-4 my-4 overflow-x-auto">
         <BulkUpdateFieldSelector
           statusOptions={statusOptions}
@@ -225,6 +184,9 @@ const CandidateAttendanceContainer = () => {
       </div>
 
       <div className="flex flex-wrap gap-4 my-4">
+          <Button type={selectAllGlobal ? "danger" : "primary"} onClick={handleSelectAllGlobal}>
+          {selectAllGlobal || selectedCandidateIds.length > 0 ? "Deselect All" : "Select All"}
+        </Button>
         <Dropdown
           overlay={
             <Menu>
@@ -242,9 +204,7 @@ const CandidateAttendanceContainer = () => {
         </Dropdown>
 
         <div className="relative" ref={fieldSelectorRef}>
-          <Button onClick={() => setShowFieldSelector((prev) => !prev)}>
-            Select Fields
-          </Button>
+          <Button onClick={() => setShowFieldSelector((prev) => !prev)}>Select Fields</Button>
           {showFieldSelector && (
             <div className="absolute z-50 bg-white shadow-lg border rounded mt-2 p-4 max-h-64 overflow-y-auto w-64">
               {fieldOptions.map(({ key, label }) => (
@@ -262,33 +222,29 @@ const CandidateAttendanceContainer = () => {
         </div>
 
         <div className="flex gap-2 mb-4">
-  <Button
-    type={!selectedParams.insideOffice ? "primary" : "default"}
-    onClick={() => handleFilterClick("")}
-  >
-    All
-  </Button>
-  <Button
-    type={selectedParams.insideOffice === "Mubarek Agency" ? "primary" : "default"}
-    onClick={() => handleFilterClick("Mubarek Agency")}
-  >
-    Mubarek Agency
-  </Button>
-
-  <Button
-    type={selectedParams.insideOffice === "Kalid Agency" ? "primary" : "default"}
-    onClick={() => handleFilterClick("Kalid Agency")}
-  >
-    Kalid Agency
-  </Button>
-
-</div>
-
+          <Button
+            type={!selectedParams.insideOffice ? "primary" : "default"}
+            onClick={() => handleFilterClick("")}
+          >
+            All
+          </Button>
+          <Button
+            type={selectedParams.insideOffice === "Mubarek Agency" ? "primary" : "default"}
+            onClick={() => handleFilterClick("Mubarek Agency")}
+          >
+            Mubarek Agency
+          </Button>
+          <Button
+            type={selectedParams.insideOffice === "Kalid Agency" ? "primary" : "default"}
+            onClick={() => handleFilterClick("Kalid Agency")}
+          >
+            Kalid Agency
+          </Button>
+        </div>
       </div>
 
-      {/* Table */}
       <div className="candidates overflow-x-auto">
-        <table className="min-w-[1400px] table">
+        <table className="min-w-[50rem] table">
           <thead>
             <tr>
               <th>
@@ -332,28 +288,6 @@ const CandidateAttendanceContainer = () => {
               onCheckboxChange={handleCheckboxChange}
             />
           ))}
-
-          <tfoot>
-            <tr>
-              <th></th>
-              <th>Photo</th>
-              <th>Full Name</th>
-              <th>Passport No.</th>
-              <th>Labor ID</th>
-              <th>Contract Date</th>
-              <th>Medical Status</th>
-              <th>Selected By</th>
-              <th>Tasheer</th>
-              <th>Tasheer Date</th>
-              <th>Wokala</th>
-              <th>Visa Status</th>
-              <th>COC Status</th>
-              <th>LMIS</th>
-              <th>Ticket</th>
-              <th>Ticket Date</th>
-              <th>Edit</th>
-            </tr>
-          </tfoot>
         </table>
       </div>
 

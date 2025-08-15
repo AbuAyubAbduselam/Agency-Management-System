@@ -23,11 +23,32 @@ const AllCandidatesContext = createContext();
 const AllCandidates = () => {
   const { data, selectedParams: initialParams } = useLoaderData();
   const [selectedParams, setSelectedParams] = useState(initialParams || {});
-  const [selectedIds, setSelectedIds] = useState(new Set()); // ⬅ Persistent selection state
-  const [selectAllGlobal, setSelectAllGlobal] = useState(false); // ⬅ Persistent global select
+
+  // ✅ Use sessionStorage for persistence until tab is closed
+  const [selectedIds, setSelectedIds] = useState(() => {
+    return new Set(
+      JSON.parse(sessionStorage.getItem("selectedCandidateIds") || "[]")
+    );
+  });
+
+  const [selectAllGlobal, setSelectAllGlobal] = useState(() => {
+    return JSON.parse(sessionStorage.getItem("selectAllGlobal") || "false");
+  });
 
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
+
+  // Save to sessionStorage on changes
+  useEffect(() => {
+    sessionStorage.setItem(
+      "selectedCandidateIds",
+      JSON.stringify(Array.from(selectedIds))
+    );
+    sessionStorage.setItem(
+      "selectAllGlobal",
+      JSON.stringify(selectAllGlobal)
+    );
+  }, [selectedIds, selectAllGlobal]);
 
   useEffect(() => {
     setSelectedParams(initialParams || {});

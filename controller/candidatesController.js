@@ -7,11 +7,23 @@ import fs from "fs/promises"; // Use fs/promises for async/await
 
 //===============GET ALL CANDIDATES==================//
 export const getAllCandidates = async (req, res) => {
-  const { search, sort, medicalStatus, gender, religion, cvStatus, cocStatus, musanedStatus, availabilityStatus, cvSentTo } = req.query;
+  const {
+    search,
+    sort,
+    page = 1,
+    limit = 20,
+    ids, // ✅ new param
+    ...filters
+  } = req.query;
 
-  const queryObject =  {};
+  const queryObject = {};
 
+  // ✅ If ids are provided, filter only those candidates
+  if (ids) {
+    queryObject._id = { $in: ids.split(",") };
+  }
 
+  // Search
   if (search) {
     queryObject.$or = [
       { firstName: { $regex: search, $options: "i" } },
@@ -21,63 +33,66 @@ export const getAllCandidates = async (req, res) => {
     ];
   }
 
-  if (medicalStatus && medicalStatus !== "Medical Status") {
-    queryObject.medicalStatus = medicalStatus;
-  }
-  if (cvStatus && cvStatus !== "CV Status") {
-    queryObject.cvStatus = cvStatus;
-  }
-  if (cocStatus && cocStatus !== "CoC Status") {
-    queryObject.cocStatus = cocStatus;
-  }
-  if (musanedStatus && musanedStatus !== "Musaned Status") {
-    queryObject.musanedStatus = musanedStatus;
-  }
-  if (availabilityStatus && availabilityStatus !== "Availability Status") {
-    queryObject.availabilityStatus = availabilityStatus;
-  }
-  if (cvSentTo && cvSentTo !== "CV Sent To") {
-    queryObject.cvSentTo = cvSentTo;
-  }
-  if (religion && religion !== "Religion") {
-    queryObject.religion = religion;
-  }
+  // Allowed filters
+  const filterKeys = [
+    "medicalStatus",
+    "cvStatus",
+    "cocStatus",
+    "musanedStatus",
+    "availabilityStatus",
+    "cvSentTo",
+    "religion",
+    "gender",
+  ];
 
-  if (gender && gender !== "Gender") {
-    queryObject.gender = gender;
-  }
+  // Handle multi-select arrays
+  filterKeys.forEach((key) => {
+    if (filters[key] && filters[key] !== "") {
+      const valuesArray = Array.isArray(filters[key])
+        ? filters[key]
+        : String(filters[key]).split(",");
+      if (valuesArray.length > 0) {
+        queryObject[key] = { $in: valuesArray };
+      }
+    }
+  });
 
+  // Sorting
   const sortOptions = {
     newest: "-createdAt",
     oldest: "createdAt",
     "a-z": "position",
     "z-a": "-position",
   };
-
   const sortKey = sortOptions[sort] || sortOptions.newest;
 
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 20;
-  const skip = (page - 1) * limit;
+  const skip = (Number(page) - 1) * Number(limit);
 
   try {
-    const candidates = await Candidate.find(queryObject)
-      .sort(sortKey)
-      .skip(skip)
-      .limit(limit);
-    const totalCandidates = await Candidate.countDocuments(queryObject);
-    const numOfPages = Math.ceil(totalCandidates / limit);
+    // ✅ If ids are given, ignore pagination
+    const candidatesQuery = Candidate.find(queryObject).sort(sortKey);
+    if (!ids) {
+      candidatesQuery.skip(skip).limit(Number(limit));
+    }
 
-    res
-      .status(StatusCodes.OK)
-      .json({ totalCandidates, numOfPages, currentPage: page, candidates });
+    const candidates = await candidatesQuery;
+    const totalCandidates = await Candidate.countDocuments(queryObject);
+    const numOfPages = ids ? 1 : Math.ceil(totalCandidates / Number(limit));
+
+    res.status(200).json({
+      totalCandidates,
+      numOfPages,
+      currentPage: Number(page),
+      candidates,
+    });
   } catch (error) {
     console.error(error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "Error fetching candidates" });
+    res.status(500).json({ msg: "Error fetching candidates" });
   }
 };
+
+
+
 
 //===============GET CHECKED CANDIDATES==================//
 export const getCheckedCandidates = async (req, res) => {

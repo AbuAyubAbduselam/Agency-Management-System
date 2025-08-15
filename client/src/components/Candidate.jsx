@@ -1,4 +1,5 @@
-import { Link, Form, useSubmit } from "react-router-dom";
+// Candidate.jsx
+import { Link, useSubmit } from "react-router-dom";
 import day from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Button, Modal } from "antd";
@@ -35,7 +36,6 @@ const Candidate = ({
 }) => {
   const age = dateOfBirth ? day().diff(day(dateOfBirth), "year") : "-";
   const medicalDays = medicalDate ? day().diff(day(medicalDate), "day") : "--";
-
   const submit = useSubmit();
 
   const showDeleteConfirm = () => {
@@ -72,11 +72,11 @@ const Candidate = ({
           </div>
         </td>
         <td>{[firstName, middleName, lastName].filter(Boolean).join(" ")}</td>
+        <td>{code}</td>
         <td>{gender}</td>
         <td>{age}</td>
         <td>{passportNo}</td>
         <td>{laborId}</td>
-        <td>{code}</td>
         <td>{phoneNo}</td>
         <td>{narrative}</td>
         <td>{religion}</td>
