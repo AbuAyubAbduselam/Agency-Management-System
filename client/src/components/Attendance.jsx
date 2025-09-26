@@ -34,6 +34,7 @@ const Attendance = ({
 }) => {
 
   const contractDate = contractCreationDate? day(contractCreationDate).format("DD MMMM YYYY"): "-----";
+  const medicalDay = medicalDate? day(medicalDate).format("DD MMMM YYYY"): "-----";
   const formattedTicketDate = ticketDate? day(ticketDate).format("DD MMMM YYYY hh:mm: A"): "-----";
 const formattedTasheerDate = tasheerDate? day(tasheerDate).format("DD MMMM YYYY hh:mm: A"):"-----";
 
@@ -79,7 +80,7 @@ const formattedTasheerDate = tasheerDate? day(tasheerDate).format("DD MMMM YYYY 
         <td>{laborId}</td>
         <td>{contractDate}</td>
         <td>{renderStatus("medicalStatus", medicalStatus)}</td>
-        <td>{medicalDate}</td>
+        <td>{medicalDay}</td>
         <td>{renderStatus("selectedBy", selectedBy)}</td>
         <td>{renderStatus("tasheer", tasheer)}</td>
           <td>{formattedTasheerDate}</td>

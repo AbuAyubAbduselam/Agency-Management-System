@@ -10,38 +10,27 @@ import {
 
 const links = [
 
-  {
-    text: "All Candidates",
-    path: ".",
-    icon: <TeamOutlined />,
-  },
-  
-  {
-    text: "Add Candidate",
+    {
+    text: "Register Candidate",
     path: "add-candidate",
     icon: <UserAddOutlined/>
   },
 
-
- /* {
-    text: "Selected Candidates",  
-    path: "",
-    icon: <ScheduleOutlined />,
-    subLinks: [
-      { text: "Candidate Attendance", path: "candidate-attendance" },
-      { text: "Teacher Attendance", path: "teacher-attendance" },
-      { text: "View Attendance", path: "attendance-detail" },
-    ],
+  {
+    text: "Registered Candidates",
+    path: ".",
+    icon: <TeamOutlined />,
   },
-  */
+  
+
 
   {
-    text: "Selected Candidates",
+    text: "Processing",
     path: "candidate-attendance",
     icon: <ScheduleOutlined />,
   },
   {
-    text: "CV",
+    text: "Arrived Candidates",
     path: "teachers",
     icon: <UserOutlined />,
   },

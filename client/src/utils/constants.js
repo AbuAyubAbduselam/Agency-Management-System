@@ -78,11 +78,20 @@ export const statusOptions = {
     { label: "Selected", value: "Selected" },
     { label: "Unavailable", value: "Unavailable" },
   ],
+
+  educationStatus: [
+    { label: "", value: "" },
+    { label: "Primary", value: "Primary" },
+    { label: "Secondary", value: "Secondary" },
+    { label: "Diploma", value: "Diploma" },
+    { label: "Graduate", value: "Graduate" },
+    
+  ],
   language: [
     { label: "", value: "" },
-    { label: "Good", value: "Good" },
-    { label: "Very Good", value: "Very good" },
     { label: "Poor", value: "Poor" },
+    { label: "Fair", value: "Fair" },
+    { label: "Good", value: "Good" },
   ],
   visaStatus: [
     { label: "", value: "" },

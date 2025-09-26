@@ -95,11 +95,9 @@ const SearchContainer = () => {
               {renderMultiSelect("Gender", "gender", getStringOptions(statusOptions.gender))}
               {renderMultiSelect("Medical status", "medicalStatus", getStringOptions(statusOptions.medicalStatus))}
               {renderMultiSelect("Religion", "religion", getStringOptions(statusOptions.religion))}
-              {renderMultiSelect("CV Status", "cvStatus", getStringOptions(statusOptions.cvStatus))}
               {renderMultiSelect("COC Status", "cocStatus", getStringOptions(statusOptions.cocStatus))}
               {renderMultiSelect("Musaned Status", "musanedStatus", getStringOptions(statusOptions.musanedStatus))}
               {renderMultiSelect("Availability", "availabilityStatus", getStringOptions(statusOptions.availabilityStatus))}
-              {renderMultiSelect("CV Sent to", "cvSentTo", getStringOptions(statusOptions.cvSentTo))}
               <div className="form-control w-full">
                 <label className="mb-1 font-small text-gray-700">Sort by</label>
                 <Select

@@ -21,7 +21,7 @@ const CandidateSchema = new mongoose.Schema(
     passportNo: { type: String, default: "" },
     phoneNo: { type: String, default: "" },
     narrativePhoneNo: { type: String, default: "" },
-    laborId: { type: String, default: "" },
+    labourId: { type: String, default: "" },
 
     religion: {
       type: String,
@@ -38,6 +38,11 @@ const CandidateSchema = new mongoose.Schema(
     cocStatus: {
       type: String,
       enum: enumValues("cocStatus"),
+      default: "",
+    },
+    educationStatus: {
+      type: String,
+      enum: enumValues("educationStatus"),
       default: "",
     },
 
@@ -125,8 +130,6 @@ const CandidateSchema = new mongoose.Schema(
       default: "",
     },
 
-    experienceOutside: { type: String, default: "" },
-
     spokenLanguages: { type: String, default: "" },
     narrative: { type: String, default: "" },
     children: Number,
@@ -168,10 +171,21 @@ const CandidateSchema = new mongoose.Schema(
       default: "",
     },
 
-    experienceCountry: { type: String, default: "" },
-    experiencePeriod: { type: String, default: "" },
+       haveExperience: {
+      type: String,
+      enum: ["yes", "no"],
+      default: "no",
+    },
+
+    experiences: [
+      {
+        country: { type: String, required: true },
+        period: { type: String, required: true },
+      },
+    ],
     arrivalCity: { type: String, default: "" },
 
+    note: { type: String, default: "" },
     remark: { type: String, default: "" },
 
     skills: {

@@ -264,7 +264,7 @@ const CandidateAttendanceContainer = () => {
               <th>Labor ID</th>
               <th>Contract Date</th>
               <th>Medical Status</th>
-              <th>Medical Days</th>
+              <th>Medical Date</th>
               <th>Selected By</th>
               <th>Tasheer</th>
               <th>Tasheer Date</th>

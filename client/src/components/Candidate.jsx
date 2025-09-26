@@ -2,8 +2,8 @@
 import { Link, useSubmit } from "react-router-dom";
 import day from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { Button, Modal } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Modal, Popover } from "antd";
+import { EditOutlined, DeleteOutlined, FileTextOutlined } from "@ant-design/icons";
 import { renderStatus } from "../utils/colorStatus";
 
 day.extend(advancedFormat);
@@ -25,13 +25,14 @@ const Candidate = ({
   cocStatus,
   musanedStatus,
   medicalStatus,
-  experienceOutside,
+  haveExperience,
   availabilityStatus,
   cvSentTo,
   medicalDate,
   isSelected,
   onCheckboxChange,
   narrative,
+  note,
   code,
 }) => {
   const age = dateOfBirth ? day().diff(day(dateOfBirth), "year") : "-";
@@ -81,12 +82,19 @@ const Candidate = ({
         <td>{narrative}</td>
         <td>{religion}</td>
         <td>{renderStatus("cvStatus", cvStatus)}</td>
-        <td>{cvSentTo}</td>
+        <td>{renderStatus("cvSentTo", cvSentTo)}</td>
         <td>{renderStatus("cocStatus", cocStatus)}</td>
         <td>{renderStatus("musanedStatus", musanedStatus)}</td>
         <td>{renderStatus("medicalStatus", medicalStatus)}</td>
         <td>{medicalDays} days ago</td>
-        <td>{experienceOutside}</td>
+        <td>{haveExperience}</td>
+        <td> {note ? (
+    <Popover content={note} title="Note">
+      <Button size="small" icon={<FileTextOutlined />}>View</Button>
+    </Popover>
+  ) : (
+    <span style={{ color: "#999" }}>--</span>
+  )}</td>
         <td>{renderStatus("availabilityStatus", availabilityStatus)}</td>
         <td>
           <Link to={`../dashboard/edit-candidate/${_id}`}>

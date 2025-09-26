@@ -5,14 +5,17 @@ import { useAllCandidatesContext } from "../pages/AllCandidates";
 import PageBtnContainer from "./PageBtnContainer";
 import { Button, Select, Dropdown, Menu } from "antd";
 import customFetch from "../utils/customFetch";
+import { agentLogos,ourLogo } from "../utils/agentLogos";
 import {
   exportCandidatesTableToPDF,
-  CombinedPDFDocument,
-  CandidateCVPages,
   exportCandidatesTableToExcel
 } from "./ExportActions";
+import { CandidateCVPages} from "./cv-templates/DefaultCV";
+import { CombinedPDFDocument } from "./cv-templates/DefaultCV";
 import { Document, pdf } from "@react-pdf/renderer";
 import { fieldOptions, statusOptions } from "../utils/constants";
+import { cvLayouts } from "./cv-templates/cvLayouts";
+
 
 const BulkStatusUpdater = ({ bulkField, setBulkField, bulkValue, setBulkValue, onApply, disabled }) => (
   <div className="flex gap-4 mb-6 items-center flex-wrap">
@@ -121,6 +124,40 @@ const CandidatesContainer = () => {
     }
   };
 
+
+const handleGenerateAgentPDF = async (layoutKey) => {
+  const selected = getSelectedCandidates();
+  if (!selected.length) return;
+
+  const CVComponent = cvLayouts[layoutKey] || cvLayouts.default;
+
+  const doc =
+    selected.length === 1 ? (
+      <Document>
+        <CVComponent candidate={selected[0]} agentName={layoutKey} agentLogo={agentLogos[layoutKey]} />
+      </Document>
+    ) : (
+      <Document>
+        {selected.map((c, i) => (
+          <CVComponent
+            key={i}
+            candidate={c}
+            agentName={layoutKey}
+            agentLogo={agentLogos[layoutKey]}
+          />
+        ))}
+      </Document>
+    );
+
+  const blob = await pdf(doc).toBlob();
+  const blobUrl = URL.createObjectURL(blob);
+  window.open(blobUrl, "_blank");
+};
+
+
+
+
+
   const handleExportPDF = async () => {
   let selected = [];
 
@@ -191,9 +228,23 @@ const CandidatesContainer = () => {
         <Dropdown
           overlay={
             <Menu>
-              <Menu.Item key="summary" onClick={handleExportPDF}>Preview Summary PDF</Menu.Item>
-              <Menu.Item key="cv" onClick={handleGenerateAndPreviewPDF}>Preview CV PDF</Menu.Item>
-              <Menu.Item key="excel" onClick={handleExportExcel}>Download Excel Table</Menu.Item>
+             <Menu.Item key="summary" onClick={handleExportPDF}>Preview Summary PDF</Menu.Item>
+<Menu.Item key="cv" onClick={handleGenerateAndPreviewPDF}>Preview CV PDF</Menu.Item>
+<Menu.Item key="excel" onClick={handleExportExcel}>Download Excel Table</Menu.Item>
+
+<Menu.Divider />
+<Menu.SubMenu key="byAgent" title="Download CV by Agent">
+  {Object.keys(cvLayouts).map((layoutKey) => (
+    <Menu.Item
+      key={layoutKey}
+      onClick={() => handleGenerateAgentPDF(layoutKey)}
+    >
+      {layoutKey}
+    </Menu.Item>
+  ))}
+</Menu.SubMenu>
+
+
             </Menu>
           }
           disabled={selectedIds.size === 0}
@@ -254,6 +305,8 @@ const CandidatesContainer = () => {
               <th>Medical Status</th>
               <th> Medical Date</th>
               <th>Experience</th>
+              <th>Note</th>
+
               <th>Availability Status</th>
               <th>Edit</th>
               <th>Delete</th>

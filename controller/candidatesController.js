@@ -114,14 +114,23 @@ export const createCandidate = async (req, res) => {
   try {
     req.body.createdBy = req.user.userId;
 
-    // ✅ Parse skills if it's a JSON string (from FormData)
-    if (req.body.skills && typeof req.body.skills === 'string') {
+    // ✅ Parse skills if sent as JSON string
+    if (req.body.skills) {
       try {
-        console.log(8888888888888)
         req.body.skills = JSON.parse(req.body.skills);
       } catch (err) {
-        console.warn('Failed to parse skills field:', req.body.skills);
-        req.body.skills = {}; // fallback to empty object
+        console.error("Error parsing skills:", err);
+        req.body.skills = {};
+      }
+    }
+
+    // ✅ Parse experiences if sent as JSON string
+    if (req.body.experiences) {
+      try {
+        req.body.experiences = JSON.parse(req.body.experiences);
+      } catch (err) {
+        console.error("Error parsing experiences:", err);
+        req.body.experiences = [];
       }
     }
 
@@ -131,7 +140,7 @@ export const createCandidate = async (req, res) => {
     if (req.files?.avatar) {
       const avatarFile = req.files.avatar;
       const response = await cloudinary.v2.uploader.upload(avatarFile.tempFilePath, {
-        folder: 'avatars',
+        folder: "avatars",
       });
       await fs.unlink(avatarFile.tempFilePath);
 
@@ -143,7 +152,7 @@ export const createCandidate = async (req, res) => {
     if (req.files?.fullSizePhoto) {
       const fullPhotoFile = req.files.fullSizePhoto;
       const response = await cloudinary.v2.uploader.upload(fullPhotoFile.tempFilePath, {
-        folder: 'fullSizePhotos',
+        folder: "fullSizePhotos",
       });
       await fs.unlink(fullPhotoFile.tempFilePath);
 
@@ -155,7 +164,7 @@ export const createCandidate = async (req, res) => {
     if (req.files?.passportScan) {
       const passportScanFile = req.files.passportScan;
       const response = await cloudinary.v2.uploader.upload(passportScanFile.tempFilePath, {
-        folder: 'passportScans',
+        folder: "passportScans",
         resource_type: "auto", // Supports images and PDFs
       });
       await fs.unlink(passportScanFile.tempFilePath);
@@ -174,6 +183,7 @@ export const createCandidate = async (req, res) => {
     });
   }
 };
+
 
 
 export const updateCandidate = async (req, res) => {
@@ -202,6 +212,44 @@ export const updateCandidate = async (req, res) => {
     ...req.body.skills
   };
 }
+
+ // ✅ Parse experiences if sent as JSON string
+    if (req.body.experiences) {
+      try {
+        req.body.experiences = JSON.parse(req.body.experiences);
+      } catch (err) {
+        console.error("Error parsing experiences:", err);
+        req.body.experiences = [];
+      }
+    }
+
+    // === Remove avatar ===
+if (req.body.removeAvatar === "true") {
+  if (candidate.avatarPublicId) {
+    await cloudinary.v2.uploader.destroy(candidate.avatarPublicId);
+  }
+  req.body.avatar = "";
+  req.body.avatarPublicId = "";
+}
+
+// === Remove fullSizePhoto ===
+if (req.body.removeFullSizePhoto === "true") {
+  if (candidate.fullSizePhotoPublicId) {
+    await cloudinary.v2.uploader.destroy(candidate.fullSizePhotoPublicId);
+  }
+  req.body.fullSizePhoto = "";
+  req.body.fullSizePhotoPublicId = "";
+}
+
+// === Remove passportScan ===
+if (req.body.removePassportScan === "true") {
+  if (candidate.passportScanPublicId) {
+    await cloudinary.v2.uploader.destroy(candidate.passportScanPublicId);
+  }
+  req.body.passportScan = "";
+  req.body.passportScanPublicId = "";
+}
+
 
 
     // === Handle avatar upload ===
